@@ -45,7 +45,7 @@ public class client
 			// get a reference to the rmiregistry
 			Registry registry = LocateRegistry.getRegistry(server);
 			// get the proxy and the remote reference by rmiregistry lookup
-			rm = (ResourceManager) registry.lookup("ProjectGroup 08 ResourceManager");
+			rm = (ResourceManager) registry.lookup("HavocadoFlesh");
 			if(rm!=null)
 			{
 				System.out.println("Successful");
