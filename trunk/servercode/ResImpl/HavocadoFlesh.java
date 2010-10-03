@@ -69,7 +69,7 @@ public class HavocadoFlesh
 		e.printStackTrace();
 	    }
 	
-	ToSeedsThread tst = new ToSeedsThread(); 
+	ToSeedsThread tst = new ToSeedsThread(toSeeds); 
 	tst.start();
 
 	// Create and install a security manager
