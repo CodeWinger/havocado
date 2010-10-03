@@ -393,7 +393,7 @@ public class HavocadoFlesh
 	
     // Adds car reservation to this customer. 
     public boolean reserveCar(int id, int customerID, String location)
-	throws RemoteException
+    //	throws RemoteException
     {
 	/*	ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
 	toSeeds.add(rc);
