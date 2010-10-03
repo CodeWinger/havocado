@@ -1,6 +1,18 @@
 all: ResInterface.jar ResImpl/ResourceManagerImpl.class
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl
 
+cars:
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl HavocadoSeedCar
+
+flights:
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl HavocadoSeedFlight
+
+rooms:
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl HavocadoSeedRoom
+
+flesh: ResInterface.jar ResImpl/HavocadoFlesh.class
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh
+
 ResInterface.jar:
 	javac ResInterface/ResourceManager.java
 	jar cvf ResInterface.jar ResInterface/*.class
@@ -10,6 +22,9 @@ ResInterface.jar:
 
 ResImpl/ResourceManagerImpl.class:
 	javac ResImpl/ResourceManagerImpl.java
+
+ResImpl/HavocadoFlesh.class:
+	javac ResImpl/HavocadoFlesh.java
 
 clean:
 	rm -rf ResImpl/*.class; rm -rf ResInterface/*.class;
