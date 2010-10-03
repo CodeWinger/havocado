@@ -24,9 +24,11 @@ public class ResourceManagerImpl
 	public static void main(String args[]) {
         // Figure out where server is running
         String server = "localhost";
+	String name = "";
 
          if (args.length == 1) {
-             server = server + ":" + args[0];
+	     //             server = server + ":" + args[0];
+	     name = args[0];
          } else if (args.length != 0 &&  args.length != 1) {
              System.err.println ("Wrong usage");
              System.out.println("Usage: java ResImpl.ResourceManagerImpl [port]");
@@ -42,7 +44,7 @@ public class ResourceManagerImpl
 
 			// Bind the remote object's stub in the registry
 			Registry registry = LocateRegistry.getRegistry();
-			registry.rebind("ProjectGroup 08 ResourceManager", rm);
+			registry.rebind(name, rm);
 
 			System.err.println("Server ready");
 		} 
