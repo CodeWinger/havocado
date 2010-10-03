@@ -367,7 +367,7 @@ public class HavocadoFlesh
 			
 	    Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") succeeded" );*/
 	    return true;
-	} // if
+	    //	} // if
     }
 
 
