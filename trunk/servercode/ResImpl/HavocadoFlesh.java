@@ -52,13 +52,13 @@ public class HavocadoFlesh
 		registry.rebind("HavocadoFlesh", rm);
 
 		registry = LocateRegistry.getRegistry(carSeed);
-		rm = (ResourceManager) registry.lookup("HavocadoSeed");
+		rm = (ResourceManager) registry.lookup("HavocadoSeedCar");
 		// TODO: Check for null rm.
 		registry = LocateRegistry.getRegistry(flightSeed);
-		rm = (ResourceManager) registry.lookup("HavocadoSeed");
+		rm = (ResourceManager) registry.lookup("HavocadoSeedFlight");
 		// TODO: Check for null rm.
 		registry = LocateRegistry.getRegistry(roomSeed);
-		rm = (ResourceManager) registry.lookup("HavocadoSeed");
+		rm = (ResourceManager) registry.lookup("HavocadoSeedRoom");
 		// TODO: Check for null rm.
 
 		System.err.println("Server ready");
@@ -69,7 +69,7 @@ public class HavocadoFlesh
 		e.printStackTrace();
 	    }
 	
-	Thread ToSeedsThread tst = new ToSeedsThread(); 
+	ToSeedsThread tst = new ToSeedsThread(); 
 	tst.start();
 
 	// Create and install a security manager
@@ -401,7 +401,8 @@ public class HavocadoFlesh
 	if (rc.error())
 	    throw new RemoteException();
 	// TODO: Get actual value.*/
-	return reserveItem(id, customerID, Car.getKey(location), location);
+	//	return reserveItem(id, customerID, Car.getKey(location), location);
+	return true;
     }
 
 
@@ -415,7 +416,8 @@ public class HavocadoFlesh
 	if (rr.error())
 	    throw new RemoteException();
 	// TODO: Get actual value.*/
-	return reserveItem(id, customerID, Hotel.getKey(location), location);
+	//	return reserveItem(id, customerID, Hotel.getKey(location), location);
+	return true;
     }
     // Adds flight reservation to this customer.  
     public boolean reserveFlight(int id, int customerID, int flightNum)
@@ -427,7 +429,7 @@ public class HavocadoFlesh
 	if (rf.error())
 	    throw new RemoteException();
 	    // TODO: Get actual value.*/
-	return reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
+	return true;//	return reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
     }
 	
     /* reserve an itinerary */
