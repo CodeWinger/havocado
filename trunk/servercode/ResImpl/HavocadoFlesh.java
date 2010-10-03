@@ -22,7 +22,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class HavocadoFlesh
     implements ResourceManager {
 	
-    ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<CommandInterface>();
+    ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<Command>();
     ResourceManager rmCars, rmFlights, rmRooms;
 
 
@@ -96,7 +96,7 @@ public class HavocadoFlesh
     public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
 	throws RemoteException
     {
-	AddFlightRMICommand af = new AddFlightRMICommnd(rmFlights, id, flightNum, flightSeats, flightPrice);
+	AddFlightRMICommand af = new AddFlightRMICommand(rmFlights, id, flightNum, flightSeats, flightPrice);
 	toSeeds.add(af);
 	af.waitFor();
 	if (af.error())
@@ -116,7 +116,8 @@ public class HavocadoFlesh
 	if (df.error())
 	    throw new RemoteException();
 	// TODO: Get actual value.
-	return deleteItem(id, Flight.getKey(flightNum));
+	//	return deleteItem(id, Flight.getKey(flightNum));
+	return true;
     }
 
 
@@ -145,7 +146,7 @@ public class HavocadoFlesh
 	if (dr.error())
 	    throw new RemoteException();
 	// TODO: Get actual value.
-	return deleteItem(id, Hotel.getKey(location));
+	//	return deleteItem(id, Hotel.getKey(location));
 	return true;
 		
     }
@@ -234,7 +235,7 @@ public class HavocadoFlesh
 	if (qr.error())
 	    throw new RemoteException();
 	// TODO: Get actual value.
-	return queryNum(id, Hotel.getKey(location));/*
+	return queryNum(id, Hotel.getKey(location));*/
 	return 0;
     }
 
