@@ -14,8 +14,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-//public class ResourceManagerImpl extends java.rmi.server.UnicastRemoteObject
-public class ResourceManagerImpl
+//public class HavocadoFlesh extends java.rmi.server.UnicastRemoteObject
+public class HavocadoFlesh
 	implements ResourceManager {
 	
 	protected RMHashtable m_itemHT = new RMHashtable();
@@ -29,14 +29,14 @@ public class ResourceManagerImpl
              server = server + ":" + args[0];
          } else if (args.length != 0 &&  args.length != 1) {
              System.err.println ("Wrong usage");
-             System.out.println("Usage: java ResImpl.ResourceManagerImpl [port]");
+             System.out.println("Usage: java ResImpl.HavocadoFlesh [port]");
              System.exit(1);
          }
 		 
 		 try 
 		 {
 			// create a new Server object
-			ResourceManagerImpl obj = new ResourceManagerImpl();
+			HavocadoFlesh obj = new HavocadoFlesh();
 			// dynamically generate the stub (client proxy)
 			ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
 
@@ -57,7 +57,7 @@ public class ResourceManagerImpl
  //          System.setSecurityManager(new RMISecurityManager());
  //        }
  //        try {
- //               ResourceManagerImpl obj = new ResourceManagerImpl();
+ //               HavocadoFlesh obj = new HavocadoFlesh();
  //               Naming.rebind("rmi://" + server + "/RM", obj);
  //               System.out.println("RM bound");
  //        } 
@@ -67,7 +67,7 @@ public class ResourceManagerImpl
     }
 
     
-    public ResourceManagerImpl() throws RemoteException {
+    public HavocadoFlesh() throws RemoteException {
     }
 
 
