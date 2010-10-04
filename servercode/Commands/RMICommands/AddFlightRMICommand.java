@@ -9,6 +9,8 @@ public class AddFlightRMICommand extends AbstractRMICommand {
   int flightSeats;
   int flightPrice;
 
+  boolean success;
+
   public AddFlightRMICommand(ResourceManager pRm, int pId, int pFlightNum, int pFlightSeats, int pFlightPrice) {
     super(pRm);
     // Store our attributes.
@@ -16,10 +18,12 @@ public class AddFlightRMICommand extends AbstractRMICommand {
     flightNum = pFlightNum;
     flightSeats = pFlightSeats;
     flightPrice = pFlightPrice;
+    
+    success = false;
   }
   
   public void doCommand() throws Exception {
     // Perform the command.
-    rm.addFlight(id, flightNum, flightSeats, flightPrice);
+    success = rm.addFlight(id, flightNum, flightSeats, flightPrice);
   }
 }

@@ -9,6 +9,8 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
   int numRooms;
   int price;
 
+  boolean success;
+
   public AddRoomsRMICommand(ResourceManager pRm, int pId, String pLocation, int pNumRooms, int pPrice) {
     super(pRm);
     // Store our attributes.
@@ -16,9 +18,11 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
     location = pLocation;
     numRooms = pNumRooms;
     price = pPrice;
+    
+    success = false;
   }
   
   public void doCommand() throws Exception {
-    rm.addRooms(id, location, numRooms, price);
+    success = rm.addRooms(id, location, numRooms, price);
   }
 }

@@ -6,15 +6,19 @@ public class DeleteRoomsRMICommand extends AbstractRMICommand {
 
   int id;
   String location;
+  
+  boolean success;
 
   public DeleteRoomsRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);
     // Store our attributes.
     id = pId;
     location = pLocation;
+    
+    success = false;
   }
   
   public void doCommand() throws Exception {
-    rm.deleteRooms(id, location);
+    success = rm.deleteRooms(id, location);
   }
 }
