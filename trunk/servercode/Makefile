@@ -1,6 +1,9 @@
 all: ResInterface.jar ResImpl/ResourceManagerImpl.class
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl
 
+many: cars flights rooms
+
+
 cars:
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl HavocadoSeedCar
 
@@ -11,7 +14,7 @@ rooms:
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl HavocadoSeedRoom
 
 flesh: ResInterface.jar ResImpl/HavocadoFlesh.class
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi
 
 ResInterface.jar:
 	javac ResInterface/ResourceManager.java
