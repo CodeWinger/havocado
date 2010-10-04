@@ -22,7 +22,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class HavocadoFlesh
     implements ResourceManager {
 	
-    ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<Command>();
+    static ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<Command>();
     ResourceManager rmCars, rmFlights, rmRooms;
 
 
