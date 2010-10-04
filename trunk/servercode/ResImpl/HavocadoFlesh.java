@@ -52,13 +52,13 @@ public class HavocadoFlesh
 		registry.rebind("HavocadoFlesh", rm);
 
 		registry = LocateRegistry.getRegistry(carSeed);
-		rm = (ResourceManager) registry.lookup("HavocadoSeedCar");
+		rmCars = (ResourceManager) registry.lookup("HavocadoSeedCar");
 		// TODO: Check for null rm.
 		registry = LocateRegistry.getRegistry(flightSeed);
-		rm = (ResourceManager) registry.lookup("HavocadoSeedFlight");
+		rmFlights = (ResourceManager) registry.lookup("HavocadoSeedFlight");
 		// TODO: Check for null rm.
 		registry = LocateRegistry.getRegistry(roomSeed);
-		rm = (ResourceManager) registry.lookup("HavocadoSeedRoom");
+		rmRooms = (ResourceManager) registry.lookup("HavocadoSeedRoom");
 		// TODO: Check for null rm.
 
 		System.err.println("Server ready");
