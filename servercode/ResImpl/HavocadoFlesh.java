@@ -23,17 +23,18 @@ public class HavocadoFlesh
     implements ResourceManager {
 	
     static ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<Command>();
-    ResourceManager rmCars, rmFlights, rmRooms;
-
+    static ResourceManager rmCars, rmFlights, rmRooms;
 
     public static void main(String args[]) {
         // Figure out where server is running
         String server = "localhost";
 	String carSeed, flightSeed, roomSeed;
+	carSeed = flightSeed = roomSeed = "localhost";
 	// TODO: Set these strings to cl arguments.
 
 	if (args.length == 1) {
-	    server = server + ":" + args[0];
+	    //	    server = server + ":" + args[0];
+	    carSeed = flightSeed = roomSeed = args[0];
 	} else if (args.length != 0 &&  args.length != 1) {
 	    System.err.println ("Wrong usage");
 	    System.out.println("Usage: java ResImpl.HavocadoFlesh [port]");
@@ -42,6 +43,7 @@ public class HavocadoFlesh
 		 
 	try 
 	    {
+		System.out.println("HELLO "+carSeed);
 		// create a new Server object
 		HavocadoFlesh obj = new HavocadoFlesh();
 		// dynamically generate the stub (client proxy)
