@@ -4,9 +4,9 @@ import ResInterface.*;
 
 public class ItineraryRMICommand extends AbstractRMICommand {
 
-  ResourceManager carRm;
-  ResourceManager flightRm;
-	ResourceManager roomRm;
+  public ResourceManager carRm;
+  public ResourceManager flightRm;
+	public ResourceManager roomRm;
 
   public int id;
   public int customer;
@@ -37,7 +37,10 @@ public class ItineraryRMICommand extends AbstractRMICommand {
     // Store our attributes.
     id = pId;
     customer = pCustomer;
-    flightNumber = pFlightNumber;
+    flightNumbers = pFlightNumbers;
+    location = pLocation;
+    car = pCar;
+    room = pRoom;
     
     success = false;
   }
