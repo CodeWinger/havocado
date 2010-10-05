@@ -29,6 +29,8 @@ public class AddFlightTCPCommand extends AbstractTCPCommand {
     ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());    
     ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
     
+    System.out.println("MY PANTS ARE ON FIRE, JESUS CHRIST OH GOD.");
+    
     // send myself to the server.
     send.writeObject(this); send.flush(); send.reset(); 
     // the server will spit out a mirrored image of me, take what i need from it.
