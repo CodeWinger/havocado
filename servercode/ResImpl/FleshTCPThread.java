@@ -70,6 +70,7 @@ public class FleshTCPThread extends Thread {
 		c.clearSocket();
 		out.writeObject(c);
 		out.flush();
+		out.reset();
 		System.out.println("Returned reply.");
 	    }
 	    catch (Exception e) {
