@@ -26,8 +26,8 @@ public class AddFlightTCPCommand extends AbstractTCPCommand {
   public void doCommand() throws Exception {
     if(toSeed == null) { throw new Exception("seed socket is null."); }
     
-    ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
     ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
+    ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
     
     System.out.println("OH MY GOD MY PANTS ARE ON FIRE.");
     
