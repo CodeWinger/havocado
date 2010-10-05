@@ -19,8 +19,8 @@ public class SeedTCPThread extends Thread {
 	socket = s;
 	seed = hs;
 	try {
-	    in = new ObjectInputStream(socket.getInputStream());
 	    out = new ObjectOutputStream(socket.getOutputStream());
+	    in = new ObjectInputStream(socket.getInputStream());
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
