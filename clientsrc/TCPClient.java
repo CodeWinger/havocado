@@ -45,7 +45,7 @@ public class TCPClient
 		
 		try 
 		{
-			toServer = new Socket(server, 11111);
+			toServer = new Socket(server, 11112);
 			if(toServer!=null) {
 				System.out.println("Successful");
 				System.out.println("Connected by TCP socket to server.");
