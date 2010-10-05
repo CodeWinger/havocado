@@ -20,8 +20,8 @@ public static boolean createSocket(String server) {
 	try 
 		{
 			toServer = new Socket(server, 11112);
-			ObjectOutputStream o = new ObjectOutputStream(toServer.getOutputStream());
-			o.writeObject("HELLO.");
+			//ObjectOutputStream o = new ObjectOutputStream(toServer.getOutputStream());
+			//o.writeObject("HELLO.");
 			
 			if(toServer!=null) {
 				System.out.println("Successful");
