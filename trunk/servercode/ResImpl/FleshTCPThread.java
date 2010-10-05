@@ -50,7 +50,6 @@ public class FleshTCPThread extends Thread {
 	catch (Exception e) {
 	    System.out.println("Error connecting to client.");
 	    e.printStackTrace();
-	    System.exit(0);
 	}
 
 	while (true) {
