@@ -38,6 +38,7 @@ public class FleshTCPThread extends Thread {
 	carSocket = carS;
 	flightSocket = flightS;
 	roomSocket = roomS;
+	start();
     }
 
     public void run() {
