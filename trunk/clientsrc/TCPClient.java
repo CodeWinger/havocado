@@ -15,6 +15,8 @@ public class TCPClient
     static String message = "blank";
     //static ResourceManager rm = null;
     static Socket toServer;
+    static ObjectInputStream recv;
+    static ObjectOutputStream send;
 
 public static boolean createSocket(String server) {
 	try 
@@ -22,6 +24,9 @@ public static boolean createSocket(String server) {
 			toServer = new Socket(server, 11112);
 			//ObjectOutputStream o = new ObjectOutputStream(toServer.getOutputStream());
 			//o.writeObject("HELLO.");
+			
+			recv = new ObjectInputStream(toServer.getInputStream());
+			send = new ObjectOutputStream(toServer.getOutputStream());
 			
 			if(toServer!=null) {
 				System.out.println("Successful");
@@ -148,8 +153,6 @@ public static void closeSocket() {
 			
 						/* TCP COMMUNICATION */
 						AddFlightTCPCommand c = new AddFlightTCPCommand(Id, flightNum, flightSeats, flightPrice);
-						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
-						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
 						send.flush();
 						send.reset();
