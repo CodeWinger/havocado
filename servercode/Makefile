@@ -31,10 +31,10 @@ ResInterface.jar:
 ResImpl/ResourceManagerImpl.class:
 	javac ResImpl/ResourceManagerImpl.java
 
-ResImpl/HavocadoFlesh.class:
+ResImpl/HavocadoFlesh.class: Commands.jar
 	javac ResImpl/HavocadoFlesh.java
 
-ResImpl/HavocadoSeed.class:
+ResImpl/HavocadoSeed.class: Commands.jar
 	javac ResImpl/HavocadoSeed.java
 
 clean:
