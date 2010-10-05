@@ -44,8 +44,8 @@ public class FleshTCPThread extends Thread {
     public void run() {
 	AbstractTCPCommand c;
 	try {
-	    in = new ObjectInputStream(clientSocket.getInputStream());
 	    out = new ObjectOutputStream(clientSocket.getOutputStream());
+	    in = new ObjectInputStream(clientSocket.getInputStream());
 	}
 	catch (Exception e) {
 	    System.out.println("Error connecting to client.");
