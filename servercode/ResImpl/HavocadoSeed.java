@@ -28,9 +28,15 @@ public class HavocadoSeed
 	String name = "";
 	int port = 11111;
 
-         if (args.length == 1) {
+         if (args.length == 2) {
 	     //             server = server + ":" + args[0];
 	     name = args[0];
+	     try {
+		 port = Integer.parseInt(args[1]);
+	     }
+	     catch (Exception e) {
+		 e.printStackTrace();
+	     }
          } else if (args.length != 0 &&  args.length != 1) {
              System.err.println ("Wrong usage");
              System.out.println("Usage: java ResImpl.HavocadoSeed [port]");
