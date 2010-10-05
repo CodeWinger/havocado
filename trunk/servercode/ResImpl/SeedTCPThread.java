@@ -39,6 +39,7 @@ public class SeedTCPThread extends Thread {
 	    }
 	    catch (Exception e) {
 		e.printStackTrace();
+		break;
 	    }
 	}
     }
