@@ -35,6 +35,7 @@ public class SeedTCPThread extends Thread {
 		c = (AbstractTCPCommand) in.readObject();
 		handle(c);
 		out.writeObject(c);
+		out.flush();
 	    }
 	    catch (Exception e) {
 		e.printStackTrace();
