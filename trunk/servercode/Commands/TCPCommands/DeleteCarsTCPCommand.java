@@ -26,7 +26,7 @@ public class DeleteCarsTCPCommand extends AbstractTCPCommand {
     ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
     
     // send myself to the server.
-    send.writeObject(this); 
+    send.writeObject(this); send.flush(); send.reset(); 
     // the server will spit out a mirrored image of me, take what i need from it.
     DeleteCarsTCPCommand mirror = (DeleteCarsTCPCommand) recv.readObject();
     
