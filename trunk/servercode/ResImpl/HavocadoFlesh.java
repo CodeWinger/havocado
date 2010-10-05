@@ -26,7 +26,7 @@ public class HavocadoFlesh
 	
     static ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<Command>();
     static ResourceManager rmCars, rmFlights, rmRooms;
-    static int port = 11111;
+    static int carPort = 11111, flightPort = 22222, roomPort = 33333, port = 1111;
     static Socket rmCarSocket, rmFlightSocket, rmRoomSocket;
 
     public static void main(String args[]) {
@@ -36,9 +36,15 @@ public class HavocadoFlesh
 	carSeed = flightSeed = roomSeed = "localhost";
 	// TODO: Set these strings to cl arguments.
 
-	if (args.length == 1) {
+	if (args.length == 2) {
 	    //	    server = server + ":" + args[0];
 	    carSeed = flightSeed = roomSeed = args[0];
+	    try {
+		port = Integer.parseInt(args[1]);
+	    }
+	    catch (Exception e) {
+		e.printStackTrace();
+	    }
 	} else if (args.length != 0 &&  args.length != 1) {
 	    System.err.println ("Wrong usage");
 	    System.out.println("Usage: java ResImpl.HavocadoFlesh [port]");
@@ -75,9 +81,9 @@ public class HavocadoFlesh
 
 	// Set up TCP sockets.
 	try {
-	    rmCarSocket = new Socket(carSeed, port);
-	    rmFlightSocket = new Socket(flightSeed, port);
-	    rmRoomSocket = new Socket(roomSeed, port);
+	    rmCarSocket = new Socket(carSeed, carPort);
+	    rmFlightSocket = new Socket(flightSeed, flightPort);
+	    rmRoomSocket = new Socket(roomSeed, roomPort);
 	    
 	    System.err.println("Server ready");
 	}
@@ -90,7 +96,7 @@ public class HavocadoFlesh
 	tst.start();
 
 	try {
-	    ServerSocket ss = new ServerSocket(port);
+	    ServerSocket ss = new ServerSocket(carPort);
 	    while (true) {
 		new FleshTCPThread(toSeeds, ss.accept(), rmCarSocket, rmFlightSocket, rmRoomSocket);
 	    }
