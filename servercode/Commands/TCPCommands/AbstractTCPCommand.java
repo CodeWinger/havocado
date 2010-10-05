@@ -5,7 +5,7 @@ import java.io.*;
 import Commands.*;
 
 public abstract class AbstractTCPCommand implements Command, Serializable {
-  protected transient boolean Socket toSeed;
+  protected transient Socket toSeed;
   protected boolean error;
   
   public AbstractTCPCommand() {

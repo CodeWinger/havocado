@@ -2,6 +2,7 @@ package Commands.TCPCommands;
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class ItineraryTCPCommand extends AbstractTCPCommand {
   
@@ -74,7 +75,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
       int flightNum = ((Integer) flightNumbers.elementAt(i)).intValue();
 
       recv = new ObjectInputStream(flightSocket.getInputStream());
-      send = new ObjectInputStream(flightSocket.getOutputStream());
+      send = new ObjectOutputStream(flightSocket.getOutputStream());
       
       ReserveFlightTCPCommand r = new ReserveFlightTCPCommand(id, customer, flightNum);
       send.writeObject(r);
@@ -85,7 +86,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
     // reserve a car if needed.
     if(car && success) {
       recv = new ObjectInputStream(carSocket.getInputStream());
-      send = new ObjectInputStream(carSocket.getOutputStream());
+      send = new ObjectOutputStream(carSocket.getOutputStream());
       
       ReserveCarTCPCommand r = new ReserveCarTCPCommand(id, customer, location);
       send.writeObject(r);
@@ -96,7 +97,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
     // reserve a room if needed.
     if(room && success) {
       recv = new ObjectInputStream(roomSocket.getInputStream());
-      send = new ObjectInputStream(roomSocket.getOutputStream());
+      send = new ObjectOutputStream(roomSocket.getOutputStream());
       
       ReserveRoomTCPCommand r = new ReserveRoomTCPCommand(id, customer, location);
       send.writeObject(r);
