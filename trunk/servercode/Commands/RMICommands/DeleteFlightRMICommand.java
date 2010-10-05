@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class DeleteFlightRMICommand extends AbstractRMICommand {
 
-  int id;
-  int flightNum;
+  public int id;
+  public int flightNum;
 
-  boolean success;
+  public boolean success;
 
   public DeleteFlightRMICommand(ResourceManager pRm, int pId, int pFlightNum) {
     super(pRm);

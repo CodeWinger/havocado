@@ -4,12 +4,12 @@ import ResInterface.*;
 
 public class AddCarsRMICommand extends AbstractRMICommand {
 
-  int id;
-  String location;
-  int numCars;
-  int price;
+  public int id;
+  public String location;
+  public int numCars;
+  public int price;
   
-  boolean success;
+  public boolean success;
 
   public AddCarsRMICommand(ResourceManager pRm, int pId, String pLocation, int pNumCars, int pPrice) {
     super(pRm);

@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
 
-  int id;
-  int customer;
+  public int id;
+  public int customer;
   
-  String customerInfo;
+  public String customerInfo;
 
   public QueryCustomerInfoRMICommand(ResourceManager pRm, int pId, int pCustomer) {
     super(pRm);

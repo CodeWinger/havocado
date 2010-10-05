@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class DeleteCustomerRMICommand extends AbstractRMICommand {
 
-  int id;
-  int customer;
+  public int id;
+  public int customer;
   
-  boolean success;
+  public boolean success;
 
   public DeleteCustomerRMICommand(ResourceManager pRm, int pId, int pCustomer) {
     super(pRm);

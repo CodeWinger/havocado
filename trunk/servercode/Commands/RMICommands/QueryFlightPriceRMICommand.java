@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class QueryFlightPriceRMICommand extends AbstractRMICommand {
 
-  int id;
-  int flightNumber;
+  public int id;
+  public int flightNumber;
   
-  int price;
+  public int price;
 
   public QueryFlightPriceRMICommand(ResourceManager pRm, int pId, int pFlightNumber) {
     super(pRm);

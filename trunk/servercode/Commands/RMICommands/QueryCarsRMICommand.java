@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class QueryCarsRMICommand extends AbstractRMICommand {
 
-  int id;
-  String location;
+  public int id;
+  public String location;
   
-  int numCars;
+  public int numCars;
 
   public QueryCarsRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);
