@@ -61,7 +61,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
     ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
     ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
     // send myself to the server.
-    send.writeObject(this); 
+    send.writeObject(this); send.flush(); send.reset(); 
     // the server will spit out a mirrored image of me, take what i need from it.
     DeleteFlightTCPCommand mirror = (DeleteFlightTCPCommand) recv.readObject();
     
@@ -78,7 +78,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
       send = new ObjectOutputStream(flightSocket.getOutputStream());
       
       ReserveFlightTCPCommand r = new ReserveFlightTCPCommand(id, customer, flightNum);
-      send.writeObject(r);
+      send.writeObject(r); send.flush(); send.reset();
       r = (ReserveFlightTCPCommand) recv.readObject();
       success = success && r.success;
     } 
@@ -89,7 +89,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
       send = new ObjectOutputStream(carSocket.getOutputStream());
       
       ReserveCarTCPCommand r = new ReserveCarTCPCommand(id, customer, location);
-      send.writeObject(r);
+      send.writeObject(r); send.flush(); send.reset();
       r = (ReserveCarTCPCommand) recv.readObject();
       success = success && r.success;
     }
@@ -100,7 +100,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
       send = new ObjectOutputStream(roomSocket.getOutputStream());
       
       ReserveRoomTCPCommand r = new ReserveRoomTCPCommand(id, customer, location);
-      send.writeObject(r);
+      send.writeObject(r); send.flush(); send.reset();
       r = (ReserveRoomTCPCommand) recv.readObject();
       success = success && r.success;
     }    
