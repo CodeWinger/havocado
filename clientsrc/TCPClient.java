@@ -16,34 +16,8 @@ public class TCPClient
     //static ResourceManager rm = null;
     static Socket toServer;
 
-    public static void main(String args[])
-	{
-	    client obj = new client();
-	    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-	    String command = "";
-	    Vector arguments  = new Vector();
-	    int Id, Cid;
-	    int flightNum;
-	    int flightPrice;
-	    int flightSeats;
-	    boolean Room;
-	    boolean Car;
-	    int price;
-	    int numRooms;
-	    int numCars;
-	    String location;
-
-
-	    String server = "localhost";
-	    if (args.length == 1) 
-			server = args[0]; 
-	    else if (args.length != 0 &&  args.length != 1) 
-		{
-			System.out.println ("Usage: java client [rmihost]"); 
-			System.exit(1); 
-	    }
-		
-		try 
+public static boolean createSocket(String server) {
+	try 
 		{
 			toServer = new Socket(server, 11112);
 			if(toServer!=null) {
@@ -73,10 +47,48 @@ public class TCPClient
 		{	
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
+			return false;
 		}
-    
-		
-		
+		return true;
+}
+
+public static void closeSocket() {
+	try{
+		if(toServer != null) { 
+			toServer.close();
+		}
+	} catch(Exception e) {
+		e.printStackTrace();
+	}
+}
+
+    public static void main(String args[])
+	{
+	    client obj = new client();
+	    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+	    String command = "";
+	    Vector arguments  = new Vector();
+	    int Id, Cid;
+	    int flightNum;
+	    int flightPrice;
+	    int flightSeats;
+	    boolean Room;
+	    boolean Car;
+	    int price;
+	    int numRooms;
+	    int numCars;
+	    String location;
+
+	    String server = "localhost";
+	    if (args.length == 1) 
+			server = args[0]; 
+	    else if (args.length != 0 &&  args.length != 1) 
+		{
+			System.out.println ("Usage: java client [rmihost]"); 
+			System.exit(1); 
+	    }
+	    
+	    createSocket(server);
 	    
 //	    System.setSecurityManager(new RMISecurityManager());
 //		try {
@@ -781,6 +793,7 @@ public class TCPClient
 			break;
 		    }
 		    System.out.println("Quitting client.");
+		    closeSocket();
 		    System.exit(1);
 		    
 		    
