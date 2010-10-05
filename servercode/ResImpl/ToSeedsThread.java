@@ -16,8 +16,10 @@ public class ToSeedsThread extends Thread {
 	Command c;
 	while (true) {
 	    c = clq.poll();
-	    if (c != null)
+	    if (c != null) {
+		System.out.println("Executing command.");
 		c.execute();
+	    }
 	    else
 		Thread.yield();
 	}
