@@ -53,6 +53,9 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
     if(carSocket == null || flightSocket == null || roomSocket == null) { 
       throw new Exception("some sockets are null."); 
     }
+    
+    ObjectInputStream recv;
+    ObjectOutputStream send;
 /*    
     ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
     ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
@@ -65,17 +68,40 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
     this.success = mirror.success;
 */
     success = true;
-    
+
+    // reserve as many flights as we want.    
     for(int i = 0; i < flightNumbers.size(); i++) {
       int flightNum = ((Integer) flightNumbers.elementAt(i)).intValue();
-      // TODO: RESERVE A FLIGHT.
+
+      recv = new ObjectInputStream(flightSocket.getInputStream());
+      send = new ObjectInputStream(flightSocket.getOutputStream());
+      
+      ReserveFlightTCPCommand r = new ReserveFlightTCPCommand(id, customer, flightNum);
+      send.writeObject(r);
+      r = (ReserveFlightTCPCommand) recv.readObject();
+      success = success && r.success;
     } 
+    
+    // reserve a car if needed.
     if(car && success) {
-      // TODO: RESERVE A CAR.
-    }
-    if(room && success) {
-      // TODO: RESERVE A ROOM.
+      recv = new ObjectInputStream(carSocket.getInputStream());
+      send = new ObjectInputStream(carSocket.getOutputStream());
+      
+      ReserveCarTCPCommand r = new ReserveCarTCPCommand(id, customer, location);
+      send.writeObject(r);
+      r = (ReserveCarTCPCommand) recv.readObject();
+      success = success && r.success;
     }
     
+    // reserve a room if needed.
+    if(room && success) {
+      recv = new ObjectInputStream(roomSocket.getInputStream());
+      send = new ObjectInputStream(roomSocket.getOutputStream());
+      
+      ReserveRoomTCPCommand r = new ReserveRoomTCPCommand(id, customer, location);
+      send.writeObject(r);
+      r = (ReserveRoomTCPCommand) recv.readObject();
+      success = success && r.success;
+    }    
   }
 }
