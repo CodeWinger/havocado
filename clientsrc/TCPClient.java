@@ -187,6 +187,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (AddCarsTCPCommand) recv.readObject();
 						if(c.success)
 								System.out.println("Cars added");
@@ -221,6 +223,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (AddRoomsTCPCommand) recv.readObject();
 						if(c.success)
 								System.out.println("Rooms added");
@@ -249,6 +253,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (NewCustomerTCPCommand) recv.readObject();
 						if(c.customer != -1) {
 								System.out.println("Customer added");
@@ -282,6 +288,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (DeleteFlightTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Flight Deleted");
@@ -319,6 +327,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (DeleteCarsTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Cars Deleted");
@@ -356,6 +366,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (DeleteRoomsTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Rooms Deleted");
@@ -393,6 +405,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (DeleteCustomerTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Customer Deleted");
@@ -433,6 +447,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (QueryFlightTCPCommand) recv.readObject();
 						int seats = c.numSeats;
 						System.out.println("Number of seats available:"+seats);
@@ -462,6 +478,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (QueryCarsTCPCommand) recv.readObject();
 						numCars = c.numCars;
 						System.out.println("number of Cars at this location: " + numCars);
@@ -493,6 +511,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (QueryRoomsTCPCommand) recv.readObject();
 						numRooms = c.numRooms;
 						/* END OF TCP COMMUNICATION */
@@ -523,6 +543,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (QueryCustomerInfoTCPCommand) recv.readObject();
 						String bill = c.customerInfo;
 						/* END OF TCP COMMUNICATION */
@@ -553,6 +575,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (QueryFlightPriceTCPCommand) recv.readObject();
 						price = c.price;
 						/* END OF TCP COMMUNICATION */
@@ -583,6 +607,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (QueryCarsPriceTCPCommand) recv.readObject();
 						price = c.price;
 						/* END OF TCP COMMUNICATION */
@@ -613,6 +639,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (QueryRoomsPriceTCPCommand) recv.readObject();
 						price = c.price;
 						/* END OF TCP COMMUNICATION */
@@ -645,6 +673,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (ReserveFlightTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Flight Reserved");
@@ -684,6 +714,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (ReserveCarTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Car Reserved");
@@ -723,6 +755,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (ReserveRoomTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Room Reserved");
@@ -771,6 +805,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (ItineraryTCPCommand) recv.readObject();
 						if(c.success)
 			    		System.out.println("Itinerary Reserved");
@@ -817,6 +853,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (NewCustomerWithIdTCPCommand) recv.readObject();
 						/* END OF TCP COMMUNICATION */		
 			
