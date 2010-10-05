@@ -10,8 +10,8 @@ import Commands.TCPCommands.*;
 
 public class FleshTCPThread extends Thread {
     private ConcurrentLinkedQueue<Command> clq;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private ObjectInputStream in, carIn, flightIn, roomIn;
+    private ObjectOutputStream out, carOut, flightOut, roomOut;
     private Socket clientSocket, carSocket, flightSocket, roomSocket;
     
     private boolean carOnly(Command c) {
@@ -46,6 +46,12 @@ public class FleshTCPThread extends Thread {
 	try {
 	    out = new ObjectOutputStream(clientSocket.getOutputStream());
 	    in = new ObjectInputStream(clientSocket.getInputStream());
+	    carIn = new ObjectInputStream(carSocket.getInputStream());
+	    carOut = new ObjectInputStream(carSocket.getOutputStream());
+	    flightIn = new ObjectInputStream(flightSocket.getInputStream());
+	    flightOut = new ObjectInputStream(flightSocket.getOutputStream());
+	    roomIn = new ObjectInputStream(roomSocket.getInputStream());
+	    roomOut = new ObjectInputStream(foomSocket.getOutputStream());
 	}
 	catch (Exception e) {
 	    System.out.println("Error connecting to client.");
@@ -56,18 +62,23 @@ public class FleshTCPThread extends Thread {
 	    try {
 		c = (AbstractTCPCommand) in.readObject();
 		System.out.println("Caught command.");
-		if (carOnly(c))
-		    c.setSocket(carSocket);
-		else if (flightOnly(c))
-		    c.setSocket(flightSocket);
-		else if (roomOnly(c))
-		    c.setSocket(roomSocket);
+		if (carOnly(c)) {
+		    c.setObjectInputStream(carIn);
+		    c.setObjectOutputStream(carOut);
+		}
+		else if (flightOnly(c)) {
+		    c.setObjectInputStream(flightIn);
+		    c.setObjectOutputStream(flightOut);
+		}
+		else if (roomOnly(c)) {
+		    c.setObjectInputStream(roomIn);
+		    c.setObjectOutputStream(roomOut);
 		else {
 		    // Handle combined commands.
 		}
 		clq.add(c);
 		c.waitFor();
-		c.clearSocket();
+		c.clearStreams();
 		out.writeObject(c);
 		out.flush();
 		out.reset();
