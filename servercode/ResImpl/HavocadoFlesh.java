@@ -96,7 +96,7 @@ public class HavocadoFlesh
 	tst.start();
 
 	try {
-	    ServerSocket ss = new ServerSocket(carPort);
+	    ServerSocket ss = new ServerSocket(port);
 	    while (true) {
 		new FleshTCPThread(toSeeds, ss.accept(), rmCarSocket, rmFlightSocket, rmRoomSocket);
 	    }
