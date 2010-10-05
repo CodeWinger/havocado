@@ -32,8 +32,8 @@ public class SeedTCPThread extends Thread {
 	AbstractTCPCommand c;
 	while (true) {
 	    try {
-		System.out.println("Caught command.");
 		c = (AbstractTCPCommand) in.readObject();
+		System.out.println("Caught command.");
 		handle(c);
 		out.writeObject(c);
 		System.out.println("Replied to command.");
