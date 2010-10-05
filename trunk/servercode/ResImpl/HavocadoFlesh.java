@@ -85,9 +85,14 @@ public class HavocadoFlesh
 	    System.err.println("Server exception: " + e.toString());
 	    e.printStackTrace();
 	}
-	
+
 	ToSeedsThread tst = new ToSeedsThread(toSeeds); 
 	tst.start();
+
+	ServerSocket ss = new ServerSocket(port);
+	while (true) {
+	    new FleshTCPThread(toSeeds, ss.accept(), rmCarSocket, rmFlightSocket, rmRoomSocket);
+	}
 
 	// Create and install a security manager
 	//        if (System.getSecurityManager() == null) {
