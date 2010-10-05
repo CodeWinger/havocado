@@ -1,0 +1,28 @@
+package Commands.RMICommands;
+
+import ResInterface.*;
+
+public class AddCarsRMICommand extends AbstractRMICommand {
+
+  int id;
+  String location;
+  int numCars;
+  int price;
+  
+  boolean success;
+
+  public AddCarsRMICommand(ResourceManager pRm, int pId, String pLocation, int pNumCars, int pPrice) {
+    super(pRm);
+    // Store our attributes.
+    id = pId;
+    location = pLocation;
+    numCars = pNumCars;
+    price = pPrice;
+    
+    success = false;
+  }
+  
+  public void doCommand() throws Exception {
+    success = rm.addCars(id, location, numCars, price);
+  }
+}
