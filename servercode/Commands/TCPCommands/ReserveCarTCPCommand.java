@@ -22,10 +22,10 @@ public class ReserveCarTCPCommand extends AbstractTCPCommand {
   
   
   public void doCommand() throws Exception {
-    if(toSeed == null) { throw new Exception("seed socket is null."); }
+    if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
     
-    ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
-    ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
+    //ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
+    //ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
     
     // send myself to the server.
     send.writeObject(this); send.flush(); send.reset(); 
