@@ -21,8 +21,8 @@ public class FleshTCPThread extends Thread {
     }
 
     private boolean flightOnly(Command c) {
-	return (c instanceof AddFlightsTCPCommand || c instanceof DeleteFlightsTCPCommand ||
-		c instanceof QueryFlightsPriceTCPCommand || c instanceof QueryFlightsPriceTCPCommand ||
+	return (c instanceof AddFlightTCPCommand || c instanceof DeleteFlightTCPCommand ||
+		c instanceof QueryFlightPriceTCPCommand || c instanceof QueryFlightPriceTCPCommand ||
 		c instanceof ReserveFlightTCPCommand);
     }
 
@@ -43,27 +43,45 @@ public class FleshTCPThread extends Thread {
 
     public void run() {
 	AbstractTCPCommand c;
-	in = new ObjectInputStream(clientSocket.getInputStream());
-	out = new ObjectOutputStream(clientSocket.getOutputStream());
-
-	while (true) {
-	    c = (AbstractTCPCommand) in.readObject();
-	    if (carOnly(c))
-		c.setSocket(carSocket);
-	    else if (flightOnly(c))
-		c.setSocket(flightSocket);
-	    else if (roomOnly(c))
-		c.setSocket(roomSocket);
-	    else {
-		// Handle combined commands.
-	    }
-	    clq.add(c);
-	    c.waitFor();
-	    c.clearSocket();
-	    out.writeObject(c);
+	try {
+	    in = new ObjectInputStream(clientSocket.getInputStream());
+	    out = new ObjectOutputStream(clientSocket.getOutputStream());
+	}
+	catch (Exception e) {
+	    System.out.println("Error connecting to client.");
+	    e.printStackTrace();
+	    System.exit(0);
 	}
 
-	in.close();
-	out.close();
+	while (true) {
+	    try {
+		c = (AbstractTCPCommand) in.readObject();
+		if (carOnly(c))
+		    c.setSocket(carSocket);
+		else if (flightOnly(c))
+		    c.setSocket(flightSocket);
+		else if (roomOnly(c))
+		    c.setSocket(roomSocket);
+		else {
+		    // Handle combined commands.
+		}
+		clq.add(c);
+		c.waitFor();
+		c.clearSocket();
+		out.writeObject(c);
+	    }
+	    catch (Exception e) {
+		e.printStackTrace();
+		break;
+	    }
+	}
+
+	try {
+	    in.close();
+	    out.close();
+	}
+	catch (Exception e) {
+	    e.printStackTrace();
+	}
     }
 }

@@ -8,14 +8,15 @@ import ResInterface.*;
 
 import java.util.*;
 import java.rmi.*;
+import java.net.*;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-//public class ResourceManagerImpl extends java.rmi.server.UnicastRemoteObject
-public class ResourceManagerImpl
+//public class HavocadoSeed extends java.rmi.server.UnicastRemoteObject
+public class HavocadoSeed
 	implements ResourceManager {
 	
 	protected RMHashtable m_itemHT = new RMHashtable();
