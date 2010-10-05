@@ -25,26 +25,30 @@ public class ResourceManagerImpl
         // Figure out where server is running
         String server = "localhost";
 	String name = "";
+	int port = 11111;
 
          if (args.length == 1) {
 	     //             server = server + ":" + args[0];
 	     name = args[0];
          } else if (args.length != 0 &&  args.length != 1) {
              System.err.println ("Wrong usage");
-             System.out.println("Usage: java ResImpl.ResourceManagerImpl [port]");
+             System.out.println("Usage: java ResImpl.HavocadoSeed [port]");
              System.exit(1);
          }
 		 
 		 try 
 		 {
 			// create a new Server object
-			ResourceManagerImpl obj = new ResourceManagerImpl();
+			HavocadoSeed obj = new HavocadoSeed();
 			// dynamically generate the stub (client proxy)
 			ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
 
 			// Bind the remote object's stub in the registry
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind(name, rm);
+
+			ServerSocket ss = new ServerSocket(port);
+			new SeedTCPThread(ss.accept(), obj);
 
 			System.err.println("Server ready");
 		} 
@@ -59,7 +63,7 @@ public class ResourceManagerImpl
  //          System.setSecurityManager(new RMISecurityManager());
  //        }
  //        try {
- //               ResourceManagerImpl obj = new ResourceManagerImpl();
+ //               HavocadoSeed obj = new HavocadoSeed();
  //               Naming.rebind("rmi://" + server + "/RM", obj);
  //               System.out.println("RM bound");
  //        } 
@@ -69,7 +73,7 @@ public class ResourceManagerImpl
     }
 
     
-    public ResourceManagerImpl() throws RemoteException {
+    public HavocadoSeed() throws RemoteException {
     }
 
 
