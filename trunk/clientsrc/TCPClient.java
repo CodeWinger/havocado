@@ -6,12 +6,13 @@ import java.rmi.registry.Registry;
 
 import java.util.*;
 import java.io.*;
-
+import java.net.*;
 
 public class TCPClient
 {
     static String message = "blank";
-    static ResourceManager rm = null;
+    //static ResourceManager rm = null;
+    static Socket toServer;
 
     public static void main(String args[])
 	{
@@ -42,6 +43,14 @@ public class TCPClient
 		
 		try 
 		{
+			toServer = new Socket(server, 11111);
+			if(toServer!=null) {
+				System.out.println("Successful");
+				System.out.println("Connected by TCP socket to server.");
+			} else {
+				System.out.println("Unsuccessful");
+			}
+			/*
 			// get a reference to the rmiregistry
 			Registry registry = LocateRegistry.getRegistry(server);
 			// get the proxy and the remote reference by rmiregistry lookup
@@ -55,6 +64,7 @@ public class TCPClient
 			{
 				System.out.println("Unsuccessful");
 			}
+			*/
 			// make call on remote method
 		} 
 		catch (Exception e) 
@@ -118,11 +128,20 @@ public class TCPClient
 			flightNum = obj.getInt(arguments.elementAt(2));
 			flightSeats = obj.getInt(arguments.elementAt(3));
 			flightPrice = obj.getInt(arguments.elementAt(4));
-			if(rm.addFlight(Id,flightNum,flightSeats,flightPrice))
-			    System.out.println("Flight added");
-			else
-			    System.out.println("Flight could not be added");
-		    }
+			
+						/* TCP COMMUNICATION */
+						AddFlightTCPCommand c = new AddFlightTCPCommand(Id, flightNum, flightSeats, flightPrice);
+						ObjectInputStream recv = new ObjectInputStream(toSocket.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toSocket.getOutputStream());
+						send.writeObject(c);
+						c = (AddFlightTCPCommand) recv.readObject();
+						if(c.success)
+								System.out.println("Flight added");
+						else
+								System.out.println("Flight could not be added");
+						}
+						/* END OF TCP COMMUNICATION */
+		    
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
@@ -144,11 +163,20 @@ public class TCPClient
 			location = obj.getString(arguments.elementAt(2));
 			numCars = obj.getInt(arguments.elementAt(3));
 			price = obj.getInt(arguments.elementAt(4));
-			if(rm.addCars(Id,location,numCars,price))
-			    System.out.println("Cars added");
-			else
-			    System.out.println("Cars could not be added");
-		    }
+
+						/* TCP COMMUNICATION */
+						AddCarsTCPCommand c = new AddCarsTCPCommand(Id, location, numCars, price);
+						ObjectInputStream recv = new ObjectInputStream(toSocket.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toSocket.getOutputStream());
+						send.writeObject(c);
+						c = (AddCarsTCPCommand) recv.readObject();
+						if(c.success)
+								System.out.println("Cars added");
+						else
+								System.out.println("Cars could not be added");
+						}
+						/* END OF TCP COMMUNICATION */			
+			
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
@@ -170,11 +198,20 @@ public class TCPClient
 			location = obj.getString(arguments.elementAt(2));
 			numRooms = obj.getInt(arguments.elementAt(3));
 			price = obj.getInt(arguments.elementAt(4));
-			if(rm.addRooms(Id,location,numRooms,price))
-			    System.out.println("Rooms added");
-			else
-			    System.out.println("Rooms could not be added");
-		    }
+			
+						/* TCP COMMUNICATION */
+						AddRoomsTCPCommand c = new AddRoomsTCPCommand(Id, location, numRooms, price);
+						ObjectInputStream recv = new ObjectInputStream(toSocket.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toSocket.getOutputStream());
+						send.writeObject(c);
+						c = (AddRoomsTCPCommand) recv.readObject();
+						if(c.success)
+								System.out.println("Rooms added");
+						else
+								System.out.println("Rooms could not be added");
+						}
+						/* END OF TCP COMMUNICATION */
+		    
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
