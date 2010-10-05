@@ -4,11 +4,11 @@ import ResInterface.*;
 
 public class ReserveCarRMICommand extends AbstractRMICommand {
 
-  int id;
-  int customer;
-  String location;
+  public int id;
+  public int customer;
+  public String location;
   
-  boolean success;
+  public boolean success;
 
   public ReserveCarRMICommand(ResourceManager pRm, int pId, int pCustomer, String pLocation) {
     super(pRm);

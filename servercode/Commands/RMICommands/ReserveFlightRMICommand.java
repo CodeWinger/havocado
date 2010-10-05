@@ -4,11 +4,11 @@ import ResInterface.*;
 
 public class ReserveFlightRMICommand extends AbstractRMICommand {
 
-  int id;
-  int customer;
-  int flightNumber;
+  public int id;
+  public int customer;
+  public int flightNumber;
   
-  boolean success;
+  public boolean success;
 
   public ReserveFlightRMICommand(ResourceManager pRm, int pId, int pCustomer, int pFlightNumber) {
     super(pRm);

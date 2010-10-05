@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class DeleteRoomsRMICommand extends AbstractRMICommand {
 
-  int id;
-  String location;
+  public int id;
+  public String location;
   
-  boolean success;
+  public boolean success;
 
   public DeleteRoomsRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);

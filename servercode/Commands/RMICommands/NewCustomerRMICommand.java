@@ -4,9 +4,9 @@ import ResInterface.*;
 
 public class NewCustomerRMICommand extends AbstractRMICommand {
 
-  int id;
+  public int id;
   
-  int customer;
+  public int customer;
 
   public NewCustomerRMICommand(ResourceManager pRm, int pId) {
     super(pRm);

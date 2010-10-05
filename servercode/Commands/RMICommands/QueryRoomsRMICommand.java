@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class QueryRoomsRMICommand extends AbstractRMICommand {
 
-  int id;
-  String location;
+  public int id;
+  public String location;
   
-  int numRooms;
+  public int numRooms;
 
   public QueryRoomsRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);

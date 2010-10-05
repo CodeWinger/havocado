@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class NewCustomerWithIdRMICommand extends AbstractRMICommand {
 
-  int id;
-  int cid;
+  public int id;
+  public int cid;
   
-  boolean success;
+  public boolean success;
 
   public NewCustomerWithIdRMICommand(ResourceManager pRm, int pId, int pCid) {
     super(pRm);

@@ -8,14 +8,14 @@ public class ItineraryRMICommand extends AbstractRMICommand {
   ResourceManager flightRm;
 	ResourceManager roomRm;
 
-  int id;
-  int customer;
-  Vector flightNumbers;
-  String location;
-  boolean car;
-  boolean room;
+  public int id;
+  public int customer;
+  public Vector flightNumbers;
+  public String location;
+  public boolean car;
+  public boolean room;
   
-  boolean success;
+  public boolean success;
 
   public ItineraryRMICommand(
 		ResourceManager pCarRm, 

@@ -4,12 +4,12 @@ import ResInterface.*;
 
 public class AddFlightRMICommand extends AbstractRMICommand {
 
-  int id;
-  int flightNum;
-  int flightSeats;
-  int flightPrice;
+  public int id;
+  public int flightNum;
+  public int flightSeats;
+  public int flightPrice;
 
-  boolean success;
+  public boolean success;
 
   public AddFlightRMICommand(ResourceManager pRm, int pId, int pFlightNum, int pFlightSeats, int pFlightPrice) {
     super(pRm);

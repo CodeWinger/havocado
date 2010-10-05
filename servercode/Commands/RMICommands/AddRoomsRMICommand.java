@@ -4,12 +4,12 @@ import ResInterface.*;
 
 public class AddRoomsRMICommand extends AbstractRMICommand {
 
-  int id;
-  String location;
-  int numRooms;
-  int price;
+  public int id;
+  public String location;
+  public int numRooms;
+  public int price;
 
-  boolean success;
+  public boolean success;
 
   public AddRoomsRMICommand(ResourceManager pRm, int pId, String pLocation, int pNumRooms, int pPrice) {
     super(pRm);

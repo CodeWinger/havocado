@@ -4,10 +4,10 @@ import ResInterface.*;
 
 public class DeleteCarsRMICommand extends AbstractRMICommand {
 
-  int id;
-  String location;
+  public int id;
+  public String location;
   
-  boolean success;
+  public boolean success;
 
   public DeleteCarsRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);
