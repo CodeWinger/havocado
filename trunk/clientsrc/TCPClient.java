@@ -151,6 +151,8 @@ public static void closeSocket() {
 						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
 						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
+						send.flush();
+						send.reset();
 						c = (AddFlightTCPCommand) recv.readObject();
 						if(c.success)
 								System.out.println("Flight added");
