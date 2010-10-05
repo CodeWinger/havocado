@@ -73,6 +73,7 @@ public class FleshTCPThread extends Thread {
 		else if (roomOnly(c)) {
 		    c.setObjectInputStream(roomIn);
 		    c.setObjectOutputStream(roomOut);
+		}
 		else {
 		    // Handle combined commands.
 		}
