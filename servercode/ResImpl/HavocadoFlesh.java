@@ -103,8 +103,7 @@ public class HavocadoFlesh
 	af.waitFor();
 	if (af.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return(true);
+	return af.success;
     }
 
 
@@ -117,9 +116,7 @@ public class HavocadoFlesh
 	df.waitFor();
 	if (df.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	//	return deleteItem(id, Flight.getKey(flightNum));
-	return true;
+	return df.success;
     }
 
 
@@ -134,8 +131,7 @@ public class HavocadoFlesh
 	ar.waitFor();
 	if (ar.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return(true);
+	return ar.success;
     }
 
     // Delete rooms from a location
@@ -147,9 +143,7 @@ public class HavocadoFlesh
 	dr.waitFor();
 	if (dr.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	//	return deleteItem(id, Hotel.getKey(location));
-	return true;
+	return dr.success;
 		
     }
 
@@ -158,13 +152,12 @@ public class HavocadoFlesh
     public boolean addCars(int id, String location, int count, int price)
 	throws RemoteException
     {
-	/*	AddCarsRMICommand ac = new AddCarsRMICommand(rmCars, id, location, count, price);
+	AddCarsRMICommand ac = new AddCarsRMICommand(rmCars, id, location, count, price);
 	toSeeds.add(ac);
 	ac.waitFor();
 	if (ac.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.*/
-	return(true);
+	return ac.success;
     }
 
 
@@ -172,14 +165,12 @@ public class HavocadoFlesh
     public boolean deleteCars(int id, String location)
 	throws RemoteException
     {
-	/*	DeleteCarsRMICommand dc = new DeleteCarsRMICommand(rmCars, id, location);
+	DeleteCarsRMICommand dc = new DeleteCarsRMICommand(rmCars, id, location);
 	toSeeds.add(dc);
 	dc.waitFor();
 	if (dc.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return deleteItem(id, Car.getKey(location));*/
-	return true;
+	return dc.success;
     }
 
 
@@ -188,14 +179,12 @@ public class HavocadoFlesh
     public int queryFlight(int id, int flightNum)
 	throws RemoteException
     {
-	/*	QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
+	QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
 	toSeeds.add(qf);
 	qf.waitFor();
 	if (qf.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return queryNum(id, Flight.getKey(flightNum));*/
-	return 0;
+	return qf.numSeats;
     }
 
     // Returns the number of reservations for this flight. 
@@ -216,14 +205,12 @@ public class HavocadoFlesh
     public int queryFlightPrice(int id, int flightNum )
 	throws RemoteException
     {
-	/*	QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFights, id, flightNum);
+	QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFights, id, flightNum);
 	toSeeds.add(qfp);
 	qfp.waitFor();
 	if (qfp.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return queryPrice(id, Flight.getKey(flightNum));*/
-	return 0;
+	return qfp.price;
     }
 
 
@@ -231,14 +218,12 @@ public class HavocadoFlesh
     public int queryRooms(int id, String location)
 	throws RemoteException
     {
-	/*	QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
+	QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
 	toSeeds.add(qr);
 	qr.waitFor();
 	if (qr.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return queryNum(id, Hotel.getKey(location));*/
-	return 0;
+	return qr.numRooms;
     }
 
 
@@ -248,14 +233,12 @@ public class HavocadoFlesh
     public int queryRoomsPrice(int id, String location)
 	throws RemoteException
     {
-	/*	QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
+	QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
 	toSeeds.add(qrp);
 	qrp.waitFor();
 	if (qrp.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return queryPrice(id, Hotel.getKey(location));*/
-	return 0;
+	return qrp.price;
     }
 
 
@@ -263,14 +246,12 @@ public class HavocadoFlesh
     public int queryCars(int id, String location)
 	throws RemoteException
     {
-	/*	QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
+	QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
 	toSeeds.add(qc);
 	qc.waitFor();
 	if (qc.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return queryNum(id, Car.getKey(location));*/
-	return 0;
+	return qc.numCars;
     }
 
 
@@ -278,14 +259,12 @@ public class HavocadoFlesh
     public int queryCarsPrice(int id, String location)
 	throws RemoteException
     {
-	/*	QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
+	QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
 	toSeeds.add(qcp);
 	qcp.waitFor();
 	if (qcp.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.
-	return queryPrice(id, Car.getKey(location));*/
-	return 0;
+	return qcp.price;
     }
 
     // return a bill
@@ -398,14 +377,12 @@ public class HavocadoFlesh
     public boolean reserveCar(int id, int customerID, String location)
     //	throws RemoteException
     {
-	/*	ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
+	ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
 	toSeeds.add(rc);
 	rc.waitFor();
 	if (rc.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.*/
-	//	return reserveItem(id, customerID, Car.getKey(location), location);
-	return true;
+	return rc.success;
     }
 
 
@@ -413,26 +390,23 @@ public class HavocadoFlesh
     public boolean reserveRoom(int id, int customerID, String location)
 	throws RemoteException
     {
-	/*	ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
+	ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
 	toSeeds.add(rr);
 	rr.waitFor();
 	if (rr.error())
 	    throw new RemoteException();
-	// TODO: Get actual value.*/
-	//	return reserveItem(id, customerID, Hotel.getKey(location), location);
-	return true;
+	return rr.success;
     }
     // Adds flight reservation to this customer.  
     public boolean reserveFlight(int id, int customerID, int flightNum)
 	throws RemoteException
     {
-	/*	ReseverFlightRMICommand rf = new ReseverFlightRMICommand(rmFlights, id, customerID, flightNum);
+	ReseverFlightRMICommand rf = new ReseverFlightRMICommand(rmFlights, id, customerID, flightNum);
 	toSeeds.ad(rf);
 	rf.waitFor();
 	if (rf.error())
 	    throw new RemoteException();
-	    // TODO: Get actual value.*/
-	return true;//	return reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
+	return rf.success;
     }
 	
     /* reserve an itinerary */
