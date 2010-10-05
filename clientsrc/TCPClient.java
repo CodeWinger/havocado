@@ -1,8 +1,10 @@
-import java.rmi.*;
-import java.rmi.Naming;
-import ResInterface.*;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+//import java.rmi.*;
+//import java.rmi.Naming;
+//import ResInterface.*;
+//import java.rmi.registry.LocateRegistry;
+//import java.rmi.registry.Registry;
+
+import Commands.TCPCommands.*;
 
 import java.util.*;
 import java.io.*;
@@ -131,18 +133,17 @@ public class TCPClient
 			
 						/* TCP COMMUNICATION */
 						AddFlightTCPCommand c = new AddFlightTCPCommand(Id, flightNum, flightSeats, flightPrice);
-						ObjectInputStream recv = new ObjectInputStream(toSocket.getInputStream());
-						ObjectOutputStream send = new ObjectOutputStream(toSocket.getOutputStream());
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
 						c = (AddFlightTCPCommand) recv.readObject();
 						if(c.success)
 								System.out.println("Flight added");
 						else
 								System.out.println("Flight could not be added");
-						}
 						/* END OF TCP COMMUNICATION */
 		    
-		    catch(Exception e){
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -166,18 +167,17 @@ public class TCPClient
 
 						/* TCP COMMUNICATION */
 						AddCarsTCPCommand c = new AddCarsTCPCommand(Id, location, numCars, price);
-						ObjectInputStream recv = new ObjectInputStream(toSocket.getInputStream());
-						ObjectOutputStream send = new ObjectOutputStream(toSocket.getOutputStream());
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
 						c = (AddCarsTCPCommand) recv.readObject();
 						if(c.success)
 								System.out.println("Cars added");
 						else
 								System.out.println("Cars could not be added");
-						}
 						/* END OF TCP COMMUNICATION */			
 			
-		    catch(Exception e){
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -201,18 +201,17 @@ public class TCPClient
 			
 						/* TCP COMMUNICATION */
 						AddRoomsTCPCommand c = new AddRoomsTCPCommand(Id, location, numRooms, price);
-						ObjectInputStream recv = new ObjectInputStream(toSocket.getInputStream());
-						ObjectOutputStream send = new ObjectOutputStream(toSocket.getOutputStream());
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
 						c = (AddRoomsTCPCommand) recv.readObject();
 						if(c.success)
 								System.out.println("Rooms added");
 						else
 								System.out.println("Rooms could not be added");
-						}
 						/* END OF TCP COMMUNICATION */
 		    
-		    catch(Exception e){
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -227,10 +226,23 @@ public class TCPClient
 		    System.out.println("Adding a new Customer using id:"+arguments.elementAt(1));
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
-			int customer=rm.newCustomer(Id);
-			System.out.println("new customer id:"+customer);
-		    }
-		    catch(Exception e){
+			
+						/* TCP COMMUNICATION */
+						NewCustomerTCPCommand c = new NewCustomerTCPCommand(Id);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (NewCustomerTCPCommand) recv.readObject();
+						if(c.customer != -1) {
+								System.out.println("Customer added");
+								System.out.println("New customer id:"+c.customer);
+						} else
+								System.out.println("Customer could not be added");
+						/* END OF TCP COMMUNICATION */
+			
+				//int customer=rm.newCustomer(Id);
+
+		    }  catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -247,12 +259,27 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
+			
+						/* TCP COMMUNICATION */
+						DeleteFlightTCPCommand c = new DeleteFlightTCPCommand(Id, flightNum);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (DeleteFlightTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Flight Deleted");
+						else
+			    		System.out.println("Flight could not be deleted");
+						/* END OF TCP COMMUNICATION */
+			
+			/*
 			if(rm.deleteFlight(Id,flightNum))
 			    System.out.println("Flight Deleted");
 			else
-			    System.out.println("Flight could not be deleted");
+			    System.out.println("Flight Deleted");;
 		    }
-		    catch(Exception e){
+		    */
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -269,13 +296,27 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
+
+						/* TCP COMMUNICATION */
+						DeleteCarsTCPCommand c = new DeleteCarsTCPCommand(Id, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (DeleteCarsTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Cars Deleted");
+						else
+			    		System.out.println("Cars could not be deleted");
+						/* END OF TCP COMMUNICATION */			
 			
+			/*
 			if(rm.deleteCars(Id,location))
 			    System.out.println("Cars Deleted");
 			else
 			    System.out.println("Cars could not be deleted");
 		    }
-		    catch(Exception e){
+		    */
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -292,12 +333,27 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
+			
+						/* TCP COMMUNICATION */
+						DeleteRoomsTCPCommand c = new DeleteRoomsTCPCommand(Id, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (DeleteRoomsTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Rooms Deleted");
+						else
+			    		System.out.println("Rooms could not be deleted");
+						/* END OF TCP COMMUNICATION */
+
+			/*
 			if(rm.deleteRooms(Id,location))
 			    System.out.println("Rooms Deleted");
 			else
 			    System.out.println("Rooms could not be deleted");
 		    }
-		    catch(Exception e){
+		   */
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -314,12 +370,29 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
+			
+						/* TCP COMMUNICATION */
+						DeleteCustomerTCPCommand c = new DeleteCustomerTCPCommand(Id, customer);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (DeleteCustomerTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Customer Deleted");
+						else
+			    		System.out.println("Customer could not be deleted");
+						/* END OF TCP COMMUNICATION */
+			
+			/*
 			if(rm.deleteCustomer(Id,customer))
 			    System.out.println("Customer Deleted");
 			else
 			    System.out.println("Customer could not be deleted");
 		    }
-		    catch(Exception e){
+		    */
+		    
+		    
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -336,8 +409,18 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			int seats=rm.queryFlight(Id,flightNum);
-			System.out.println("Number of seats available:"+seats);
+			
+						//int seats=rm.queryFlight(Id,flightNum);
+						/* TCP COMMUNICATION */
+						QueryFlightTCPCommand c = new QueryFlightTCPCommand(Id, flightNum);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (QueryFlightTCPCommand) recv.readObject();
+						int seats = c.numSeats;
+						System.out.println("Number of seats available:"+seats);
+						/* END OF TCP COMMUNICATION */
+						
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -356,8 +439,19 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			numCars=rm.queryCars(Id,location);
-			System.out.println("number of Cars at this location:"+numCars);
+
+						/* TCP COMMUNICATION */
+						QueryCarsTCPCommand c = new QueryCarsTCPCommand(Id, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (QueryCarsTCPCommand) recv.readObject();
+						numCars = c.numCars;
+						System.out.println("number of Cars at this location: " + numCars);
+						/* END OF TCP COMMUNICATION */
+						
+//			numCars=rm.queryCars(Id,location);
+//			System.out.println("number of Cars at this location:"+numCars);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -376,7 +470,17 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			numRooms=rm.queryRooms(Id,location);
+
+						/* TCP COMMUNICATION */
+						QueryRoomsTCPCommand c = new QueryRoomsTCPCommand(Id, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (QueryRoomsTCPCommand) recv.readObject();
+						numRooms = c.numRooms;
+						/* END OF TCP COMMUNICATION */
+			
+//			numRooms=rm.queryRooms(Id,location);
 			System.out.println("number of Rooms at this location:"+numRooms);
 		    }
 		    catch(Exception e){
@@ -396,7 +500,17 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
-			String bill=rm.queryCustomerInfo(Id,customer);
+			
+						/* TCP COMMUNICATION */
+						QueryCustomerInfoTCPCommand c = new QueryCustomerInfoTCPCommand(Id, customer);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (QueryCustomerInfoTCPCommand) recv.readObject();
+						String bill = c.customerInfo;
+						/* END OF TCP COMMUNICATION */
+
+//			String bill=rm.queryCustomerInfo(Id,customer);
 			System.out.println("Customer info:"+bill);
 		    }
 		    catch(Exception e){
@@ -416,7 +530,17 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			price=rm.queryFlightPrice(Id,flightNum);
+			
+						/* TCP COMMUNICATION */
+						QueryFlightPriceTCPCommand c = new QueryFlightPriceTCPCommand(Id, flightNum);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (QueryFlightPriceTCPCommand) recv.readObject();
+						price = c.price;
+						/* END OF TCP COMMUNICATION */
+
+//			price=rm.queryFlightPrice(Id,flightNum);
 			System.out.println("Price of a seat:"+price);
 		    }
 		    catch(Exception e){
@@ -436,7 +560,17 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			price=rm.queryCarsPrice(Id,location);
+			
+						/* TCP COMMUNICATION */
+						QueryCarsPriceTCPCommand c = new QueryCarsPriceTCPCommand(Id, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (QueryCarsPriceTCPCommand) recv.readObject();
+						price = c.price;
+						/* END OF TCP COMMUNICATION */
+
+//			price=rm.queryCarsPrice(Id,location);
 			System.out.println("Price of a car at this location:"+price);
 		    }
 		    catch(Exception e){
@@ -456,7 +590,17 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			price=rm.queryRoomsPrice(Id,location);
+			
+						/* TCP COMMUNICATION */
+						QueryRoomsPriceTCPCommand c = new QueryRoomsPriceTCPCommand(Id, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (QueryRoomsPriceTCPCommand) recv.readObject();
+						price = c.price;
+						/* END OF TCP COMMUNICATION */
+			
+//			price=rm.queryRoomsPrice(Id,location);
 			System.out.println("Price of Rooms at this location:"+price);
 		    }
 		    catch(Exception e){
@@ -478,12 +622,26 @@ public class TCPClient
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
 			flightNum = obj.getInt(arguments.elementAt(3));
+
+						/* TCP COMMUNICATION */
+						ReserveFlightTCPCommand c = new ReserveFlightTCPCommand(Id, customer, flightNum);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (ReserveFlightTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Flight Reserved");
+						else
+			    		System.out.println("Flight could not be reserved");
+						/* END OF TCP COMMUNICATION */
+/*			
 			if(rm.reserveFlight(Id,customer,flightNum))
 			    System.out.println("Flight Reserved");
 			else
 			    System.out.println("Flight could not be reserved.");
 		    }
-		    catch(Exception e){
+		    */
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -504,12 +662,26 @@ public class TCPClient
 			int customer = obj.getInt(arguments.elementAt(2));
 			location = obj.getString(arguments.elementAt(3));
 			
+						/* TCP COMMUNICATION */
+						ReserveCarTCPCommand c = new ReserveCarTCPCommand(Id, customer, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (ReserveCarTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Car Reserved");
+						else
+			    		System.out.println("Car could not be reserved.");
+						/* END OF TCP COMMUNICATION */
+			
+			/*
 			if(rm.reserveCar(Id,customer,location))
 			    System.out.println("Car Reserved");
 			else
 			    System.out.println("Car could not be reserved.");
 		    }
-		    catch(Exception e){
+		    */
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -528,13 +700,27 @@ public class TCPClient
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
 			location = obj.getString(arguments.elementAt(3));
-			
+
+						/* TCP COMMUNICATION */
+						ReserveRoomTCPCommand c = new ReserveRoomTCPCommand(Id, customer, location);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (ReserveRoomTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Room Reserved");
+						else
+			    		System.out.println("Room could not be reserved");
+						/* END OF TCP COMMUNICATION */		
+
+			/*
 			if(rm.reserveRoom(Id,customer,location))
 			    System.out.println("Room Reserved");
 			else
 			    System.out.println("Room could not be reserved.");
 		    }
-		    catch(Exception e){
+		    */
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -562,13 +748,27 @@ public class TCPClient
 			location = obj.getString(arguments.elementAt(arguments.size()-3));
 			Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
 			Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
-			
+
+						/* TCP COMMUNICATION */
+						ItineraryTCPCommand c = new ItineraryTCPCommand(Id, customer, flightNumbers, location, Car, Room);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (ItineraryTCPCommand) recv.readObject();
+						if(c.success)
+			    		System.out.println("Itinerary Reserved");
+						else
+			    		System.out.println("Itinerary could not be reserved.");
+						/* END OF TCP COMMUNICATION */
+
+			/*
 			if(rm.itinerary(Id,customer,flightNumbers,location,Car,Room))
 			    System.out.println("Itinerary Reserved");
 			else
 			    System.out.println("Itinerary could not be reserved.");
 		    }
-		    catch(Exception e){
+		    */
+		    } catch(Exception e){
 			System.out.println("EXCEPTION:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -593,7 +793,16 @@ public class TCPClient
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			Cid = obj.getInt(arguments.elementAt(2));
-			boolean customer=rm.newCustomer(Id,Cid);
+			
+						/* TCP COMMUNICATION */
+						NewCustomerWithIdTCPCommand c = new NewCustomerWithIdTCPCommand(Id, Cid);
+						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+						send.writeObject(c);
+						c = (NewCustomerWithIdTCPCommand) recv.readObject();
+						/* END OF TCP COMMUNICATION */		
+			
+//			boolean customer=rm.newCustomer(Id,Cid);
 			System.out.println("new customer id:"+Cid);
 		    }
 		    catch(Exception e){
