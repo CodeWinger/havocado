@@ -89,9 +89,14 @@ public class HavocadoFlesh
 	ToSeedsThread tst = new ToSeedsThread(toSeeds); 
 	tst.start();
 
-	ServerSocket ss = new ServerSocket(port);
-	while (true) {
-	    new FleshTCPThread(toSeeds, ss.accept(), rmCarSocket, rmFlightSocket, rmRoomSocket);
+	try {
+	    ServerSocket ss = new ServerSocket(port);
+	    while (true) {
+		new FleshTCPThread(toSeeds, ss.accept(), rmCarSocket, rmFlightSocket, rmRoomSocket);
+	    }
+	}
+	catch (Exception e) {
+	    e.printStackTrace();
 	}
 
 	// Create and install a security manager
@@ -225,7 +230,7 @@ public class HavocadoFlesh
     public int queryFlightPrice(int id, int flightNum )
 	throws RemoteException
     {
-	QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFights, id, flightNum);
+	QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFlights, id, flightNum);
 	toSeeds.add(qfp);
 	qfp.waitFor();
 	if (qfp.error())
@@ -395,7 +400,7 @@ public class HavocadoFlesh
 	
     // Adds car reservation to this customer. 
     public boolean reserveCar(int id, int customerID, String location)
-    //	throws RemoteException
+	throws RemoteException
     {
 	ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
 	toSeeds.add(rc);
@@ -421,8 +426,8 @@ public class HavocadoFlesh
     public boolean reserveFlight(int id, int customerID, int flightNum)
 	throws RemoteException
     {
-	ReseverFlightRMICommand rf = new ReseverFlightRMICommand(rmFlights, id, customerID, flightNum);
-	toSeeds.ad(rf);
+	ReserveFlightRMICommand rf = new ReserveFlightRMICommand(rmFlights, id, customerID, flightNum);
+	toSeeds.add(rf);
 	rf.waitFor();
 	if (rf.error())
 	    throw new RemoteException();
