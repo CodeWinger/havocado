@@ -8,6 +8,8 @@ import ResInterface.*;
 
 import java.util.*;
 import java.rmi.*;
+import java.net.*;
+import java.io.*;
 
 import Commands.*;
 import Commands.RMICommands.*;
@@ -24,6 +26,8 @@ public class HavocadoFlesh
 	
     static ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<Command>();
     static ResourceManager rmCars, rmFlights, rmRooms;
+    static int port = 11111;
+    static Socket rmCarSocket, rmFlightSocket, rmRoomSocket;
 
     public static void main(String args[]) {
         // Figure out where server is running
@@ -40,36 +44,47 @@ public class HavocadoFlesh
 	    System.out.println("Usage: java ResImpl.HavocadoFlesh [port]");
 	    System.exit(1);
 	}
-		 
-	try 
-	    {
-		System.out.println("HELLO "+carSeed);
-		// create a new Server object
-		HavocadoFlesh obj = new HavocadoFlesh();
-		// dynamically generate the stub (client proxy)
-		ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
+	
+	// Set up RMI.	 
+	try {
+	    System.out.println("HELLO "+carSeed);
+	    // create a new Server object
+	    HavocadoFlesh obj = new HavocadoFlesh();
+	    // dynamically generate the stub (client proxy)
+	    ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
 
-		// Bind the remote object's stub in the registry
-		Registry registry = LocateRegistry.getRegistry();
-		registry.rebind("HavocadoFlesh", rm);
+	    // Bind the remote object's stub in the registry
+	    Registry registry = LocateRegistry.getRegistry();
+	    registry.rebind("HavocadoFlesh", rm);
 
-		registry = LocateRegistry.getRegistry(carSeed);
-		rmCars = (ResourceManager) registry.lookup("HavocadoSeedCar");
-		// TODO: Check for null rm.
-		registry = LocateRegistry.getRegistry(flightSeed);
-		rmFlights = (ResourceManager) registry.lookup("HavocadoSeedFlight");
-		// TODO: Check for null rm.
-		registry = LocateRegistry.getRegistry(roomSeed);
-		rmRooms = (ResourceManager) registry.lookup("HavocadoSeedRoom");
-		// TODO: Check for null rm.
-
-		System.err.println("Server ready");
-	    } 
+	    registry = LocateRegistry.getRegistry(carSeed);
+	    rmCars = (ResourceManager) registry.lookup("HavocadoSeedCar");
+	    // TODO: Check for null rm.
+	    registry = LocateRegistry.getRegistry(flightSeed);
+	    rmFlights = (ResourceManager) registry.lookup("HavocadoSeedFlight");
+	    // TODO: Check for null rm.
+	    registry = LocateRegistry.getRegistry(roomSeed);
+	    rmRooms = (ResourceManager) registry.lookup("HavocadoSeedRoom");
+	    // TODO: Check for null rm.
+	 	} 
 	catch (Exception e) 
 	    {
 		System.err.println("Server exception: " + e.toString());
 		e.printStackTrace();
 	    }
+
+	// Set up TCP sockets.
+	try {
+	    rmCarSocket = new Socket(carSeed, port);
+	    rmFlightSocket = new Socket(flightSeed, port);
+	    rmRoomSocket = new Socket(roomSeed, port);
+	    
+	    System.err.println("Server ready");
+	}
+	catch (Exception e) {
+	    System.err.println("Server exception: " + e.toString());
+	    e.printStackTrace();
+	}
 	
 	ToSeedsThread tst = new ToSeedsThread(toSeeds); 
 	tst.start();
