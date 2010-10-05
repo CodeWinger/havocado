@@ -67,6 +67,7 @@ public class SeedTCPThread extends Thread {
 	}
 	else if (command instanceof AddFlightTCPCommand) {
 	    AddFlightTCPCommand c = (AddFlightTCPCommand)command;
+	    System.out.println("Add flight: id: " + c.id + ", flightNum: " + c.flightNum + ", price: " + c.flightPrice + ".");
 	    c.success = seed.addFlight(c.id, c.flightNum, c.flightSeats, c.flightPrice);
 	}
 	else if (command instanceof DeleteFlightTCPCommand) {

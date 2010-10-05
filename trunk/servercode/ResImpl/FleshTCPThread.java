@@ -56,6 +56,7 @@ public class FleshTCPThread extends Thread {
 	while (true) {
 	    try {
 		c = (AbstractTCPCommand) in.readObject();
+		System.out.println("Caught command.");
 		if (carOnly(c))
 		    c.setSocket(carSocket);
 		else if (flightOnly(c))
@@ -69,6 +70,7 @@ public class FleshTCPThread extends Thread {
 		c.waitFor();
 		c.clearSocket();
 		out.writeObject(c);
+		System.out.println("Returned reply.");
 	    }
 	    catch (Exception e) {
 		e.printStackTrace();
