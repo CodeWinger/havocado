@@ -187,8 +187,8 @@ public static void closeSocket() {
 
 						/* TCP COMMUNICATION */
 						AddCarsTCPCommand c = new AddCarsTCPCommand(Id, location, numCars, price);
-						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
-						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
+//						ObjectInputStream recv = new ObjectInputStream(toServer.getInputStream());
+//						ObjectOutputStream send = new ObjectOutputStream(toServer.getOutputStream());
 						send.writeObject(c);
 						send.flush();
 						send.reset();

@@ -5,14 +5,31 @@ import java.io.*;
 import Commands.*;
 
 public abstract class AbstractTCPCommand implements Command, Serializable {
-  protected transient Socket toSeed;
+  //protected transient Socket toSeed;
+  protected transient ObjectInputStream recv;
+  protected transient ObjectOutputStream send;
   protected boolean error;
   
   public AbstractTCPCommand() {
     error = false;
-    toSeed = null;
+    recv = null;
+    send = null;
   }
   
+  public void setObjectInputStream(ObjectInputStream in) {
+  	recv = in;
+  }
+  
+  public void setObjectOutputStream(ObjectOutputStream out) {
+  	send = out;
+  }
+  
+  public void clearStreams() {
+  	recv = null;
+  	send = null;
+  }
+  
+  /*
   public void setSocket(Socket s) {
     toSeed = s;
   }
@@ -20,6 +37,7 @@ public abstract class AbstractTCPCommand implements Command, Serializable {
   public void clearSocket() {
     toSeed = null;
   }
+  */
   
   public abstract void doCommand() throws Exception;
   
