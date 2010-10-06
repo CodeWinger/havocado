@@ -42,6 +42,113 @@ public class ToSeedsThread extends Thread {
 	}
     }
 
+    private void customerAction(Command command) {
+	if (command instanceof NewCustomerTCPCommand) {
+	    NewCustomerTCPCommand c = (NewCustomerTCPCommand) command;
+	    // Generate a globally unique ID for the new customer
+	    int cid = Integer.parseInt( String.valueOf(c.id) +
+					String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+					String.valueOf( Math.round( Math.random() * 100 + 1 )));
+	    Customer cust = new Customer( cid );
+	    writeData( id, cust.getKey(), cust );
+	    c.customer = cid;
+	}
+	else if (command instanceof NewCustomerRMICommand) {
+	    NewCustomerRMICommand c = (NewCustomerRMICommand) command;
+	    // Generate a globally unique ID for the new customer
+	    int cid = Integer.parseInt( String.valueOf(c.id) +
+					String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+					String.valueOf( Math.round( Math.random() * 100 + 1 )));
+	    Customer cust = new Customer( cid );
+	    writeData( id, cust.getKey(), cust );
+	    c.customer = cid;
+	}
+	else if (command instanceof NewCustomerWithIdTCPCommand) {
+	    NewCustomerWithIdTCPCommand c = (NewCustomerWithIdTCPCommand) command;
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customerID) );
+	    if( cust == null ) {
+		cust = new Customer(c.customerID);
+		writeData( c.id, cust.getKey(), cust );
+		c.success = true;
+	    } else {
+		c.success = false;
+	    }
+	}
+	else if (command instanceof NewCustomerWithIdRMICommand) {
+	    NewCustomerWithIdRMICommand c = (NewCustomerWithIdRMICommand) command;
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customerID) );
+	    if( cust == null ) {
+		cust = new Customer(c.customerID);
+		writeData( c.id, cust.getKey(), cust );
+		c.success = true;
+	    } else {
+		c.success = false;
+	    }
+	}
+	else if (command instanceof QueryCustomerInfoTCPCommand) {
+	    QueryCustomerInfoTCPCommand c = (QueryCustomerInfoTCPCommand) command;
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(customerID) );
+	    if( cust == null ) {
+		c.customerInfo = "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
+	    } else {
+		String s = cust.printBill();
+		c.customerInfo = s;
+	    }
+	}
+	else if (command instanceof QueryCustomerInfoRMICommand) {
+	    QueryCustomerInfoRMICommand c = (QueryCustomerInfoRMICommand) command;
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(customerID) );
+	    if( cust == null ) {
+		c.customerInfo = "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
+	    } else {
+		String s = cust.printBill();
+		c.customerInfo = s;
+	    }
+	}
+	else if (command instanceof DeleteCustomerTCPCommand) {
+	    DeleteCustomerTCPCommand c = (DeleteCustomerTCPCommand) command;
+	    Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+	    if( cust == null ) {
+		c.success = false;
+	    } else {			
+		// Increase the reserved numbers of all reservable items which the customer reserved. 
+		RMHashtable reservationHT = cust.getReservations();
+		for(Enumeration e = reservationHT.keys(); e.hasMoreElements();){		
+		    String reservedkey = (String) (e.nextElement());
+		    ReservedItem reserveditem = cust.getReservedItem(reservedkey);
+		    ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
+		    item.setReserved(item.getReserved()-reserveditem.getCount());
+		    item.setCount(item.getCount()+reserveditem.getCount());
+		}
+			
+		// remove the customer from the storage
+		removeData(id, cust.getKey());
+		c.success = true;
+	    }
+	}
+	else if (command instanceof DeleteCustomerRMICommand) {
+	    DeleteCustomerRMICommand c = (DeleteCustomerRMICommand) command;
+	    Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+	    if( cust == null ) {
+		c.success = false;
+	    } else {			
+		// Increase the reserved numbers of all reservable items which the customer reserved. 
+		RMHashtable reservationHT = cust.getReservations();
+		for(Enumeration e = reservationHT.keys(); e.hasMoreElements();){		
+		    String reservedkey = (String) (e.nextElement());
+		    ReservedItem reserveditem = cust.getReservedItem(reservedkey);
+		    ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
+		    item.setReserved(item.getReserved()-reserveditem.getCount());
+		    item.setCount(item.getCount()+reserveditem.getCount());
+		}
+			
+		// remove the customer from the storage
+		removeData(id, cust.getKey());
+		c.success = true;
+	    }
+	}
+    }
+
     public ToSeedsThread(ConcurrentLinkedQueue<Command> pclq, HavocadoFlesh phf) {
 	clq = pclq;
 	hf = phf;
@@ -55,6 +162,7 @@ public class ToSeedsThread extends Thread {
 		if (isReservation(c)) {
 		    reserve(c);
 		}
+		customerAction(c);
 		System.out.println("Executing command.");
 		c.execute();
 	    }
