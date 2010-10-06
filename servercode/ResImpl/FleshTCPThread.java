@@ -84,7 +84,7 @@ public class FleshTCPThread extends Thread {
 		System.out.println("Returned reply.");
 	    }
 	    catch (Exception e) {
-		e.printStackTrace();
+		System.out.println("Client disconnected.");
 		break;
 	    }
 	}
