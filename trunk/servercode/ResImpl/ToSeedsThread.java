@@ -120,13 +120,13 @@ public class ToSeedsThread extends Thread {
 		for(Enumeration e = reservationHT.keys(); e.hasMoreElements();){		
 		    String reservedkey = (String) (e.nextElement());
 		    ReservedItem reserveditem = cust.getReservedItem(reservedkey);
-		    ReservableItem item  = (ReservableItem) hf.readData(id, reserveditem.getKey());
+		    ReservableItem item  = (ReservableItem) hf.readData(c.id, reserveditem.getKey());
 		    item.setReserved(item.getReserved()-reserveditem.getCount());
 		    item.setCount(item.getCount()+reserveditem.getCount());
 		}
 			
 		// remove the customer from the storage
-		hf.removeData(id, cust.getKey());
+		hf.removeData(c.id, cust.getKey());
 		c.success = true;
 	    }
 	}
@@ -141,13 +141,13 @@ public class ToSeedsThread extends Thread {
 		for(Enumeration e = reservationHT.keys(); e.hasMoreElements();){		
 		    String reservedkey = (String) (e.nextElement());
 		    ReservedItem reserveditem = cust.getReservedItem(reservedkey);
-		    ReservableItem item  = (ReservableItem) hf.readData(id, reserveditem.getKey());
+		    ReservableItem item  = (ReservableItem) hf.readData(c.id, reserveditem.getKey());
 		    item.setReserved(item.getReserved()-reserveditem.getCount());
 		    item.setCount(item.getCount()+reserveditem.getCount());
 		}
 			
 		// remove the customer from the storage
-		hf.removeData(id, cust.getKey());
+		hf.removeData(c.id, cust.getKey());
 		c.success = true;
 	    }
 	}
