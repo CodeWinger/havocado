@@ -17,6 +17,6 @@ public class NewCustomerRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    customer = rm.newCustomer(id);
+      //    customer = rm.newCustomer(id);
   }
 }

@@ -19,6 +19,6 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    success = rm.deleteCustomer(id, customer);
+      //    success = rm.deleteCustomer(id, customer);
   }
 }
