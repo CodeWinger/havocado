@@ -20,6 +20,7 @@ public class NewCustomerWithIdTCPCommand extends AbstractTCPCommand {
   
   
   public void doCommand() throws Exception {
+  /*
     if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
     
     //ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
@@ -32,5 +33,6 @@ public class NewCustomerWithIdTCPCommand extends AbstractTCPCommand {
     
     // Store the returned object.
     this.success = mirror.success;
+  */
   }
 }
