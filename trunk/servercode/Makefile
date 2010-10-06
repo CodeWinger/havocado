@@ -14,7 +14,7 @@ rooms: ResImpl/HavocadoSeed.class
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedRoom 33333
 
 flesh: Commands.jar ResInterface.jar ResImpl/HavocadoFlesh.class
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi 11112
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh 11112 mimi
 
 Commands.jar:
 	javac Commands/*.java Commands/TCPCommands/*.java
