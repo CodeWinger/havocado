@@ -68,9 +68,9 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof NewCustomerWithIdTCPCommand) {
 	    NewCustomerWithIdTCPCommand c = (NewCustomerWithIdTCPCommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
+	    Customer cust = (Customer) hf.readData( c.id, Customer.getKey(c.cid) );
 	    if( cust == null ) {
-		cust = new Customer(c.customer);
+		cust = new Customer(c.cid);
 		hf.writeData( c.id, cust.getKey(), cust );
 		c.success = true;
 	    } else {
@@ -79,9 +79,9 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof NewCustomerWithIdRMICommand) {
 	    NewCustomerWithIdRMICommand c = (NewCustomerWithIdRMICommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
+	    Customer cust = (Customer) hf.readData( c.id, Customer.getKey(c.cid) );
 	    if( cust == null ) {
-		cust = new Customer(c.customer);
+		cust = new Customer(c.cid);
 		hf.writeData( c.id, cust.getKey(), cust );
 		c.success = true;
 	    } else {
