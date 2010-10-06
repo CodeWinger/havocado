@@ -12,7 +12,7 @@ public class FleshTCPThread extends Thread {
     private ConcurrentLinkedQueue<Command> clq;
     private ObjectInputStream in, carIn, flightIn, roomIn;
     private ObjectOutputStream out, carOut, flightOut, roomOut;
-    private Socket clientSocket, carSocket, flightSocket, roomSocket;
+    private Socket clientSocket;
     
     private boolean carOnly(Command c) {
 	return (c instanceof AddCarsTCPCommand || c instanceof DeleteCarsTCPCommand ||
@@ -36,9 +36,6 @@ public class FleshTCPThread extends Thread {
 			  ObjectInputStream pfi, ObjectOutputStream pfo, ObjectInputStream pri, ObjectOutputStream pro) {
 	clq = pclq;
 	clientSocket = clientS;
-	carSocket = carS;
-	flightSocket = flightS;
-	roomSocket = roomS;
 	carIn = pci;
 	carOut = pco;
 	flightIn = pfi;
