@@ -4,6 +4,7 @@ import java.net.*;
 import java.io.*;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Calendar;
 
 import Commands.Command;
 import Commands.TCPCommands.*;
@@ -75,7 +76,8 @@ public class FleshTCPThread extends Thread {
 		else {
 		    // Handle combined commands.
 		    if (c instanceof NewCustomerTCPCommand) {
-			cwi = new NewCustomerWithIdTCPCommand(cwi.id, Integer.parseInt( String.valueOf(cwi.id) +
+			NewCustomerWithIdTCPComment cwi = new NewCustomerWithIdTCPCommand(cwi.id,
+											  Integer.parseInt( String.valueOf(cwi.id) +
 							    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 							    String.valueOf( Math.round( Math.random() * 100 + 1 ))));
 			c = cwi;
