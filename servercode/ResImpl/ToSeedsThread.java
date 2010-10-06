@@ -1,6 +1,7 @@
 package ResImpl;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Calendar;
 
 import Commands.Command;
 import Commands.TCPCommands.*;
@@ -28,11 +29,11 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof ReserveFlightTCPCommand) {
 	    ReserveFlightTCPCommand c = (ReserveFlightTCPCommand)command;
-	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNum), String.valueOf(c.flightNum));
+	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNumber), String.valueOf(c.flightNum));
 	}
 	else if (command instanceof ReserveFlightRMICommand) {
 	    ReserveFlightRMICommand c = (ReserveFlightRMICommand)command;
-	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNum), String.valueOf(c.flightNum));
+	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNumber), String.valueOf(c.flightNum));
 	}
 	else if (command instanceof ReserveRoomTCPCommand) {
 	    ReserveRoomTCPCommand c = (ReserveRoomTCPCommand)command;
@@ -52,7 +53,7 @@ public class ToSeedsThread extends Thread {
 					String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 					String.valueOf( Math.round( Math.random() * 100 + 1 )));
 	    Customer cust = new Customer( cid );
-	    writeData( id, cust.getKey(), cust );
+	    writeData( c.id, cust.getKey(), cust );
 	    c.customer = cid;
 	}
 	else if (command instanceof NewCustomerRMICommand) {
@@ -62,14 +63,14 @@ public class ToSeedsThread extends Thread {
 					String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 					String.valueOf( Math.round( Math.random() * 100 + 1 )));
 	    Customer cust = new Customer( cid );
-	    writeData( id, cust.getKey(), cust );
+	    writeData( c.id, cust.getKey(), cust );
 	    c.customer = cid;
 	}
 	else if (command instanceof NewCustomerWithIdTCPCommand) {
 	    NewCustomerWithIdTCPCommand c = (NewCustomerWithIdTCPCommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customerID) );
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
-		cust = new Customer(c.customerID);
+		cust = new Customer(c.customer);
 		writeData( c.id, cust.getKey(), cust );
 		c.success = true;
 	    } else {
@@ -78,9 +79,9 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof NewCustomerWithIdRMICommand) {
 	    NewCustomerWithIdRMICommand c = (NewCustomerWithIdRMICommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customerID) );
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
-		cust = new Customer(c.customerID);
+		cust = new Customer(c.customer);
 		writeData( c.id, cust.getKey(), cust );
 		c.success = true;
 	    } else {
@@ -89,7 +90,7 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof QueryCustomerInfoTCPCommand) {
 	    QueryCustomerInfoTCPCommand c = (QueryCustomerInfoTCPCommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(customerID) );
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		c.customerInfo = "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
 	    } else {
@@ -99,7 +100,7 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof QueryCustomerInfoRMICommand) {
 	    QueryCustomerInfoRMICommand c = (QueryCustomerInfoRMICommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(customerID) );
+	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		c.customerInfo = "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
 	    } else {
