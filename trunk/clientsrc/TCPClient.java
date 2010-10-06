@@ -862,7 +862,7 @@ public static void closeSocket() {
 						/* END OF TCP COMMUNICATION */		
 			
 //			boolean customer=rm.newCustomer(Id,Cid);
-			System.out.println("new customer id:"+Cid);
+			System.out.println("new customer creation: " + c.success);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
