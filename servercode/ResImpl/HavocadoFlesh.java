@@ -99,12 +99,12 @@ public class HavocadoFlesh
 
 	try {
 	    ServerSocket ss = new ServerSocket(port);
-	    ObjectInputStream carIn = new ObjectInputStream(carSocket.getInputStream());
-	    ObjectOutputStream carOut = new ObjectOutputStream(carSocket.getOutputStream());
-	    ObjectInputStream flightIn = new ObjectInputStream(flightSocket.getInputStream());
-	    ObjectOutputStream flightOut = new ObjectOutputStream(flightSocket.getOutputStream());
-	    ObjectInputStream roomIn = new ObjectInputStream(roomSocket.getInputStream());
-	    ObjectOutputStream roomOut = new ObjectOutputStream(roomSocket.getOutputStream());
+	    ObjectInputStream carIn = new ObjectInputStream(rmCarSocket.getInputStream());
+	    ObjectOutputStream carOut = new ObjectOutputStream(rmCarSocket.getOutputStream());
+	    ObjectInputStream flightIn = new ObjectInputStream(rmFlightSocket.getInputStream());
+	    ObjectOutputStream flightOut = new ObjectOutputStream(rmFlightSocket.getOutputStream());
+	    ObjectInputStream roomIn = new ObjectInputStream(rmRoomSocket.getInputStream());
+	    ObjectOutputStream roomOut = new ObjectOutputStream(rmRoomSocket.getOutputStream());
 	    while (true) {
 		new FleshTCPThread(toSeeds, ss.accept(), carIn, carOut, flightIn, flightOut, roomIn, roomOut);
 	    }
