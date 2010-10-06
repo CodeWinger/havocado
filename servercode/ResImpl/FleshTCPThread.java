@@ -59,6 +59,8 @@ public class FleshTCPThread extends Thread {
 
 	while (true) {
 	    try {
+		int rid = 0;
+		NewCustomerTCPCommand nc;
 		c = (AbstractTCPCommand) in.readObject();
 		System.out.println("Caught command.");
 		if (carOnly(c)) {
@@ -76,10 +78,11 @@ public class FleshTCPThread extends Thread {
 		else {
 		    // Handle combined commands.
 		    if (c instanceof NewCustomerTCPCommand) {
-			NewCustomerWithIdTCPComment cwi = new NewCustomerWithIdTCPCommand(cwi.id,
-											  Integer.parseInt( String.valueOf(cwi.id) +
-							    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
-							    String.valueOf( Math.round( Math.random() * 100 + 1 ))));
+			rid = Integer.parseInt( String.valueOf(cwi.id) +
+						String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+						String.valueOf( Math.round( Math.random() * 100 + 1 )));
+			NewCustomerWithIdTCPComment cwi = new NewCustomerWithIdTCPCommand(cwi.id, rid);
+			nc = c;
 			c = cwi;
 		    }
 		    c.setCarStreams(carIn, carOut);
@@ -89,6 +92,11 @@ public class FleshTCPThread extends Thread {
 		clq.add(c);
 		c.waitFor();
 		c.clearStreams();
+		// Special behaviour if c was a NewCustomer.
+		if (rid != 0) {
+		    nc.customer = rid;
+		    c = nc;
+		}
 		out.writeObject(c);
 		out.flush();
 		out.reset();

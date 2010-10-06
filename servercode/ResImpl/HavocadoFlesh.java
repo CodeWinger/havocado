@@ -437,12 +437,12 @@ public class HavocadoFlesh
 	int rid = Integer.parseInt( String.valueOf(id) +
 				    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 				    String.valueOf( Math.round( Math.random() * 100 + 1 )));
-	NewCustomerWithIdRMICommand nc = new NewCustomerRMICommand(rmCars, rmFlights, rmRooms, id, rid);
+	NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, rid);
 	toSeeds.add(nc);
 	nc.waitFor();
 	if (nc.error())
 	    throw new RemoteException();
-	return nc.customer;
+	return rid;
     }
 
     // I opted to pass in customerID instead. This makes testing easier
