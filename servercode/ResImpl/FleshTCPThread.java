@@ -42,6 +42,14 @@ public class FleshTCPThread extends Thread {
 	flightOut = pfo;
 	roomIn = pri;
 	roomOut = pro;
+	try {
+	    in = new ObjectInputStream(clientSocket.getInputStream());
+	    out = new ObjectOutputStream(clientSocekt.getOutputStream());
+	}
+	catch (Exception e) {
+	    e.printStackTrace();
+	    System.exit(0);
+	}
 	start();
     }
 
