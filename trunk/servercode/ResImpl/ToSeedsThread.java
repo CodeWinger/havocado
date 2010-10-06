@@ -29,11 +29,11 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof ReserveFlightTCPCommand) {
 	    ReserveFlightTCPCommand c = (ReserveFlightTCPCommand)command;
-	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNumber), String.valueOf(c.flightNum));
+	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNumber), String.valueOf(c.flightNumber));
 	}
 	else if (command instanceof ReserveFlightRMICommand) {
 	    ReserveFlightRMICommand c = (ReserveFlightRMICommand)command;
-	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNumber), String.valueOf(c.flightNum));
+	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNumber), String.valueOf(c.flightNumber));
 	}
 	else if (command instanceof ReserveRoomTCPCommand) {
 	    ReserveRoomTCPCommand c = (ReserveRoomTCPCommand)command;
@@ -53,7 +53,7 @@ public class ToSeedsThread extends Thread {
 					String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 					String.valueOf( Math.round( Math.random() * 100 + 1 )));
 	    Customer cust = new Customer( cid );
-	    writeData( c.id, cust.getKey(), cust );
+	    hf.writeData( c.id, cust.getKey(), cust );
 	    c.customer = cid;
 	}
 	else if (command instanceof NewCustomerRMICommand) {
@@ -63,7 +63,7 @@ public class ToSeedsThread extends Thread {
 					String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 					String.valueOf( Math.round( Math.random() * 100 + 1 )));
 	    Customer cust = new Customer( cid );
-	    writeData( c.id, cust.getKey(), cust );
+	    hf.writeData( c.id, cust.getKey(), cust );
 	    c.customer = cid;
 	}
 	else if (command instanceof NewCustomerWithIdTCPCommand) {
@@ -71,7 +71,7 @@ public class ToSeedsThread extends Thread {
 	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		cust = new Customer(c.customer);
-		writeData( c.id, cust.getKey(), cust );
+		hf.writeData( c.id, cust.getKey(), cust );
 		c.success = true;
 	    } else {
 		c.success = false;
@@ -82,7 +82,7 @@ public class ToSeedsThread extends Thread {
 	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		cust = new Customer(c.customer);
-		writeData( c.id, cust.getKey(), cust );
+		hf.writeData( c.id, cust.getKey(), cust );
 		c.success = true;
 	    } else {
 		c.success = false;
@@ -125,7 +125,7 @@ public class ToSeedsThread extends Thread {
 		}
 			
 		// remove the customer from the storage
-		removeData(id, cust.getKey());
+		hf.removeData(id, cust.getKey());
 		c.success = true;
 	    }
 	}
@@ -146,7 +146,7 @@ public class ToSeedsThread extends Thread {
 		}
 			
 		// remove the customer from the storage
-		removeData(id, cust.getKey());
+		hf.removeData(id, cust.getKey());
 		c.success = true;
 	    }
 	}
