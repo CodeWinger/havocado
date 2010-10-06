@@ -3,6 +3,8 @@ package ResImpl;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Commands.Command;
+import Commands.TCPCommands.*;
+import Commands.RMICommands.*;
 
 public class ToSeedsThread extends Thread {
     
