@@ -440,7 +440,7 @@ public class HavocadoFlesh
     public boolean newCustomer(int id, int customerID )
 	throws RemoteException
     {
-	NewCustomerWithIdRMICommand ncni = new NewCustomerWithIdRMICommand(null, id, customerID);
+	NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(null, id, customerID);
 	toSeeds.add(ncwi);
 	ncwi.waitFor();
 	if (ncwi.error())
