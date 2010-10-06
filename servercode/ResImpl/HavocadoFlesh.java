@@ -150,7 +150,7 @@ public class HavocadoFlesh
     }
 	
     // Remove the item out of storage
-    protected RMItem removeData(int id, String key){
+    public RMItem removeData(int id, String key){
 	synchronized(m_itemHT){
 	    return (RMItem)m_itemHT.remove(key);
 	}
@@ -158,7 +158,7 @@ public class HavocadoFlesh
 	
 	
     // deletes the entire item
-    protected boolean deleteItem(int id, String key)
+    public boolean deleteItem(int id, String key)
     {
 	Trace.info("RM::deleteItem(" + id + ", " + key + ") called" );
 	ReservableItem curObj = (ReservableItem) readData( id, key );
@@ -181,7 +181,7 @@ public class HavocadoFlesh
 	
 
     // query the number of available seats/rooms/cars
-    protected int queryNum(int id, String key) {
+    public int queryNum(int id, String key) {
 	Trace.info("RM::queryNum(" + id + ", " + key + ") called" );
 	ReservableItem curObj = (ReservableItem) readData( id, key);
 	int value = 0;  
@@ -193,7 +193,7 @@ public class HavocadoFlesh
     }	
 	
     // query the price of an item
-    protected int queryPrice(int id, String key){
+    public int queryPrice(int id, String key){
 	Trace.info("RM::queryCarsPrice(" + id + ", " + key + ") called" );
 	ReservableItem curObj = (ReservableItem) readData( id, key);
 	int value = 0; 
@@ -205,7 +205,7 @@ public class HavocadoFlesh
     }
 	
     // reserve an item
-    protected boolean reserveItem(int id, int customerID, String key, String location){
+    public boolean reserveItem(int id, int customerID, String key, String location){
 	Trace.info("RM::reserveItem( " + id + ", customer=" + customerID + ", " +key+ ", "+location+" ) called" );		
 	// Read customer object if it exists (and read lock it)
 	Customer cust = (Customer) readData( id, Customer.getKey(customerID) );		
