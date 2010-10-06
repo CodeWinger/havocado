@@ -23,7 +23,7 @@ public class FleshTCPThread extends Thread {
 
     private boolean flightOnly(Command c) {
 	return (c instanceof AddFlightTCPCommand || c instanceof DeleteFlightTCPCommand ||
-		c instanceof QueryFlightPriceTCPCommand || c instanceof QueryFlightPriceTCPCommand ||
+		c instanceof QueryFlightPriceTCPCommand || c instanceof QueryFlightTCPCommand ||
 		c instanceof ReserveFlightTCPCommand);
     }
 
