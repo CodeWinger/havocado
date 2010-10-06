@@ -32,31 +32,24 @@ public class FleshTCPThread extends Thread {
 		c instanceof ReserveRoomTCPCommand);
     }
 
-    public FleshTCPThread(ConcurrentLinkedQueue pclq, Socket clientS, Socket carS, Socket flightS, Socket roomS) {
+    public FleshTCPThread(ConcurrentLinkedQueue pclq, Socket clientS, ObjectInputStream pci, ObjectOutputStream pco,
+			  ObjectInputStream pfi, ObjectInputStream pfo, ObjectInputStream pri, ObjectInputStream pro) {
 	clq = pclq;
 	clientSocket = clientS;
 	carSocket = carS;
 	flightSocket = flightS;
 	roomSocket = roomS;
+	carIn = pci;
+	carOut = pco;
+	flightIn = pfi;
+	flightOut = pfo;
+	roomIn = pri;
+	roomOut = pro;
 	start();
     }
 
     public void run() {
 	AbstractTCPCommand c;
-	try {
-	    out = new ObjectOutputStream(clientSocket.getOutputStream());
-	    in = new ObjectInputStream(clientSocket.getInputStream());
-	    carIn = new ObjectInputStream(carSocket.getInputStream());
-	    carOut = new ObjectOutputStream(carSocket.getOutputStream());
-	    flightIn = new ObjectInputStream(flightSocket.getInputStream());
-	    flightOut = new ObjectOutputStream(flightSocket.getOutputStream());
-	    roomIn = new ObjectInputStream(roomSocket.getInputStream());
-	    roomOut = new ObjectOutputStream(roomSocket.getOutputStream());
-	}
-	catch (Exception e) {
-	    System.out.println("Error connecting to client.");
-	    e.printStackTrace();
-	}
 
 	while (true) {
 	    try {
