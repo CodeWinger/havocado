@@ -51,7 +51,7 @@ public class FleshTCPThread extends Thread {
 	    flightIn = new ObjectInputStream(flightSocket.getInputStream());
 	    flightOut = new ObjectOutputStream(flightSocket.getOutputStream());
 	    roomIn = new ObjectInputStream(roomSocket.getInputStream());
-	    roomOut = new ObjectOutputStream(foomSocket.getOutputStream());
+	    roomOut = new ObjectOutputStream(roomSocket.getOutputStream());
 	}
 	catch (Exception e) {
 	    System.out.println("Error connecting to client.");
