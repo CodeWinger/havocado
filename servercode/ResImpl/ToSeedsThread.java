@@ -163,11 +163,11 @@ public class ToSeedsThread extends Thread {
 	while (true) {
 	    c = clq.poll();
 	    if (c != null) {
-		if (isReservation(c)) {
+		/*		if (isReservation(c)) {
 		    reserve(c);
-		}
+		    }*/
 		customerAction(c);
-		System.out.println("Executing command.");
+		//		System.out.println("Executing command.");
 		c.execute();
 	    }
 	    else

@@ -74,6 +74,15 @@ public class FleshTCPThread extends Thread {
 		}
 		else {
 		    // Handle combined commands.
+		    if (c instanceof NewCustomerTCPCommand) {
+			cwi = new NewCustomerWithIdTCPCommand(cwi.id Integer.parseInt( String.valueOf(id) +
+							    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+							    String.valueOf( Math.round( Math.random() * 100 + 1 ))));
+			c = cwi;
+		    }
+		    c.setCarStreams(carIn, carOut);
+		    c.setFlightStreams(flightIn, flightOut);
+		    c.setRoomStreams(roomIn, roomOut);
 		}
 		clq.add(c);
 		c.waitFor();

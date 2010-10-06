@@ -38,11 +38,16 @@ public class HavocadoFlesh
 	carSeed = flightSeed = roomSeed = "localhost";
 	// TODO: Set these strings to cl arguments.
 
-	if (args.length == 2) {
+	if (args.length == 4) {
+	    port = Integer.parseInt(args[0]);
+	    carSeed = args[1];
+	    flightSeed = args[2];
+	    roomSeed = args[3];
+	else if (args.length == 2) {
 	    //	    server = server + ":" + args[0];
-	    carSeed = flightSeed = roomSeed = args[0];
+	    carSeed = flightSeed = roomSeed = args[1];
 	    try {
-		port = Integer.parseInt(args[1]);
+		port = Integer.parseInt(args[0]);
 	    }
 	    catch (Exception e) {
 		e.printStackTrace();
@@ -414,7 +419,7 @@ public class HavocadoFlesh
     public String queryCustomerInfo(int id, int customerID)
 	throws RemoteException
     {
-	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(null, id, customerID);
+	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
 	toSeeds.add(qci);
 	qci.waitFor();
 	if (qci.error())
@@ -428,7 +433,10 @@ public class HavocadoFlesh
     public int newCustomer(int id)
 	throws RemoteException
     {
-	NewCustomerRMICommand nc = new NewCustomerRMICommand(null, id);
+	int rid = Integer.parseInt( String.valueOf(id) +
+				    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+				    String.valueOf( Math.round( Math.random() * 100 + 1 )));
+	NewCustomerWithIdRMICommand nc = new NewCustomerRMICommand(rmCars, rmFlights, rmRooms, id, rid);
 	toSeeds.add(nc);
 	nc.waitFor();
 	if (nc.error())
@@ -440,7 +448,7 @@ public class HavocadoFlesh
     public boolean newCustomer(int id, int customerID )
 	throws RemoteException
     {
-	NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(null, id, customerID);
+	NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
 	toSeeds.add(ncwi);
 	ncwi.waitFor();
 	if (ncwi.error())
@@ -453,7 +461,7 @@ public class HavocadoFlesh
     public boolean deleteCustomer(int id, int customerID)
 	throws RemoteException
     {
-	DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(null, id, customerID);
+	DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
 	toSeeds.add(dc);
 	dc.waitFor();
 	if(dc.error())
