@@ -94,7 +94,7 @@ public class HavocadoFlesh
 	    e.printStackTrace();
 	}
 
-	ToSeedsThread tst = new ToSeedsThread(toSeeds); 
+	ToSeedsThread tst = new ToSeedsThread(toSeeds, obj);
 	tst.start();
 
 	try {
@@ -413,7 +413,7 @@ public class HavocadoFlesh
     public String queryCustomerInfo(int id, int customerID)
 	throws RemoteException
     {
-	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(id, customerID);
+	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(null, id, customerID);
 	toSeeds.add(qci);
 	qcp.waitFor();
 	if (qcp.error())
@@ -427,7 +427,7 @@ public class HavocadoFlesh
     public int newCustomer(int id)
 	throws RemoteException
     {
-	NewCustomerRMICommand nc = new NewCustomerRMICommand(id);
+	NewCustomerRMICommand nc = new NewCustomerRMICommand(null, id);
 	toSeeds.add(nc);
 	nc.waitFor();
 	if (nc.error())
@@ -439,7 +439,7 @@ public class HavocadoFlesh
     public boolean newCustomer(int id, int customerID )
 	throws RemoteException
     {
-	NewCustomerNoIdRMICommand ncni = new NewCustomerNoIdRMICommand(id, customerID);
+	NewCustomerNoIdRMICommand ncni = new NewCustomerNoIdRMICommand(null, id, customerID);
 	toSeeds.add(ncni);
 	ncni.waitFor();
 	if (ncni.error())
@@ -452,7 +452,7 @@ public class HavocadoFlesh
     public boolean deleteCustomer(int id, int customerID)
 	throws RemoteException
     {
-	DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(id, customerID);
+	DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(null, id, customerID);
 	toSeeds.add(dc);
 	dc.waitFor();
 	if(dc.error())
