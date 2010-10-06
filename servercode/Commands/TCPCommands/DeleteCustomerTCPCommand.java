@@ -51,6 +51,7 @@ public class DeleteCustomerTCPCommand extends AbstractTCPCommand {
   
   
   public void doCommand() throws Exception {
+  		success = true;
       send(carRecv, carSend);
   	  send(roomRecv, roomSend);
 	    send(flightRecv, flightSend);
