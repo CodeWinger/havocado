@@ -29,13 +29,6 @@ public abstract class AbstractTCPCommand implements Command, Serializable {
   	flightSend = out;
   }
   
-  private void send(ObjectInputStream recv, ObjectOutputStream send) throws Exception {
-  	if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
-  	send.writeObject(this); send.flush(); send.reset();
-  	DeleteCustomerTCPCommand mirror = (DeleteCustomerTCPCommand) recv.readObject();
-  	this.success = this.success && mirror.success;
-  }
-  
   //protected transient Socket toSeed;
   protected transient ObjectInputStream recv;
   protected transient ObjectOutputStream send;
