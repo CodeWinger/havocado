@@ -78,11 +78,11 @@ public class FleshTCPThread extends Thread {
 		else {
 		    // Handle combined commands.
 		    if (c instanceof NewCustomerTCPCommand) {
-			rid = Integer.parseInt( String.valueOf(cwi.id) +
+			nc = (NewCustomerTCPCommand)c;
+			rid = Integer.parseInt( String.valueOf(nc.id) +
 						String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 						String.valueOf( Math.round( Math.random() * 100 + 1 )));
-			NewCustomerWithIdTCPComment cwi = new NewCustomerWithIdTCPCommand(cwi.id, rid);
-			nc = c;
+			NewCustomerWithIdTCPCommand cwi = new NewCustomerWithIdTCPCommand(nc.id, rid);
 			c = cwi;
 		    }
 		    c.setCarStreams(carIn, carOut);
