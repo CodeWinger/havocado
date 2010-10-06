@@ -19,6 +19,6 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    customerInfo = rm.queryCustomerInfo(id, customer);
+      //    customerInfo = rm.queryCustomerInfo(id, customer);
   }
 }

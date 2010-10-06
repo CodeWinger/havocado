@@ -20,7 +20,7 @@ public class QueryCustomerInfoTCPCommand extends AbstractTCPCommand {
   
   
   public void doCommand() throws Exception {
-    if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
+      /*    if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
     
     //ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
     //ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
@@ -31,6 +31,6 @@ public class QueryCustomerInfoTCPCommand extends AbstractTCPCommand {
     QueryCustomerInfoTCPCommand mirror = (QueryCustomerInfoTCPCommand) recv.readObject();
     
     // Store the returned object.
-    this.customerInfo = mirror.customerInfo;
+    this.customerInfo = mirror.customerInfo;*/
   }
 }

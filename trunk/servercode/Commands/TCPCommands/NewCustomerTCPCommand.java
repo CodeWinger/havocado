@@ -30,7 +30,6 @@ public class NewCustomerTCPCommand extends AbstractTCPCommand {
     NewCustomerTCPCommand mirror = (NewCustomerTCPCommand) recv.readObject();
     
     // Store the returned object.
-    this.customer = mirror.customer;
-  */
+    this.customer = mirror.customer;*/
   }
 }
