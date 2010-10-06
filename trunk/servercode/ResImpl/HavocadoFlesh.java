@@ -54,10 +54,11 @@ public class HavocadoFlesh
 	}
 	
 	// Set up RMI.	 
+	HavocadoFlesh obj;
 	try {
 	    System.out.println("HELLO "+carSeed);
 	    // create a new Server object
-	    HavocadoFlesh obj = new HavocadoFlesh();
+	    obj = new HavocadoFlesh();
 	    // dynamically generate the stub (client proxy)
 	    ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
 
@@ -415,10 +416,10 @@ public class HavocadoFlesh
     {
 	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(null, id, customerID);
 	toSeeds.add(qci);
-	qcp.waitFor();
-	if (qcp.error())
+	qci.waitFor();
+	if (qci.error())
 	    throw new RemoteException();
-	return qcp.customerInfo;
+	return qci.customerInfo;
     }
 
     // customer functions
@@ -439,12 +440,12 @@ public class HavocadoFlesh
     public boolean newCustomer(int id, int customerID )
 	throws RemoteException
     {
-	NewCustomerNoIdRMICommand ncni = new NewCustomerNoIdRMICommand(null, id, customerID);
-	toSeeds.add(ncni);
-	ncni.waitFor();
-	if (ncni.error())
+	NewCustomerWithIdRMICommand ncni = new NewCustomerWithIdRMICommand(null, id, customerID);
+	toSeeds.add(ncwi);
+	ncwi.waitFor();
+	if (ncwi.error())
 	    throw new RemoteException();
-	return ncni.success;
+	return ncwi.success;
     }
 
 
