@@ -134,7 +134,7 @@ public class HavocadoFlesh
 
 
     // Reads a data item
-    private RMItem readData( int id, String key )
+    public RMItem readData( int id, String key )
     {
 	synchronized(m_itemHT){
 	    return (RMItem) m_itemHT.get(key);
@@ -142,7 +142,7 @@ public class HavocadoFlesh
     }
 
     // Writes a data item
-    private void writeData( int id, String key, RMItem value )
+    public void writeData( int id, String key, RMItem value )
     {
 	synchronized(m_itemHT){
 	    m_itemHT.put(key, value);
