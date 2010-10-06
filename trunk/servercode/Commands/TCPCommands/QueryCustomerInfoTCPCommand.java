@@ -28,11 +28,11 @@ public class QueryCustomerInfoTCPCommand extends AbstractTCPCommand {
   	flightSend = out;
   }
   
-  private void send(ObjectInputStream recv, ObjectOutputStream send) throws Exception {
+  private String send(ObjectInputStream recv, ObjectOutputStream send) throws Exception {
   	if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
   	send.writeObject(this); send.flush(); send.reset();
   	QueryCustomerInfoTCPCommand mirror = (QueryCustomerInfoTCPCommand) recv.readObject();
-  	this.customerInfo = this.customerInfo + "\n" + mirror.customerInfo;
+  	return mirror.customerInfo;
   }
   
   public int id;
@@ -51,9 +51,10 @@ public class QueryCustomerInfoTCPCommand extends AbstractTCPCommand {
   
   
   public void doCommand() throws Exception {
-      send(carRecv, carSend);
-  	  send(roomRecv, roomSend);
-	    send(flightRecv, flightSend);
+      String carCustomer = send(carRecv, carSend);
+  	  String roomCustomer = send(roomRecv, roomSend);
+	    String flightCustomer = send(flightRecv, flightSend);
+	    customerInfo = "Car: " + carCustomer + "\n" + "Room: " + roomCustomer + "\n" + "Flight: " + flightCustomer;
 	    
       /*    if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
     
