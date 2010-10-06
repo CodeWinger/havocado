@@ -60,7 +60,7 @@ public class FleshTCPThread extends Thread {
 	while (true) {
 	    try {
 		int rid = 0;
-		NewCustomerTCPCommand nc;
+		NewCustomerTCPCommand nc = null;
 		c = (AbstractTCPCommand) in.readObject();
 		System.out.println("Caught command.");
 		if (carOnly(c)) {
