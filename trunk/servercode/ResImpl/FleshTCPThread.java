@@ -33,7 +33,7 @@ public class FleshTCPThread extends Thread {
     }
 
     public FleshTCPThread(ConcurrentLinkedQueue pclq, Socket clientS, ObjectInputStream pci, ObjectOutputStream pco,
-			  ObjectInputStream pfi, ObjectInputStream pfo, ObjectInputStream pri, ObjectInputStream pro) {
+			  ObjectInputStream pfi, ObjectOutputStream pfo, ObjectInputStream pri, ObjectOutputStream pro) {
 	clq = pclq;
 	clientSocket = clientS;
 	carSocket = carS;
