@@ -54,7 +54,7 @@ public class HavocadoFlesh
 	}
 	
 	// Set up RMI.	 
-	HavocadoFlesh obj;
+	HavocadoFlesh obj = null;
 	try {
 	    System.out.println("HELLO "+carSeed);
 	    // create a new Server object
