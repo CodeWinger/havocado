@@ -20,27 +20,27 @@ public class ToSeedsThread extends Thread {
     private void reserve(Command command) {
 	if (command instanceof ReserveCarTCPCommand) {
 	    ReserveCarTCPCommand c = (ReserveCarTCPCommand)command;
-	    hf.reserveItem(c.id, c.customerID, Car.getKey(c.location), c.location);
+	    hf.reserveItem(c.id, c.customer, Car.getKey(c.location), c.location);
 	}
 	else if (command instanceof ReserveCarRMICommand) {
 	    ReserveCarRMICommand c = (ReserveCarRMICommand)command;
-	    hf.reserveItem(c.id, c.customerID, Car.getKey(c.location), c.location);
+	    hf.reserveItem(c.id, c.customer, Car.getKey(c.location), c.location);
 	}
 	else if (command instanceof ReserveFlightTCPCommand) {
 	    ReserveFlightTCPCommand c = (ReserveFlightTCPCommand)command;
-	    hf.reserveItem(c.id, c.customerID, Flight.getKey(c.flightNum), String.valueOf(c.flightNum));
+	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNum), String.valueOf(c.flightNum));
 	}
 	else if (command instanceof ReserveFlightRMICommand) {
 	    ReserveFlightRMICommand c = (ReserveFlightRMICommand)command;
-	    hf.reserveItem(c.id, c.customerID, Flight.getKey(c.flightNum), String.valueOf(c.flightNum));
+	    hf.reserveItem(c.id, c.customer, Flight.getKey(c.flightNum), String.valueOf(c.flightNum));
 	}
 	else if (command instanceof ReserveRoomTCPCommand) {
 	    ReserveRoomTCPCommand c = (ReserveRoomTCPCommand)command;
-	    hf.reserveItem(c.id, c.customerID, Hotel.getKey(c.location), c.location);
+	    hf.reserveItem(c.id, c.customer, Hotel.getKey(c.location), c.location);
 	}
 	else if (command instanceof ReserveRoomRMICommand) {
 	    ReserveRoomRMICommand c = (ReserveRoomRMICommand)command;
-	    hf.reserveItem(c.id, c.customerID, Hotel.getKey(c.location), c.location);
+	    hf.reserveItem(c.id, c.customer, Hotel.getKey(c.location), c.location);
 	}
     }
 
