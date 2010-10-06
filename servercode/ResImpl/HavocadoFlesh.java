@@ -43,6 +43,7 @@ public class HavocadoFlesh
 	    carSeed = args[1];
 	    flightSeed = args[2];
 	    roomSeed = args[3];
+	}
 	else if (args.length == 2) {
 	    //	    server = server + ":" + args[0];
 	    carSeed = flightSeed = roomSeed = args[1];
