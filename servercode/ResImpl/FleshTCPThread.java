@@ -44,7 +44,7 @@ public class FleshTCPThread extends Thread {
 	roomOut = pro;
 	try {
 	    in = new ObjectInputStream(clientSocket.getInputStream());
-	    out = new ObjectOutputStream(clientSocekt.getOutputStream());
+	    out = new ObjectOutputStream(clientSocket.getOutputStream());
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
