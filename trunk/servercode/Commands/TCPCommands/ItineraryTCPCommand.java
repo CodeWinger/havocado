@@ -6,9 +6,36 @@ import java.util.*;
 
 public class ItineraryTCPCommand extends AbstractTCPCommand {
   
-  public transient Socket carSocket;
-  public transient Socket flightSocket;
-  public transient Socket roomSocket;
+  public transient ObjectInputStream carRecv;
+  public transient ObjectOutputStream carSend;
+
+  public transient ObjectInputStream roomRecv;
+  public transient ObjectOutputStream roomSend;
+
+  public transient ObjectInputStream flightRecv;
+  public transient ObjectOutputStream flightSend;
+  
+  public void setCarStreams(ObjectInputStream in, ObjectOutputStream out) {
+  	carRecv = in;
+  	carSend = out;
+  }
+  
+  public void setRoomStreams(ObjectInputStream in, ObjectOutputStream out) {
+  	roomRecv = in;
+  	roomSend = out;
+  }
+  
+  public void setFlightStreams(ObjectInputStream in, ObjectOutputStream out) {
+  	flightRecv = in;
+  	flightSend = out;
+  }
+  
+  private void send(ObjectInputStream recv, ObjectOutputStream send) throws Exception {
+  	if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
+  	send.writeObject(this); send.flush(); send.reset();
+  	DeleteCustomerTCPCommand mirror = (DeleteCustomerTCPCommand) recv.readObject();
+  	this.success = this.success && mirror.success;
+  }
 
   public int id;
   public int customer;
@@ -38,70 +65,31 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
     success = false;
   }
   
-  public void setCarSocket(Socket s) { carSocket = s; }
-  
-  public void clearCarSocket() { carSocket = null; }
-  
-  public void setFlightSocket(Socket s) { flightSocket = s; }
-  
-  public void clearFlightSocket() { flightSocket = null; }
-  
-  public void setRoomSocket(Socket s) { roomSocket = s; }
-  
-  public void clearRoomSocket() { roomSocket = null; }
-  
   public void doCommand() throws Exception {
-    if(carSocket == null || flightSocket == null || roomSocket == null) { 
-      throw new Exception("some sockets are null."); 
-    }
-    
-    ObjectInputStream recv;
-    ObjectOutputStream send;
-/*    
-    ObjectInputStream recv = new ObjectInputStream(toSeed.getInputStream());
-    ObjectOutputStream send = new ObjectOutputStream(toSeed.getOutputStream());
-    // send myself to the server.
-    send.writeObject(this); send.flush(); send.reset(); 
-    // the server will spit out a mirrored image of me, take what i need from it.
-    DeleteFlightTCPCommand mirror = (DeleteFlightTCPCommand) recv.readObject();
-    
-    // Store the returned object.
-    this.success = mirror.success;
-*/
     success = true;
 
     // reserve as many flights as we want.    
     for(int i = 0; i < flightNumbers.size(); i++) {
       int flightNum = ((Integer) flightNumbers.elementAt(i)).intValue();
-
-      recv = new ObjectInputStream(flightSocket.getInputStream());
-      send = new ObjectOutputStream(flightSocket.getOutputStream());
-      
       ReserveFlightTCPCommand r = new ReserveFlightTCPCommand(id, customer, flightNum);
-      send.writeObject(r); send.flush(); send.reset();
-      r = (ReserveFlightTCPCommand) recv.readObject();
+      flightSend.writeObject(r); flightSend.flush(); flightSend.reset();
+      r = (ReserveFlightTCPCommand) flightRecv.readObject();
       success = success && r.success;
     } 
     
     // reserve a car if needed.
     if(car && success) {
-      recv = new ObjectInputStream(carSocket.getInputStream());
-      send = new ObjectOutputStream(carSocket.getOutputStream());
-      
       ReserveCarTCPCommand r = new ReserveCarTCPCommand(id, customer, location);
-      send.writeObject(r); send.flush(); send.reset();
-      r = (ReserveCarTCPCommand) recv.readObject();
+      carSend.writeObject(r); carSend.flush(); carSend.reset();
+      r = (ReserveCarTCPCommand) carRecv.readObject();
       success = success && r.success;
     }
     
     // reserve a room if needed.
     if(room && success) {
-      recv = new ObjectInputStream(roomSocket.getInputStream());
-      send = new ObjectOutputStream(roomSocket.getOutputStream());
-      
       ReserveRoomTCPCommand r = new ReserveRoomTCPCommand(id, customer, location);
-      send.writeObject(r); send.flush(); send.reset();
-      r = (ReserveRoomTCPCommand) recv.readObject();
+      roomSend.writeObject(r); roomSend.flush(); roomSend.reset();
+      r = (ReserveRoomTCPCommand) roomRecv.readObject();
       success = success && r.success;
     }    
   }
