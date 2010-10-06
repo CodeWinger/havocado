@@ -90,7 +90,7 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof QueryCustomerInfoTCPCommand) {
 	    QueryCustomerInfoTCPCommand c = (QueryCustomerInfoTCPCommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
+	    Customer cust = (Customer) hf.readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		c.customerInfo = "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
 	    } else {
@@ -100,7 +100,7 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof QueryCustomerInfoRMICommand) {
 	    QueryCustomerInfoRMICommand c = (QueryCustomerInfoRMICommand) command;
-	    Customer cust = (Customer) readData( c.id, Customer.getKey(c.customer) );
+	    Customer cust = (Customer) hf.readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		c.customerInfo = "";   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
 	    } else {
@@ -110,7 +110,7 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof DeleteCustomerTCPCommand) {
 	    DeleteCustomerTCPCommand c = (DeleteCustomerTCPCommand) command;
-	    Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+	    Customer cust = (Customer) hf.readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		c.success = false;
 	    } else {			
@@ -119,7 +119,7 @@ public class ToSeedsThread extends Thread {
 		for(Enumeration e = reservationHT.keys(); e.hasMoreElements();){		
 		    String reservedkey = (String) (e.nextElement());
 		    ReservedItem reserveditem = cust.getReservedItem(reservedkey);
-		    ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
+		    ReservableItem item  = (ReservableItem) hf.readData(id, reserveditem.getKey());
 		    item.setReserved(item.getReserved()-reserveditem.getCount());
 		    item.setCount(item.getCount()+reserveditem.getCount());
 		}
@@ -131,7 +131,7 @@ public class ToSeedsThread extends Thread {
 	}
 	else if (command instanceof DeleteCustomerRMICommand) {
 	    DeleteCustomerRMICommand c = (DeleteCustomerRMICommand) command;
-	    Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
+	    Customer cust = (Customer) hf.readData( c.id, Customer.getKey(c.customer) );
 	    if( cust == null ) {
 		c.success = false;
 	    } else {			
@@ -140,7 +140,7 @@ public class ToSeedsThread extends Thread {
 		for(Enumeration e = reservationHT.keys(); e.hasMoreElements();){		
 		    String reservedkey = (String) (e.nextElement());
 		    ReservedItem reserveditem = cust.getReservedItem(reservedkey);
-		    ReservableItem item  = (ReservableItem) readData(id, reserveditem.getKey());
+		    ReservableItem item  = (ReservableItem) hf.readData(id, reserveditem.getKey());
 		    item.setReserved(item.getReserved()-reserveditem.getCount());
 		    item.setCount(item.getCount()+reserveditem.getCount());
 		}
