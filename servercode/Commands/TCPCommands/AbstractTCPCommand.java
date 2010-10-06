@@ -5,6 +5,37 @@ import java.io.*;
 import Commands.*;
 
 public abstract class AbstractTCPCommand implements Command, Serializable {
+  public transient ObjectInputStream carRecv;
+  public transient ObjectOutputStream carSend;
+
+  public transient ObjectInputStream roomRecv;
+  public transient ObjectOutputStream roomSend;
+
+  public transient ObjectInputStream flightRecv;
+  public transient ObjectOutputStream flightSend;
+  
+  public void setCarStreams(ObjectInputStream in, ObjectOutputStream out) {
+  	carRecv = in;
+  	carSend = out;
+  }
+  
+  public void setRoomStreams(ObjectInputStream in, ObjectOutputStream out) {
+  	roomRecv = in;
+  	roomSend = out;
+  }
+  
+  public void setFlightStreams(ObjectInputStream in, ObjectOutputStream out) {
+  	flightRecv = in;
+  	flightSend = out;
+  }
+  
+  private void send(ObjectInputStream recv, ObjectOutputStream send) throws Exception {
+  	if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
+  	send.writeObject(this); send.flush(); send.reset();
+  	DeleteCustomerTCPCommand mirror = (DeleteCustomerTCPCommand) recv.readObject();
+  	this.success = this.success && mirror.success;
+  }
+  
   //protected transient Socket toSeed;
   protected transient ObjectInputStream recv;
   protected transient ObjectOutputStream send;

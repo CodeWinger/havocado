@@ -31,7 +31,7 @@ public class QueryCustomerInfoTCPCommand extends AbstractTCPCommand {
   private void send(ObjectInputStream recv, ObjectOutputStream send) throws Exception {
   	if(recv == null || send == null) { throw new Exception("One of the streams is null."); }
   	send.writeObject(this); send.flush(); send.reset();
-  	QueryCustomerTCPCommand mirror = (QueryCustomerTCPCommand) recv.readObject();
+  	QueryCustomerInfoTCPCommand mirror = (QueryCustomerInfoTCPCommand) recv.readObject();
   	this.customerInfo = this.customerInfo + "\n" + mirror.customerInfo;
   }
   
