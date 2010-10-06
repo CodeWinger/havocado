@@ -31,9 +31,9 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-  		customerInfo = "";
-      customerInfo = customerInfo + "\n" + carRm.queryCustomerInfo(id, customer);
-      customerInfo = customerInfo + "\n" + flightRm.queryCustomerInfo(id, customer);
-      customerInfo = customerInfo + "\n" + roomRm.queryCustomerInfo(id, customer); 
+  		String carCustomer = carRm.queryCustomerInfo(id, customer);
+      String flightCustomer = flightRm.queryCustomerInfo(id, customer);
+      String roomCustomer = roomRm.queryCustomerInfo(id, customer); 
+	    customerInfo = "Car: " + carCustomer + "\n" + "Room: " + roomCustomer + "\n" + "Flight: " + flightCustomer;
   }
 }
