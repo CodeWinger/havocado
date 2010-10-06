@@ -70,7 +70,6 @@ public class SeedTCPThread extends Thread {
 	}
 	else if (command instanceof AddFlightTCPCommand) {
 	    AddFlightTCPCommand c = (AddFlightTCPCommand)command;
-	    System.out.println("Add flight: id: " + c.id + ", flightNum: " + c.flightNum + ", price: " + c.flightPrice + ".");
 	    c.success = seed.addFlight(c.id, c.flightNum, c.flightSeats, c.flightPrice);
 	}
 	else if (command instanceof DeleteFlightTCPCommand) {
@@ -108,6 +107,18 @@ public class SeedTCPThread extends Thread {
 	else if (command instanceof ReserveRoomTCPCommand) {
 	    ReserveRoomTCPCommand c = (ReserveRoomTCPCommand)command;
 	    c.success = seed.reserveRoom(c.id, c.customer, c.location);
+	}
+	else if (command instanceof NewCustomerWithIdTCPCommand) {
+	    NewCustomerWithIdTCPCommand c = (NewCustomerWithIdTCPCommand)command;
+	    c.success = seed.newCustomer(c.id, c.cid);
+	}
+	else if (command instanceof DeleteCustomerTCPCommand) {
+	    DeleteCustomerTCPCommand c = (DeleteCustomerTCPCommand)command;
+	    c.success = seed.deleteCustomer(c.id, c.customer);
+	}
+	else if (command instanceof QueryCustomerInfoTCPCommand) {
+	    QueryCustomerInfoTCPCommand c = (QueryCustomerInfoTCPCommand)command;
+	    c.customerInfo = seed.queryCustomerInfo(c.id, c.customer);
 	}
     }
 }
