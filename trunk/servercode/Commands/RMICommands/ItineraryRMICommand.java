@@ -49,7 +49,7 @@ public class ItineraryRMICommand extends AbstractRMICommand {
     // do the flights.
     success = true;
     for(int i = 0; i < flightNumbers.size(); i++){
-      int flightNum = Integer.parseInt(flightNumbers.elementAt(i));
+      int flightNum = Integer.parseInt((String) flightNumbers.elementAt(i));
       success = success && flightRm.reserveFlight(id, customer, flightNum);
     }
     if(car && success) {

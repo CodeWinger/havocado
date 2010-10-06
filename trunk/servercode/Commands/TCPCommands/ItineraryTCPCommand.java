@@ -63,7 +63,7 @@ public class ItineraryTCPCommand extends AbstractTCPCommand {
 
     // reserve as many flights as we want.    
     for(int i = 0; i < flightNumbers.size(); i++) {
-      int flightNum = Integer.parseInt(flightNumbers.elementAt(i));
+      int flightNum = Integer.parseInt((String) flightNumbers.elementAt(i));
       ReserveFlightTCPCommand r = new ReserveFlightTCPCommand(id, customer, flightNum);
       flightSend.writeObject(r); flightSend.flush(); flightSend.reset();
       r = (ReserveFlightTCPCommand) flightRecv.readObject();
