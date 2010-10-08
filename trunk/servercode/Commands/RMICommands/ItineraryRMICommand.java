@@ -1,6 +1,7 @@
 package Commands.RMICommands;
 
 import ResInterface.*;
+import java.util.Vector;
 
 public class ItineraryRMICommand extends AbstractRMICommand {
 
