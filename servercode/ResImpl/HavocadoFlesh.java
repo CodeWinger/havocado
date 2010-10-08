@@ -530,8 +530,12 @@ public class HavocadoFlesh
     /* reserve an itinerary */
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
 	throws RemoteException {
-	// TODO: This.
-    	return false;
+	ItineraryRMICommand i = new ItineraryRMICommand(rmCars, rmFlights, rmRooms, id, customer, flightNumbers, location, Car, Room);
+	toSeeds.add(i);
+	i.waitFor();
+	if (i.error())
+	    throw new RemoteException();
+	return i.success;
     }
 
 }
