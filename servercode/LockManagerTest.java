@@ -35,13 +35,15 @@ class MyThread extends Thread {
         	System.out.println ("Deadlock2.... ");        	
         }
         
+        lm.UnlockAll(1);
+        
         try {
         	lm.Lock(2, "a", LockManager.READ);
         } catch (DeadlockException e) {
         	System.out.println ("Deadlock3.... ");        	
         }
         
-        lm.UnlockAll(1);
+        lm.UnlockAll(2);
         /*
 	    try {
 		lm.Lock (1, "a", LockManager.READ);
