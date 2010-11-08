@@ -23,6 +23,26 @@ class MyThread extends Thread {
 
     public void run () {
         if (threadId == 1) {
+        try {
+        	lm.Lock(1, "a", LockManager.READ);
+        } catch (DeadlockException e) {
+        	System.out.println ("Deadlock1.... ");
+        }
+        
+        try {
+        	lm.Lock(1, "a", LockManager.WRITE);
+        } catch (DeadlockException e) {
+        	System.out.println ("Deadlock2.... ");        	
+        }
+        
+        try {
+        	lm.Lock(2, "a", LockManager.READ);
+        } catch (DeadlockException e) {
+        	System.out.println ("Deadlock3.... ");        	
+        }
+        
+        lm.UnlockAll(1);
+        /*
 	    try {
 		lm.Lock (1, "a", LockManager.READ);
 	    }
@@ -43,8 +63,18 @@ class MyThread extends Thread {
 	    }
 	    
 	    lm.UnlockAll (1);
+	    */
 	}
 	else if (threadId == 2) {
+		
+	/*
+		try {
+		
+		} catch(DeadlockException e) {
+		
+		}
+		*/
+	/*
 	    try {
 		lm.Lock (2, "b", LockManager.READ);
 	    }
@@ -65,6 +95,7 @@ class MyThread extends Thread {
 	    }
 	    
 	    lm.UnlockAll (2);
+	    */
 	}
     }
 }
