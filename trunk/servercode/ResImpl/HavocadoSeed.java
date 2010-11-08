@@ -15,6 +15,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import exceptions.InvalidTransactionException;
+import exceptions.TransactionAbortedException;
+
 //public class HavocadoSeed extends java.rmi.server.UnicastRemoteObject
 public class HavocadoSeed
 	implements ResourceManager {
@@ -53,9 +56,10 @@ public class HavocadoSeed
 			// Bind the remote object's stub in the registry
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind(name, rm);
-
+/*
 			ServerSocket ss = new ServerSocket(port);
 			new SeedTCPThread(ss.accept(), obj);
+*/
 
 			System.err.println("Server ready");
 		} 
@@ -494,5 +498,29 @@ public class HavocadoSeed
 	throws RemoteException {
     	return false;
     }
+
+
+	public void abort(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public boolean commit(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public boolean shutdown(String server) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public int start() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }

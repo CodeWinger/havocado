@@ -20,6 +20,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import exceptions.InvalidTransactionException;
+import exceptions.TransactionAbortedException;
+
 //public class HavocadoFlesh extends java.rmi.server.UnicastRemoteObject
 public class HavocadoFlesh
     implements ResourceManager {
@@ -100,7 +103,7 @@ public class HavocadoFlesh
 	    System.err.println("Server exception: " + e.toString());
 	    e.printStackTrace();
 	}
-
+/*
 	ToSeedsThread tst = new ToSeedsThread(toSeeds, obj);
 	tst.start();
 
@@ -119,7 +122,7 @@ public class HavocadoFlesh
 	catch (Exception e) {
 	    e.printStackTrace();
 	}
-
+*/
 	// Create and install a security manager
 	//        if (System.getSecurityManager() == null) {
 	//          System.setSecurityManager(new RMISecurityManager());
@@ -537,5 +540,29 @@ public class HavocadoFlesh
 	    throw new RemoteException();
 	return i.success;
     }
+
+
+	public void abort(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public boolean commit(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public boolean shutdown(String server) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public int start() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
