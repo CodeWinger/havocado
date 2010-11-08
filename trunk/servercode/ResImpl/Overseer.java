@@ -19,6 +19,9 @@ public class Overseer extends Thread{
 	 */
 	private HashSet<Transaction> currentTransactions;
 	
+	/** The IDs of the transactions that have been aborted. */
+	private HashSet<Integer> abortedIds;
+	
 	/** The next transaction id to be returned */
 	private int nextTId = 0;
 	
@@ -28,9 +31,12 @@ public class Overseer extends Thread{
 	/** A boolean that is used to kill the thread. */
 	private boolean alive = true;
 	
-	private void updateTTL(Transaction t) {
+	/*private void updateTTL(Transaction t) {
 		
-	}
+	}*/
+	//TODO: Add ids of expired and aborted transactions to abortedIds and check when executing commands for expiry.
+	//TODO: Throw exceptions for invalid transactions and expired transactions.
+	//TODO: Override hashcode in transaction 
 	
 	/**
 	 * Check each transaction and kills ones that have been inactive for
