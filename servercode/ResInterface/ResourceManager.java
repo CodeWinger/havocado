@@ -166,4 +166,6 @@ public interface ResourceManager extends Remote
      * @throws RemoteException
      */
     public boolean shutdown(String server) throws RemoteException;
+    
+    //TODO: MAKE SURE WE HAVE A WAY TO EDIT RESERVATIONS ON THE RESOURCE MANAGER'S SIDE.
 }

@@ -28,7 +28,11 @@ public class AddFlightRMICommand extends AbstractRMICommand {
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  rm.deleteFlight(id, flightNum);
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override
