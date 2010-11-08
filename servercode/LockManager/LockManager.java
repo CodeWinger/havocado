@@ -63,6 +63,10 @@ public class LockManager
                         if (bConvert.get(0) == true) {
                             // lock conversion 
                             // *** ADD CODE HERE *** to carry out the lock conversion in the
+                            System.out.println("HUURDUUURRR");
+                            TrxnObj readTrxnObj = new TrxnObj(xid, strData, READ);
+                            this.lockTable.remove(readTrxnObj);
+                            this.lockTable.add(trxnObj);
                             // lock table
                         } else {
                             // a lock request that is not lock conversion
@@ -73,6 +77,7 @@ public class LockManager
                 }
                 if (bConflict) {
                     // lock conflict exists, wait
+                    System.out.println("CONFLICT! >:(");
                     WaitLock(dataObj);
                 }
             }
@@ -203,6 +208,12 @@ public class LockManager
                     // (2) transaction already had a WRITE lock
                     // Seeing the comments at the top of this function might be helpful
                     // *** ADD CODE HERE *** to take care of both these cases
+                    if(dataObj2.getLockType() == DataObj.WRITE) {
+                    	throw new RedundantLockRequestException(dataObj.getXId(), "Redundant WRITE lock request");
+                    } else {
+                    	bitset.set(0,true);
+                    	return false;
+                    }
                 }
             } 
             else {
