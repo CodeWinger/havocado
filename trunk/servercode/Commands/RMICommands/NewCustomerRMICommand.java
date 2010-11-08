@@ -34,4 +34,8 @@ public class NewCustomerRMICommand extends AbstractRMICommand {
 			roomRm.newCustomer(id);
       customer = flightRm.newCustomer(id);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

@@ -26,4 +26,8 @@ public class AddFlightRMICommand extends AbstractRMICommand {
     // Perform the command.
     success = rm.addFlight(id, flightNum, flightSeats, flightPrice);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

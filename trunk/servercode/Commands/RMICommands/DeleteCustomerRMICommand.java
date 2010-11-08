@@ -37,4 +37,8 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
       success = success && flightRm.deleteCustomer(id, customer);
       success = success && roomRm.deleteCustomer(id, customer);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

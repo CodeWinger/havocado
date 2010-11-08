@@ -22,5 +22,9 @@ public class DeleteFlightRMICommand extends AbstractRMICommand {
     // Perform the command.
     success = rm.deleteFlight(id, flightNum);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }
 

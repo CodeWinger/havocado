@@ -25,4 +25,8 @@ public class AddCarsRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     success = rm.addCars(id, location, numCars, price);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

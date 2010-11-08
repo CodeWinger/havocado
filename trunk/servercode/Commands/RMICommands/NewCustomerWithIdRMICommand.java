@@ -37,4 +37,8 @@ public class NewCustomerWithIdRMICommand extends AbstractRMICommand {
       success = success && flightRm.newCustomer(id, cid);
       success = success && roomRm.newCustomer(id, cid);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

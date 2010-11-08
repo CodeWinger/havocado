@@ -21,4 +21,8 @@ public class QueryRoomsPriceRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     price = rm.queryRoomsPrice(id, location);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

@@ -25,4 +25,8 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     success = rm.addRooms(id, location, numRooms, price);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }
