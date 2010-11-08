@@ -63,10 +63,10 @@ public class LockManager
                         if (bConvert.get(0) == true) {
                             // lock conversion 
                             // *** ADD CODE HERE *** to carry out the lock conversion in the
-                            System.out.println("HUURDUUURRR");
                             TrxnObj readTrxnObj = new TrxnObj(xid, strData, READ);
                             this.lockTable.remove(readTrxnObj);
                             this.lockTable.add(trxnObj);
+                            this.lockTable.add(dataObj);
                             // lock table
                         } else {
                             // a lock request that is not lock conversion
@@ -77,7 +77,6 @@ public class LockManager
                 }
                 if (bConflict) {
                     // lock conflict exists, wait
-                    System.out.println("CONFLICT! >:(");
                     WaitLock(dataObj);
                 }
             }
