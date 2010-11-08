@@ -34,6 +34,9 @@ public class HavocadoFlesh
 
     /** The middleware's lock manager. All lock management is done on the middleware side */
     private LockManager lm = new LockManager();
+    
+    /** The middleware's transaction manager. Handles keeping track of transactions. */
+    private Overseer overseer = new Overseer();
 
     /** 
      * Main program - starts the middleware. The middleware looks for the resource managers'
@@ -42,24 +45,17 @@ public class HavocadoFlesh
      */ 
     public static void main(String args[]) {
         // Figure out where server is running
-        String server = "localhost";
 		String carSeed, flightSeed, roomSeed;
 		carSeed = flightSeed = roomSeed = "localhost";
-		// TODO: Set these strings to cl arguments.
 
 		if (args.length == 3) {
 		    //port = Integer.parseInt(args[0]);
 		    carSeed = args[0];
 		    flightSeed = args[1];
 		    roomSeed = args[2];
-		}
-		else if (args.length == 1) {
-		    //	    server = server + ":" + args[0];
-		    carSeed = flightSeed = roomSeed = args[0];
-		} else if (args.length != 0 &&  args.length != 1 && args.length != 3) {
+		} else {
 		    System.err.println ("Wrong usage");
 		    System.out.println("Usage: ");
-		    System.out.println("'java ResImpl.HavocadoFlesh' - Uses default program values.");
 		    System.out.println("'java ResImpl.HavocadoFlesh <car server host> <flight server host> <room server host>' - Uses the specified host names or IPs to find the resource managers.");
 		    System.exit(1);
 		}
@@ -92,7 +88,7 @@ public class HavocadoFlesh
 			e.printStackTrace();
 	    }
     }
-
+    
     
     public HavocadoFlesh() throws RemoteException {
     }

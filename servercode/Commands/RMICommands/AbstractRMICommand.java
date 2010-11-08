@@ -12,6 +12,8 @@ public abstract class AbstractRMICommand implements Command {
     error = false;
   }
   
+  public abstract RequiredLock getRequiredLock();
+  
   public abstract void doCommand() throws Exception;
   
   public synchronized void waitFor() { 
