@@ -20,6 +20,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import LockManager.LockManager;
+
 import exceptions.InvalidTransactionException;
 import exceptions.TransactionAbortedException;
 
