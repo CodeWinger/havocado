@@ -27,7 +27,11 @@ public class AddCarsRMICommand extends AbstractRMICommand {
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  rm.deleteCars(id, location);
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override

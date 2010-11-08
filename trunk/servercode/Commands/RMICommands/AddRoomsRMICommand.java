@@ -27,7 +27,11 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  rm.deleteRooms(id, location);
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override
