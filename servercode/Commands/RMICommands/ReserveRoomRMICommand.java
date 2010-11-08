@@ -23,4 +23,8 @@ public class ReserveRoomRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     success = rm.reserveRoom(id, customer, location);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

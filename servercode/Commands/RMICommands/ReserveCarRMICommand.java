@@ -23,4 +23,8 @@ public class ReserveCarRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     success = rm.reserveCar(id, customer, location);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

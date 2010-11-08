@@ -60,4 +60,8 @@ public class ItineraryRMICommand extends AbstractRMICommand {
       success = success && roomRm.reserveRoom(id, customer, location);
     }
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

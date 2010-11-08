@@ -20,4 +20,8 @@ public class QueryFlightPriceRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     price = rm.queryFlightPrice(id, flightNumber);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

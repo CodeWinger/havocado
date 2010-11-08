@@ -36,4 +36,8 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
       String roomCustomer = roomRm.queryCustomerInfo(id, customer); 
 	    customerInfo = "Car: " + carCustomer + "\n" + "Room: " + roomCustomer + "\n" + "Flight: " + flightCustomer;
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

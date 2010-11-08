@@ -21,4 +21,8 @@ public class QueryRoomsRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     numRooms = rm.queryRooms(id, location);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

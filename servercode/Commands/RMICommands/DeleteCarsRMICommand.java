@@ -21,4 +21,8 @@ public class DeleteCarsRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     success = rm.deleteCars(id, location);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

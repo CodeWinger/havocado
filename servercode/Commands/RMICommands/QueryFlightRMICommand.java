@@ -20,4 +20,8 @@ public class QueryFlightRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     numSeats = rm.queryFlight(id, flightNumber);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }

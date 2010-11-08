@@ -21,4 +21,8 @@ public class DeleteRoomsRMICommand extends AbstractRMICommand {
   public void doCommand() throws Exception {
     success = rm.deleteRooms(id, location);
   }
+  
+  public void undo() {
+	  // TODO: undo this operation.
+  }
 }
