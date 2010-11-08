@@ -29,223 +29,73 @@ import exceptions.TransactionAbortedException;
 public class HavocadoFlesh
     implements ResourceManager {
 	
-    static ConcurrentLinkedQueue<Command> toSeeds = new ConcurrentLinkedQueue<Command>();
+	/** Static resource manager references */
     static ResourceManager rmCars, rmFlights, rmRooms;
-    static int carPort = 11111, flightPort = 22222, roomPort = 33333, port = 1111;
-    static Socket rmCarSocket, rmFlightSocket, rmRoomSocket;
 
-    protected RMHashtable m_itemHT = new RMHashtable();
+    /** The middleware's lock manager. All lock management is done on the middleware side */
+    private LockManager lm = new LockManager();
 
+    /** 
+     * Main program - starts the middleware. The middleware looks for the resource managers'
+     * RMI servers and registers itself to the RMI registry on the machine. 
+     * @param args
+     */ 
     public static void main(String args[]) {
         // Figure out where server is running
         String server = "localhost";
-	String carSeed, flightSeed, roomSeed;
-	carSeed = flightSeed = roomSeed = "localhost";
-	// TODO: Set these strings to cl arguments.
+		String carSeed, flightSeed, roomSeed;
+		carSeed = flightSeed = roomSeed = "localhost";
+		// TODO: Set these strings to cl arguments.
 
-	if (args.length == 4) {
-	    port = Integer.parseInt(args[0]);
-	    carSeed = args[1];
-	    flightSeed = args[2];
-	    roomSeed = args[3];
-	}
-	else if (args.length == 2) {
-	    //	    server = server + ":" + args[0];
-	    carSeed = flightSeed = roomSeed = args[1];
-	    try {
-		port = Integer.parseInt(args[0]);
-	    }
-	    catch (Exception e) {
-		e.printStackTrace();
-	    }
-	} else if (args.length != 0 &&  args.length != 1) {
-	    System.err.println ("Wrong usage");
-	    System.out.println("Usage: java ResImpl.HavocadoFlesh [port]");
-	    System.exit(1);
-	}
+		if (args.length == 3) {
+		    //port = Integer.parseInt(args[0]);
+		    carSeed = args[0];
+		    flightSeed = args[1];
+		    roomSeed = args[2];
+		}
+		else if (args.length == 1) {
+		    //	    server = server + ":" + args[0];
+		    carSeed = flightSeed = roomSeed = args[0];
+		} else if (args.length != 0 &&  args.length != 1 && args.length != 3) {
+		    System.err.println ("Wrong usage");
+		    System.out.println("Usage: ");
+		    System.out.println("'java ResImpl.HavocadoFlesh' - Uses default program values.");
+		    System.out.println("'java ResImpl.HavocadoFlesh <car server host> <flight server host> <room server host>' - Uses the specified host names or IPs to find the resource managers.");
+		    System.exit(1);
+		}
+		
+		// Set up RMI.	 
+		HavocadoFlesh obj = null;
+		try {
+		    // create a new Server object
+		    obj = new HavocadoFlesh();
+		    // dynamically generate the stub (client proxy)
+		    ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
 	
-	// Set up RMI.	 
-	HavocadoFlesh obj = null;
-	try {
-	    System.out.println("HELLO "+carSeed);
-	    // create a new Server object
-	    obj = new HavocadoFlesh();
-	    // dynamically generate the stub (client proxy)
-	    ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
-
-	    // Bind the remote object's stub in the registry
-	    Registry registry = LocateRegistry.getRegistry();
-	    registry.rebind("HavocadoFlesh", rm);
-
-	    registry = LocateRegistry.getRegistry(carSeed);
-	    rmCars = (ResourceManager) registry.lookup("HavocadoSeedCar");
-	    // TODO: Check for null rm.
-	    registry = LocateRegistry.getRegistry(flightSeed);
-	    rmFlights = (ResourceManager) registry.lookup("HavocadoSeedFlight");
-	    // TODO: Check for null rm.
-	    registry = LocateRegistry.getRegistry(roomSeed);
-	    rmRooms = (ResourceManager) registry.lookup("HavocadoSeedRoom");
-	    // TODO: Check for null rm.
-	} 
-	catch (Exception e) 
+		    // Bind the remote object's stub in the registry
+		    Registry registry = LocateRegistry.getRegistry();
+		    registry.rebind("HavocadoFlesh", rm);
+	
+		    registry = LocateRegistry.getRegistry(carSeed);
+		    rmCars = (ResourceManager) registry.lookup("HavocadoSeedCar");
+		    // TODO: Check for null rm.
+		    registry = LocateRegistry.getRegistry(flightSeed);
+		    rmFlights = (ResourceManager) registry.lookup("HavocadoSeedFlight");
+		    // TODO: Check for null rm.
+		    registry = LocateRegistry.getRegistry(roomSeed);
+		    rmRooms = (ResourceManager) registry.lookup("HavocadoSeedRoom");
+		    // TODO: Check for null rm.
+		} 
+		catch (Exception e) 
 	    {
-		System.err.println("Server exception: " + e.toString());
-		e.printStackTrace();
+			System.err.println("Server exception: " + e.toString());
+			e.printStackTrace();
 	    }
-
-	// Set up TCP sockets.
-	try {
-	    rmCarSocket = new Socket(carSeed, carPort);
-	    rmFlightSocket = new Socket(flightSeed, flightPort);
-	    rmRoomSocket = new Socket(roomSeed, roomPort);
-	    
-	    System.err.println("Server ready");
-	}
-	catch (Exception e) {
-	    System.err.println("Server exception: " + e.toString());
-	    e.printStackTrace();
-	}
-/*
-	ToSeedsThread tst = new ToSeedsThread(toSeeds, obj);
-	tst.start();
-
-	try {
-	    ServerSocket ss = new ServerSocket(port);
-	    ObjectInputStream carIn = new ObjectInputStream(rmCarSocket.getInputStream());
-	    ObjectOutputStream carOut = new ObjectOutputStream(rmCarSocket.getOutputStream());
-	    ObjectInputStream flightIn = new ObjectInputStream(rmFlightSocket.getInputStream());
-	    ObjectOutputStream flightOut = new ObjectOutputStream(rmFlightSocket.getOutputStream());
-	    ObjectInputStream roomIn = new ObjectInputStream(rmRoomSocket.getInputStream());
-	    ObjectOutputStream roomOut = new ObjectOutputStream(rmRoomSocket.getOutputStream());
-	    while (true) {
-		new FleshTCPThread(toSeeds, ss.accept(), carIn, carOut, flightIn, flightOut, roomIn, roomOut);
-	    }
-	}
-	catch (Exception e) {
-	    e.printStackTrace();
-	}
-*/
-	// Create and install a security manager
-	//        if (System.getSecurityManager() == null) {
-	//          System.setSecurityManager(new RMISecurityManager());
-	//        }
-	//        try {
-	//               HavocadoFlesh obj = new HavocadoFlesh();
-	//               Naming.rebind("rmi://" + server + "/RM", obj);
-	//               System.out.println("RM bound");
-	//        } 
-	//        catch (Exception e) {
-	//               System.out.println("RM not bound:" + e);
-	//        }
     }
 
     
     public HavocadoFlesh() throws RemoteException {
     }
-
-
-    // Reads a data item
-    public RMItem readData( int id, String key )
-    {
-	synchronized(m_itemHT){
-	    return (RMItem) m_itemHT.get(key);
-	}
-    }
-
-    // Writes a data item
-    public void writeData( int id, String key, RMItem value )
-    {
-	synchronized(m_itemHT){
-	    m_itemHT.put(key, value);
-	}
-    }
-	
-    // Remove the item out of storage
-    public RMItem removeData(int id, String key){
-	synchronized(m_itemHT){
-	    return (RMItem)m_itemHT.remove(key);
-	}
-    }
-	
-	
-    // deletes the entire item
-    public boolean deleteItem(int id, String key)
-    {
-	Trace.info("RM::deleteItem(" + id + ", " + key + ") called" );
-	ReservableItem curObj = (ReservableItem) readData( id, key );
-	// Check if there is such an item in the storage
-	if( curObj == null ) {
-	    Trace.warn("RM::deleteItem(" + id + ", " + key + ") failed--item doesn't exist" );
-	    return false;
-	} else {
-	    if(curObj.getReserved()==0){
-		removeData(id, curObj.getKey());
-		Trace.info("RM::deleteItem(" + id + ", " + key + ") item deleted" );
-		return true;
-	    }
-	    else{
-		Trace.info("RM::deleteItem(" + id + ", " + key + ") item can't be deleted because some customers reserved it" );
-		return false;
-	    }
-	} // if
-    }
-	
-
-    // query the number of available seats/rooms/cars
-    public int queryNum(int id, String key) {
-	Trace.info("RM::queryNum(" + id + ", " + key + ") called" );
-	ReservableItem curObj = (ReservableItem) readData( id, key);
-	int value = 0;  
-	if( curObj != null ) {
-	    value = curObj.getCount();
-	} // else
-	Trace.info("RM::queryNum(" + id + ", " + key + ") returns count=" + value);
-	return value;
-    }	
-	
-    // query the price of an item
-    public int queryPrice(int id, String key){
-	Trace.info("RM::queryCarsPrice(" + id + ", " + key + ") called" );
-	ReservableItem curObj = (ReservableItem) readData( id, key);
-	int value = 0; 
-	if( curObj != null ) {
-	    value = curObj.getPrice();
-	} // else
-	Trace.info("RM::queryCarsPrice(" + id + ", " + key + ") returns cost=$" + value );
-	return value;		
-    }
-	
-    // reserve an item
-    public boolean reserveItem(int id, int customerID, String key, String location){
-	Trace.info("RM::reserveItem( " + id + ", customer=" + customerID + ", " +key+ ", "+location+" ) called" );		
-	// Read customer object if it exists (and read lock it)
-	Customer cust = (Customer) readData( id, Customer.getKey(customerID) );		
-	if( cust == null ) {
-	    Trace.warn("RM::reserveCar( " + id + ", " + customerID + ", " + key + ", "+location+")  failed--customer doesn't exist" );
-	    return false;
-	} 
-		
-	// check if the item is available
-	ReservableItem item = (ReservableItem)readData(id, key);
-	if(item==null){
-	    Trace.warn("RM::reserveItem( " + id + ", " + customerID + ", " + key+", " +location+") failed--item doesn't exist" );
-	    return false;
-	}else if(item.getCount()==0){
-	    Trace.warn("RM::reserveItem( " + id + ", " + customerID + ", " + key+", " + location+") failed--No more items" );
-	    return false;
-	}else{			
-	    cust.reserve( key, location, item.getPrice());		
-	    writeData( id, cust.getKey(), cust );
-			
-	    // decrease the number of available items in the storage
-	    item.setCount(item.getCount() - 1);
-	    item.setReserved(item.getReserved()+1);
-			
-	    Trace.info("RM::reserveItem( " + id + ", " + customerID + ", " + key + ", " +location+") succeeded" );
-	    return true;
-	}		
-    }
-
 
     // Create a new flight, or add seats to existing flight
     //  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
@@ -253,7 +103,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	AddFlightRMICommand af = new AddFlightRMICommand(rmFlights, id, flightNum, flightSeats, flightPrice);
-	toSeeds.add(af);
+	// TODO: toSeeds.add(af);
 	af.waitFor();
 	if (af.error())
 	    throw new RemoteException();
@@ -266,7 +116,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	DeleteFlightRMICommand df = new DeleteFlightRMICommand(rmFlights, id, flightNum);
-	toSeeds.add(df);
+	// TODO: toSeeds.add(df);
 	df.waitFor();
 	if (df.error())
 	    throw new RemoteException();
@@ -281,7 +131,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	AddRoomsRMICommand ar = new AddRoomsRMICommand(rmRooms, id, location, count, price);
-	toSeeds.add(ar);
+	// TODO: toSeeds.add(ar);
 	ar.waitFor();
 	if (ar.error())
 	    throw new RemoteException();
@@ -293,7 +143,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(rmRooms, id, location);
-	toSeeds.add(dr);
+	// TODO: toSeeds.add(dr);
 	dr.waitFor();
 	if (dr.error())
 	    throw new RemoteException();
@@ -307,7 +157,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	AddCarsRMICommand ac = new AddCarsRMICommand(rmCars, id, location, count, price);
-	toSeeds.add(ac);
+	// TODO: toSeeds.add(ac);
 	ac.waitFor();
 	if (ac.error())
 	    throw new RemoteException();
@@ -320,7 +170,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	DeleteCarsRMICommand dc = new DeleteCarsRMICommand(rmCars, id, location);
-	toSeeds.add(dc);
+	// TODO: toSeeds.add(dc);
 	dc.waitFor();
 	if (dc.error())
 	    throw new RemoteException();
@@ -334,7 +184,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
-	toSeeds.add(qf);
+	// TODO: toSeeds.add(qf);
 	qf.waitFor();
 	if (qf.error())
 	    throw new RemoteException();
@@ -360,7 +210,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFlights, id, flightNum);
-	toSeeds.add(qfp);
+	// TODO: toSeeds.add(qfp);
 	qfp.waitFor();
 	if (qfp.error())
 	    throw new RemoteException();
@@ -373,7 +223,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
-	toSeeds.add(qr);
+	// TODO: toSeeds.add(qr);
 	qr.waitFor();
 	if (qr.error())
 	    throw new RemoteException();
@@ -388,7 +238,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
-	toSeeds.add(qrp);
+	// TODO: toSeeds.add(qrp);
 	qrp.waitFor();
 	if (qrp.error())
 	    throw new RemoteException();
@@ -401,7 +251,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
-	toSeeds.add(qc);
+	// TODO: toSeeds.add(qc);
 	qc.waitFor();
 	if (qc.error())
 	    throw new RemoteException();
@@ -414,7 +264,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
-	toSeeds.add(qcp);
+	// TODO: toSeeds.add(qcp);
 	qcp.waitFor();
 	if (qcp.error())
 	    throw new RemoteException();
@@ -426,7 +276,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
-	toSeeds.add(qci);
+	// TODO: toSeeds.add(qci);
 	qci.waitFor();
 	if (qci.error())
 	    throw new RemoteException();
@@ -443,7 +293,7 @@ public class HavocadoFlesh
 				    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 				    String.valueOf( Math.round( Math.random() * 100 + 1 )));
 	NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, rid);
-	toSeeds.add(nc);
+	// TODO: toSeeds.add(nc);
 	nc.waitFor();
 	if (nc.error())
 	    throw new RemoteException();
@@ -455,7 +305,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
-	toSeeds.add(ncwi);
+	// TODO: toSeeds.add(ncwi);
 	ncwi.waitFor();
 	if (ncwi.error())
 	    throw new RemoteException();
@@ -468,7 +318,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
-	toSeeds.add(dc);
+	// TODO: toSeeds.add(dc);
 	dc.waitFor();
 	if(dc.error())
 	    throw new RemoteException();
@@ -501,7 +351,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
-	toSeeds.add(rc);
+	// TODO: toSeeds.add(rc);
 	rc.waitFor();
 	if (rc.error())
 	    throw new RemoteException();
@@ -514,7 +364,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
-	toSeeds.add(rr);
+	// TODO: toSeeds.add(rr);
 	rr.waitFor();
 	if (rr.error())
 	    throw new RemoteException();
@@ -525,7 +375,7 @@ public class HavocadoFlesh
 	throws RemoteException
     {
 	ReserveFlightRMICommand rf = new ReserveFlightRMICommand(rmFlights, id, customerID, flightNum);
-	toSeeds.add(rf);
+	// TODO: toSeeds.add(rf);
 	rf.waitFor();
 	if (rf.error())
 	    throw new RemoteException();
@@ -536,7 +386,7 @@ public class HavocadoFlesh
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
 	throws RemoteException {
 	ItineraryRMICommand i = new ItineraryRMICommand(rmCars, rmFlights, rmRooms, id, customer, flightNumbers, location, Car, Room);
-	toSeeds.add(i);
+	// TODO: toSeeds.add(i);
 	i.waitFor();
 	if (i.error())
 	    throw new RemoteException();

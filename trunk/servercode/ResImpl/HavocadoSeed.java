@@ -27,27 +27,18 @@ public class HavocadoSeed
 
 	public static void main(String args[]) {
         // Figure out where server is running
-        String server = "localhost";
-	String name = "";
-	int port = 11111;
+        String name = "";
 
-         if (args.length == 2) {
-	     //             server = server + ":" + args[0];
-	     name = args[0];
-	     try {
-		 port = Integer.parseInt(args[1]);
-	     }
-	     catch (Exception e) {
-		 e.printStackTrace();
-	     }
-         } else if (args.length != 0 &&  args.length != 1) {
-             System.err.println ("Wrong usage");
-             System.out.println("Usage: java ResImpl.HavocadoSeed [port]");
-             System.exit(1);
-         }
-		 
-		 try 
-		 {
+        if (args.length == 1) {
+        	name = args[0];
+        } else if (args.length != 1) {
+        	System.err.println ("Wrong usage");
+        	System.out.println("Usage: java ResImpl.HavocadoSeed [port]");
+            System.exit(1);
+        }
+		
+		try 
+		{
 			// create a new Server object
 			HavocadoSeed obj = new HavocadoSeed();
 			// dynamically generate the stub (client proxy)
@@ -56,10 +47,6 @@ public class HavocadoSeed
 			// Bind the remote object's stub in the registry
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind(name, rm);
-/*
-			ServerSocket ss = new ServerSocket(port);
-			new SeedTCPThread(ss.accept(), obj);
-*/
 
 			System.err.println("Server ready");
 		} 
@@ -501,26 +488,26 @@ public class HavocadoSeed
 
 
 	public void abort(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-		// TODO Auto-generated method stub
-		
+		// do nothing.
 	}
 
 
 	public boolean commit(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-		// TODO Auto-generated method stub
-		return false;
+		// do nothing.
+		return true;
 	}
 
 
 	public boolean shutdown(String server) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		// shut the resource manager down, and disregard the string.
+		System.exit(1);
+		return true;
 	}
 
 
 	public int start() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+		// do nothing.
+		return -1;
 	}
 
 }
