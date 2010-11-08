@@ -25,4 +25,9 @@ public class QueryCarsPriceRMICommand extends AbstractRMICommand {
   public void undo() {
 	  // TODO: undo this operation.
   }
+
+	@Override
+	public RequiredLock getRequiredLock() {
+		return RequiredLock.READ;
+	}
 }
