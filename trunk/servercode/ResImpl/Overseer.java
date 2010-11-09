@@ -82,7 +82,7 @@ public class Overseer extends Thread{
 		// Check validity of tId.
 		if (t == null) {
 			if (abortedIds.contains(i))
-				throw new TransactionAbortedException();
+				return false;
 			else
 				throw new InvalidTransactionException();
 		}
