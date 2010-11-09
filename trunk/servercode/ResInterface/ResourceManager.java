@@ -133,11 +133,17 @@ public interface ResourceManager extends Remote
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location, boolean Car, boolean Room)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException; 
     
-    public void unreserveRoom(int id, int customer, String locationd) throws RemoteException, TransactionAbortedException, InvalidTransactionException;
+    public void unreserveRoom(int id, int customer, String locationd) throws RemoteException;
     
-    public void unreserveCar(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException;
+    public void unreserveCar(int id, int customer, String location) throws RemoteException;
     
-    public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException, TransactionAbortedException, InvalidTransactionException;
+    public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException;
+    
+    public void setCars(int id, String location, int count, int price) throws RemoteException;
+    
+    public void setRooms(int id, String location, int count, int price) throws RemoteException;
+    
+    public void setFlight(int id, int flightNum, int count, int price) throws RemoteException;
     
     /**
      * Start a transaction.
