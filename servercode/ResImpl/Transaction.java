@@ -18,8 +18,6 @@ public class Transaction {
 	/** A reference to the lock manager. */
 	private LockManager lockManager;
 	
-	
-	
 	/**
 	 * Creates a new transaction with the given ID.
 	 * @param lockManager A reference to the lock manager
