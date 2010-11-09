@@ -19,7 +19,7 @@ public class QueryRoomsPriceRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    price = rm.queryRoomsPrice(id, location);
+    price = rm.queryRoomsPrice(id, location, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

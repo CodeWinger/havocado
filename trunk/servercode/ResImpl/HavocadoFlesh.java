@@ -95,7 +95,7 @@ public class HavocadoFlesh
 
     // Create a new flight, or add seats to existing flight
     //  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
-    public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
+    public ReturnTuple<Boolean> addFlight(int id, int flightNum, int flightSeats, int flightPrice, Timestamp timestamp)
 	throws RemoteException
     {
 	AddFlightRMICommand af = new AddFlightRMICommand(rmFlights, id, flightNum, flightSeats, flightPrice);
@@ -103,12 +103,12 @@ public class HavocadoFlesh
 	af.waitFor();
 	if (af.error())
 	    throw new RemoteException();
-	return af.success;
+	return new ReturnTuple<Boolean>(af.success, null) ;
     }
 
 
 	
-    public boolean deleteFlight(int id, int flightNum)
+    public ReturnTuple<Boolean> deleteFlight(int id, int flightNum, Timestamp timestamp)
 	throws RemoteException
     {
 	DeleteFlightRMICommand df = new DeleteFlightRMICommand(rmFlights, id, flightNum);
@@ -116,14 +116,14 @@ public class HavocadoFlesh
 	df.waitFor();
 	if (df.error())
 	    throw new RemoteException();
-	return df.success;
+	return new ReturnTuple<Boolean>(df.success, timestamp);  // TODO: TIMESTAMP LOGIC.
     }
 
 
 
     // Create a new room location or add rooms to an existing location
     //  NOTE: if price <= 0 and the room location already exists, it maintains its current price
-    public boolean addRooms(int id, String location, int count, int price)
+    public ReturnTuple<Boolean> addRooms(int id, String location, int count, int price, Timestamp timestamp)
 	throws RemoteException
     {
 	AddRoomsRMICommand ar = new AddRoomsRMICommand(rmRooms, id, location, count, price);
@@ -131,11 +131,11 @@ public class HavocadoFlesh
 	ar.waitFor();
 	if (ar.error())
 	    throw new RemoteException();
-	return ar.success;
+	return new ReturnTuple<Boolean>(ar.success, timestamp);  // TODO: TIMESTAMP LOGIC.
     }
 
     // Delete rooms from a location
-    public boolean deleteRooms(int id, String location)
+    public ReturnTuple<Boolean> deleteRooms(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(rmRooms, id, location);
@@ -143,13 +143,13 @@ public class HavocadoFlesh
 	dr.waitFor();
 	if (dr.error())
 	    throw new RemoteException();
-	return dr.success;
+	return new ReturnTuple<Boolean>(dr.success, timestamp); // TODO: TIMESTAMP LOGIC.
 		
     }
 
     // Create a new car location or add cars to an existing location
     //  NOTE: if price <= 0 and the location already exists, it maintains its current price
-    public boolean addCars(int id, String location, int count, int price)
+    public ReturnTuple<Boolean> addCars(int id, String location, int count, int price, Timestamp timestamp)
 	throws RemoteException
     {
 	AddCarsRMICommand ac = new AddCarsRMICommand(rmCars, id, location, count, price);
@@ -157,12 +157,12 @@ public class HavocadoFlesh
 	ac.waitFor();
 	if (ac.error())
 	    throw new RemoteException();
-	return ac.success;
+	return new ReturnTuple<Boolean>(ac.success, timestamp);  // TODO: TIMESTAMP LOGIC.
     }
 
 
     // Delete cars from a location
-    public boolean deleteCars(int id, String location)
+    public ReturnTuple<Boolean> deleteCars(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	DeleteCarsRMICommand dc = new DeleteCarsRMICommand(rmCars, id, location);
@@ -170,13 +170,13 @@ public class HavocadoFlesh
 	dc.waitFor();
 	if (dc.error())
 	    throw new RemoteException();
-	return dc.success;
+	return new ReturnTuple<Boolean>(dc.success, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
 
     // Returns the number of empty seats on this flight
-    public int queryFlight(int id, int flightNum)
+    public ReturnTuple<Integer> queryFlight(int id, int flightNum, Timestamp timestamp)
 	throws RemoteException
     {
 	QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
@@ -184,7 +184,7 @@ public class HavocadoFlesh
 	qf.waitFor();
 	if (qf.error())
 	    throw new RemoteException();
-	return qf.numSeats;
+	return new ReturnTuple<Integer>(qf.numSeats, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
     // Returns the number of reservations for this flight. 
@@ -202,7 +202,7 @@ public class HavocadoFlesh
 
 
     // Returns price of this flight
-    public int queryFlightPrice(int id, int flightNum )
+    public ReturnTuple<Integer> queryFlightPrice(int id, int flightNum, Timestamp timestamp )
 	throws RemoteException
     {
 	QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFlights, id, flightNum);
@@ -210,12 +210,12 @@ public class HavocadoFlesh
 	qfp.waitFor();
 	if (qfp.error())
 	    throw new RemoteException();
-	return qfp.price;
+	return new ReturnTuple<Integer>(qfp.price, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
     // Returns the number of rooms available at a location
-    public int queryRooms(int id, String location)
+    public ReturnTuple<Integer> queryRooms(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
@@ -223,14 +223,14 @@ public class HavocadoFlesh
 	qr.waitFor();
 	if (qr.error())
 	    throw new RemoteException();
-	return qr.numRooms;
+	return new ReturnTuple<Integer>(qr.numRooms, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
 	
 	
     // Returns room price at this location
-    public int queryRoomsPrice(int id, String location)
+    public ReturnTuple<Integer> queryRoomsPrice(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
@@ -238,12 +238,12 @@ public class HavocadoFlesh
 	qrp.waitFor();
 	if (qrp.error())
 	    throw new RemoteException();
-	return qrp.price;
+	return new ReturnTuple<Integer>(qrp.price, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
     // Returns the number of cars available at a location
-    public int queryCars(int id, String location)
+    public ReturnTuple<Integer> queryCars(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
@@ -251,12 +251,12 @@ public class HavocadoFlesh
 	qc.waitFor();
 	if (qc.error())
 	    throw new RemoteException();
-	return qc.numCars;
+	return new ReturnTuple<Integer>(qc.numCars, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
     // Returns price of cars at this location
-    public int queryCarsPrice(int id, String location)
+    public ReturnTuple<Integer> queryCarsPrice(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
@@ -264,11 +264,11 @@ public class HavocadoFlesh
 	qcp.waitFor();
 	if (qcp.error())
 	    throw new RemoteException();
-	return qcp.price;
+	return new ReturnTuple<Integer>(qcp.price, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
     // return a bill
-    public String queryCustomerInfo(int id, int customerID)
+    public ReturnTuple<String> queryCustomerInfo(int id, int customerID, Timestamp timestamp)
 	throws RemoteException
     {
 	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
@@ -276,13 +276,13 @@ public class HavocadoFlesh
 	qci.waitFor();
 	if (qci.error())
 	    throw new RemoteException();
-	return qci.customerInfo;
+	return new ReturnTuple<String>(qci.customerInfo, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
     // customer functions
     // new customer just returns a unique customer identifier
 	
-    public int newCustomer(int id)
+    public ReturnTuple<Integer> newCustomer(int id, Timestamp timestamp)
 	throws RemoteException
     {
 	int rid = Integer.parseInt( String.valueOf(id) +
@@ -293,11 +293,11 @@ public class HavocadoFlesh
 	nc.waitFor();
 	if (nc.error())
 	    throw new RemoteException();
-	return rid;
+	return new ReturnTuple<Integer>(rid, timestamp);  // TODO: TIMESTAMP LOGIC.
     }
 
     // I opted to pass in customerID instead. This makes testing easier
-    public boolean newCustomer(int id, int customerID )
+    public ReturnTuple<Boolean> newCustomer(int id, int customerID, Timestamp timestamp )
 	throws RemoteException
     {
 	NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
@@ -305,12 +305,12 @@ public class HavocadoFlesh
 	ncwi.waitFor();
 	if (ncwi.error())
 	    throw new RemoteException();
-	return ncwi.success;
+	return new ReturnTuple<Boolean>(ncwi.success, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
     // Deletes customer from the database. 
-    public boolean deleteCustomer(int id, int customerID)
+    public ReturnTuple<Boolean> deleteCustomer(int id, int customerID, Timestamp timestamp)
 	throws RemoteException
     {
 	DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
@@ -318,7 +318,7 @@ public class HavocadoFlesh
 	dc.waitFor();
 	if(dc.error())
 	    throw new RemoteException();
-	return dc.success;
+	return new ReturnTuple<Boolean>(dc.success, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
@@ -343,7 +343,7 @@ public class HavocadoFlesh
 
 	
     // Adds car reservation to this customer. 
-    public boolean reserveCar(int id, int customerID, String location)
+    public ReturnTuple<Boolean> reserveCar(int id, int customerID, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
@@ -351,12 +351,12 @@ public class HavocadoFlesh
 	rc.waitFor();
 	if (rc.error())
 	    throw new RemoteException();
-	return rc.success;
+	return new ReturnTuple<Boolean>(rc.success, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
     // Adds room reservation to this customer. 
-    public boolean reserveRoom(int id, int customerID, String location)
+    public ReturnTuple<Boolean> reserveRoom(int id, int customerID, String location, Timestamp timestamp)
 	throws RemoteException
     {
 	ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
@@ -364,10 +364,10 @@ public class HavocadoFlesh
 	rr.waitFor();
 	if (rr.error())
 	    throw new RemoteException();
-	return rr.success;
+	return new ReturnTuple<Boolean>(rr.success, timestamp); // TODO: TIMESTAMP LOGIC.
     }
     // Adds flight reservation to this customer.  
-    public boolean reserveFlight(int id, int customerID, int flightNum)
+    public ReturnTuple<Boolean> reserveFlight(int id, int customerID, int flightNum, Timestamp timestamp)
 	throws RemoteException
     {
 	ReserveFlightRMICommand rf = new ReserveFlightRMICommand(rmFlights, id, customerID, flightNum);
@@ -375,30 +375,30 @@ public class HavocadoFlesh
 	rf.waitFor();
 	if (rf.error())
 	    throw new RemoteException();
-	return rf.success;
+	return new ReturnTuple<Boolean>(rf.success, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 	
     /* reserve an itinerary */
-    public boolean itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room)
+    public ReturnTuple<Boolean> itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room, Timestamp timestamp)
 	throws RemoteException {
 	ItineraryRMICommand i = new ItineraryRMICommand(rmCars, rmFlights, rmRooms, id, customer, flightNumbers, location, Car, Room);
 	// TODO: toSeeds.add(i);
 	i.waitFor();
 	if (i.error())
 	    throw new RemoteException();
-	return i.success;
+	return new ReturnTuple<Boolean>(i.success, timestamp); // TODO: TIMESTAMP LOGIC.
     }
 
 
-	public void abort(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-		// TODO Auto-generated method stub
-		
+	public ReturnTuple<Object> abort(int id, Timestamp timestamp) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// TODO Abort the transaction!
+		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
-	public boolean commit(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+	public ReturnTuple<Boolean> commit(int id, Timestamp timestamp) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
 		// TODO Auto-generated method stub
-		return false;
+		return new ReturnTuple<Boolean>(false, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
@@ -408,39 +408,45 @@ public class HavocadoFlesh
 	}
 
 
-	public int start() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+	public ReturnTuple<Integer> start(Timestamp timestamp) throws RemoteException {
+		// TODO: call the transaction manager!
+		return new ReturnTuple<Integer>(0, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
-	public void unreserveCar(int id, int customer, String location) throws RemoteException {
+	public ReturnTuple<Object> unreserveCar(int id, int customer, String location, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
+		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
-	public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException {
+	public ReturnTuple<Object> unreserveFlight(int id, int customer, int flightNumber, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
+		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
-	public void unreserveRoom(int id, int customer, String locationd) throws RemoteException {
+	public ReturnTuple<Object> unreserveRoom(int id, int customer, String locationd, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
+		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
-	public void setCars(int id, String location, int count, int price) throws RemoteException {
+	public ReturnTuple<Object> setCars(int id, String location, int count, int price, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
+		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
-	public void setFlight(int id, int flightNum, int count, int price) throws RemoteException {
+	public ReturnTuple<Object> setFlight(int id, int flightNum, int count, int price, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
+		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 
-	public void setRooms(int id, String location, int count, int price) throws RemoteException {
+	public ReturnTuple<Object> setRooms(int id, String location, int count, int price, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
+		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
 	}
 
 }

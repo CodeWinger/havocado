@@ -27,7 +27,7 @@ public class AddCarsRMICommand extends AbstractRMICommand {
   
   public void doCommand() throws Exception {
 	  
-	  success = rm.addCars(id, location, numCars, price);
+	  success = rm.addCars(id, location, numCars, price, null).result;  // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

@@ -21,7 +21,7 @@ public class ReserveFlightRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    success = rm.reserveFlight(id, customer, flightNumber);
+    success = rm.reserveFlight(id, customer, flightNumber, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {
