@@ -1,9 +1,10 @@
 package ResImpl;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 
 import Commands.RMICommands.AbstractRMICommand;
+import exceptions.*;
 import LockManager.LockManager;
 
 public class Overseer extends Thread{
@@ -17,7 +18,7 @@ public class Overseer extends Thread{
 	 * A set of the currently active transactions. All methods that modify this
 	 * should be synchronized, since HashSets aren't.
 	 */
-	private HashSet<Transaction> currentTransactions;
+	private Hashtable<Integer, Transaction> currentTransactions;
 	
 	/** The IDs of the transactions that have been aborted. */
 	private HashSet<Integer> abortedIds;
@@ -25,18 +26,8 @@ public class Overseer extends Thread{
 	/** The next transaction id to be returned */
 	private int nextTId = 0;
 	
-	/** A mapping between transactions and their Ids. */
-	private HashMap<Integer, Transaction> transactionIdMap;
-	
 	/** A boolean that is used to kill the thread. */
 	private boolean alive = true;
-	
-	/*private void updateTTL(Transaction t) {
-		
-	}*/
-	//TODO: Add ids of expired and aborted transactions to abortedIds and check when executing commands for expiry.
-	//TODO: Throw exceptions for invalid transactions and expired transactions.
-	//TODO: Override hashcode in transaction 
 	
 	/**
 	 * Check each transaction and kills ones that have been inactive for
@@ -45,7 +36,7 @@ public class Overseer extends Thread{
 	public void run() {
 		while(alive) {
 			synchronized (this) {
-				for (Transaction t : currentTransactions) {
+				for (Transaction t : currentTransactions.values()) {
 					if (System.currentTimeMillis() - t.getTime() > timeout)
 						t.abort();
 				}
@@ -66,8 +57,7 @@ public class Overseer extends Thread{
 	public synchronized int createTransaction(LockManager lockManager) {
 		//TODO: Avoid tIds already in use
 		Transaction t = new Transaction(lockManager, nextTId);
-		currentTransactions.add(t);
-		transactionIdMap.put(new Integer(nextTId), t);
+		currentTransactions.put(new Integer(nextTId), t);
 		return nextTId++;
 	}
 	
@@ -78,9 +68,7 @@ public class Overseer extends Thread{
 	 */
 	private synchronized void deleteTransaction(int tId) {
 		Integer i = new Integer(tId);
-		Transaction t = transactionIdMap.get(i);
-		currentTransactions.remove(t);
-		transactionIdMap.remove(i);
+		currentTransactions.remove(i);
 	}
 	
 	/**
@@ -88,14 +76,17 @@ public class Overseer extends Thread{
 	 * @param tId The ID of the transaction
 	 * @return false if tId is invalid or if commit fails, true otherewise.
 	 */
-	public synchronized boolean commit(int tId) {
-		//TODO: Maybe add check that tId is valid.
+	public synchronized boolean commit(int tId) throws TransactionAbortedException, InvalidTransactionException {
 		Integer i = new Integer(tId);
+		Transaction t = currentTransactions.get(i);
 		// Check validity of tId.
-		if (!transactionIdMap.containsKey(i))
-			return false;
-		// Get transaction and commit.
-		Transaction t = transactionIdMap.get(i);
+		if (t == null) {
+			if (abortedIds.contains(i))
+				throw new TransactionAbortedException();
+			else
+				throw new InvalidTransactionException();
+		}
+		// Commit and delete transaction.
 		boolean result = t.commit();
 		deleteTransaction(tId);
 		return result;
@@ -105,9 +96,18 @@ public class Overseer extends Thread{
 	 * Aborts the transaction with tId.
 	 * @param tId The ID of the transaction to be aborted.
 	 */
-	public synchronized void abort(int tId) {
+	public synchronized void abort(int tId) throws TransactionAbortedException, InvalidTransactionException {
 		Integer i = new Integer(tId);
-		Transaction t = transactionIdMap.get(i);
+		Transaction t = currentTransactions.get(i);
+		// Check validity of tId.
+		if (t == null) {
+			if (abortedIds.contains(i))
+				throw new TransactionAbortedException();
+			else
+				throw new InvalidTransactionException();
+		}
+		// Abort and delete transaction.
+		abortedIds.add(i);
 		t.abort();
 		deleteTransaction(tId);
 		return;
@@ -119,12 +119,17 @@ public class Overseer extends Thread{
 	 * @param command A command to add to the transaction.
 	 * @return false if the ID is invalid, true otherwise.
 	 */
-	public synchronized boolean addCommandToTransaction(int tId, AbstractRMICommand command) {
+	public synchronized boolean addCommandToTransaction(int tId, AbstractRMICommand command) throws TransactionAbortedException, InvalidTransactionException {
 		Integer i = new Integer(tId);
+		Transaction t = currentTransactions.get(i);
 		// Check validity of tId.
-		if (!transactionIdMap.containsKey(i))
-			return false;
-		Transaction t = transactionIdMap.get(i);
+		if (t == null) {
+			if (abortedIds.contains(i))
+				throw new TransactionAbortedException();
+			else
+				throw new InvalidTransactionException();
+		}
+		// Add command and update transaction TTL.
 		t.addCommand(command);
 		t.setTime();
 		return true;
