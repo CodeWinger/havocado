@@ -122,7 +122,7 @@ public class client
 			flightNum = obj.getInt(arguments.elementAt(2));
 			flightSeats = obj.getInt(arguments.elementAt(3));
 			flightPrice = obj.getInt(arguments.elementAt(4));
-			if(rm.addFlight(Id,flightNum,flightSeats,flightPrice).result)
+			if(rm.addFlight(Id,flightNum,flightSeats,flightPrice, new Timestamp()).result)
 			    System.out.println("Flight added");
 			else
 			    System.out.println("Flight could not be added");
@@ -148,7 +148,7 @@ public class client
 			location = obj.getString(arguments.elementAt(2));
 			numCars = obj.getInt(arguments.elementAt(3));
 			price = obj.getInt(arguments.elementAt(4));
-			if(rm.addCars(Id,location,numCars,price).result)
+			if(rm.addCars(Id,location,numCars,price, new Timestamp()).result)
 			    System.out.println("Cars added");
 			else
 			    System.out.println("Cars could not be added");
@@ -174,7 +174,7 @@ public class client
 			location = obj.getString(arguments.elementAt(2));
 			numRooms = obj.getInt(arguments.elementAt(3));
 			price = obj.getInt(arguments.elementAt(4));
-			if(rm.addRooms(Id,location,numRooms,price).result)
+			if(rm.addRooms(Id,location,numRooms,price, new Timestamp()).result)
 			    System.out.println("Rooms added");
 			else
 			    System.out.println("Rooms could not be added");
@@ -194,7 +194,7 @@ public class client
 		    System.out.println("Adding a new Customer using id:"+arguments.elementAt(1));
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
-			int customer=rm.newCustomer(Id).result;
+			int customer=rm.newCustomer(Id, new Timestamp()).result;
 			System.out.println("new customer id:"+customer);
 		    }
 		    catch(Exception e){
@@ -214,7 +214,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			if(rm.deleteFlight(Id,flightNum).result)
+			if(rm.deleteFlight(Id,flightNum, new Timestamp()).result)
 			    System.out.println("Flight Deleted");
 			else
 			    System.out.println("Flight could not be deleted");
@@ -237,7 +237,7 @@ public class client
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
 			
-			if(rm.deleteCars(Id,location).result)
+			if(rm.deleteCars(Id,location, new Timestamp()).result)
 			    System.out.println("Cars Deleted");
 			else
 			    System.out.println("Cars could not be deleted");
@@ -259,7 +259,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			if(rm.deleteRooms(Id,location).result)
+			if(rm.deleteRooms(Id,location, new Timestamp()).result)
 			    System.out.println("Rooms Deleted");
 			else
 			    System.out.println("Rooms could not be deleted");
@@ -281,7 +281,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
-			if(rm.deleteCustomer(Id,customer).result)
+			if(rm.deleteCustomer(Id,customer, new Timestamp()).result)
 			    System.out.println("Customer Deleted");
 			else
 			    System.out.println("Customer could not be deleted");
@@ -303,7 +303,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			int seats=rm.queryFlight(Id,flightNum).result;
+			int seats=rm.queryFlight(Id,flightNum, new Timestamp()).result;
 			System.out.println("Number of seats available:"+seats);
 		    }
 		    catch(Exception e){
@@ -323,7 +323,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			numCars=rm.queryCars(Id,location).result;
+			numCars=rm.queryCars(Id,location, new Timestamp()).result;
 			System.out.println("number of Cars at this location:"+numCars);
 		    }
 		    catch(Exception e){
@@ -343,7 +343,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			numRooms=rm.queryRooms(Id,location).result;
+			numRooms=rm.queryRooms(Id,location, new Timestamp()).result;
 			System.out.println("number of Rooms at this location:"+numRooms);
 		    }
 		    catch(Exception e){
@@ -363,7 +363,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
-			String bill=rm.queryCustomerInfo(Id,customer).result;
+			String bill=rm.queryCustomerInfo(Id,customer, new Timestamp()).result;
 			System.out.println("Customer info:"+bill);
 		    }
 		    catch(Exception e){
@@ -383,7 +383,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			price=rm.queryFlightPrice(Id,flightNum).result;
+			price=rm.queryFlightPrice(Id,flightNum, new Timestamp()).result;
 			System.out.println("Price of a seat:"+price);
 		    }
 		    catch(Exception e){
@@ -403,7 +403,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			price=rm.queryCarsPrice(Id,location).result;
+			price=rm.queryCarsPrice(Id,location, new Timestamp()).result;
 			System.out.println("Price of a car at this location:"+price);
 		    }
 		    catch(Exception e){
@@ -423,7 +423,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			price=rm.queryRoomsPrice(Id,location).result;
+			price=rm.queryRoomsPrice(Id,location, new Timestamp()).result;
 			System.out.println("Price of Rooms at this location:"+price);
 		    }
 		    catch(Exception e){
@@ -445,7 +445,7 @@ public class client
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
 			flightNum = obj.getInt(arguments.elementAt(3));
-			if(rm.reserveFlight(Id,customer,flightNum).result)
+			if(rm.reserveFlight(Id,customer,flightNum, new Timestamp()).result)
 			    System.out.println("Flight Reserved");
 			else
 			    System.out.println("Flight could not be reserved.");
@@ -471,7 +471,7 @@ public class client
 			int customer = obj.getInt(arguments.elementAt(2));
 			location = obj.getString(arguments.elementAt(3));
 			
-			if(rm.reserveCar(Id,customer,location).result)
+			if(rm.reserveCar(Id,customer,location, new Timestamp()).result)
 			    System.out.println("Car Reserved");
 			else
 			    System.out.println("Car could not be reserved.");
@@ -496,7 +496,7 @@ public class client
 			int customer = obj.getInt(arguments.elementAt(2));
 			location = obj.getString(arguments.elementAt(3));
 			
-			if(rm.reserveRoom(Id,customer,location).result)
+			if(rm.reserveRoom(Id,customer,location, new Timestamp()).result)
 			    System.out.println("Room Reserved");
 			else
 			    System.out.println("Room could not be reserved.");
@@ -530,7 +530,7 @@ public class client
 			Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
 			Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
 			
-			if(rm.itinerary(Id,customer,flightNumbers,location,Car,Room).result)
+			if(rm.itinerary(Id,customer,flightNumbers,location,Car,Room, new Timestamp()).result)
 			    System.out.println("Itinerary Reserved");
 			else
 			    System.out.println("Itinerary could not be reserved.");
@@ -560,7 +560,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			Cid = obj.getInt(arguments.elementAt(2));
-			boolean customer=rm.newCustomer(Id,Cid).result;
+			boolean customer=rm.newCustomer(Id,Cid, new Timestamp()).result;
 			System.out.println("new customer id:"+Cid);
 		    }
 		    catch(Exception e){
@@ -593,7 +593,7 @@ public class client
 			}
 			System.out.println("Starting a new transaction");
 			try {
-				int transactionID = rm.start().result;
+				int transactionID = rm.start(new Timestamp()).result;
 				System.out.println("New transaction id:"+transactionID);
 			}
 			catch(Exception e) {
@@ -611,7 +611,7 @@ public class client
 			System.out.println("Commiting transaction with ID: "+arguments.elementAt(1));
 			try {
 				Id = obj.getInt(arguments.elementAt(1));
-				boolean success = rm.commit(Id).result;
+				boolean success = rm.commit(Id, new Timestamp()).result;
 				if (success)
 					System.out.println("Transaction commited!");
 				else
@@ -638,7 +638,7 @@ public class client
 			System.out.println("Aborting transaction with ID: "+arguments.elementAt(1));
 			try {
 				Id = obj.getInt(arguments.elementAt(1));
-				rm.abort(Id);
+				rm.abort(Id, new Timestamp());
 				System.out.println("Transaction aborted!");
 			}
 			catch(TransactionAbortedException tae) {
@@ -660,7 +660,11 @@ public class client
 				break;
 			}
 			System.out.println("Running script: "+arguments.elementAt(1));
-			obj.runScript(obj.getString(arguments.elementAt(1)));
+			try {
+				obj.runScript(obj.getString(arguments.elementAt(1)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		    
 		default:
 		    System.out.println("The interface does not support this command.");
@@ -683,16 +687,18 @@ public class client
 	    int numCars;
 	    String location;
 	    String shutdownServer;
-	    ScriptLogger logger = new ScriptLogger(filename);
+	    ScriptLogger logger = null;
 	    
 	    BufferedReader scriptFile;
 	    
 	    try {
+	    	logger = new ScriptLogger(filename);
 	    	scriptFile = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
 	    }
 	    catch (FileNotFoundException fnfe) {
 	    	System.out.println("Not a valid script file.");
-	    	logger.stop();
+	    	if (logger != null)
+	    		logger.stop();
 	    	return;
 	    }
 
@@ -724,7 +730,7 @@ public class client
 			flightNum = getInt(arguments.elementAt(2));
 			flightSeats = getInt(arguments.elementAt(3));
 			flightPrice = getInt(arguments.elementAt(4));
-			logger.log(rm.addFlight(Id,flightNum,flightSeats,flightPrice).timestamp);
+			logger.log(rm.addFlight(Id,flightNum,flightSeats,flightPrice, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -743,7 +749,7 @@ public class client
 			location = getString(arguments.elementAt(2));
 			numCars = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			logger.log(rm.addCars(Id,location,numCars,price).timestamp);
+			logger.log(rm.addCars(Id,location,numCars,price, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -762,7 +768,7 @@ public class client
 			location = getString(arguments.elementAt(2));
 			numRooms = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			logger.log(rm.addRooms(Id,location,numRooms,price).timestamp);
+			logger.log(rm.addRooms(Id,location,numRooms,price, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -778,7 +784,7 @@ public class client
 		    }
 		    try{
 			Id = getInt(arguments.elementAt(1));
-			logger.log(rm.newCustomer(Id).timestamp);
+			logger.log(rm.newCustomer(Id, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -795,7 +801,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			logger.log(rm.deleteFlight(Id,flightNum).timestamp);
+			logger.log(rm.deleteFlight(Id,flightNum, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -813,7 +819,7 @@ public class client
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
 			
-			logger.log(rm.deleteCars(Id,location).timestamp);
+			logger.log(rm.deleteCars(Id,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -830,7 +836,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.deleteRooms(Id,location).timestamp);
+			logger.log(rm.deleteRooms(Id,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -847,7 +853,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			logger.log(rm.deleteCustomer(Id,customer).timestamp);
+			logger.log(rm.deleteCustomer(Id,customer, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -864,7 +870,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			logger.log(rm.queryFlight(Id,flightNum).timestamp);
+			logger.log(rm.queryFlight(Id,flightNum, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -881,7 +887,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryCars(Id,location).timestamp);
+			logger.log(rm.queryCars(Id,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -898,7 +904,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryRooms(Id,location).timestamp);
+			logger.log(rm.queryRooms(Id,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -915,7 +921,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			logger.log(rm.queryCustomerInfo(Id,customer).timestamp);
+			logger.log(rm.queryCustomerInfo(Id,customer, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -932,7 +938,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			logger.log(rm.queryFlightPrice(Id,flightNum).timestamp);
+			logger.log(rm.queryFlightPrice(Id,flightNum, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -949,7 +955,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryCarsPrice(Id,location).timestamp);
+			logger.log(rm.queryCarsPrice(Id,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -966,7 +972,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryRoomsPrice(Id,location).timestamp);
+			logger.log(rm.queryRoomsPrice(Id,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -984,7 +990,7 @@ public class client
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
 			flightNum = getInt(arguments.elementAt(3));
-			logger.log(rm.reserveFlight(Id,customer,flightNum).timestamp);
+			logger.log(rm.reserveFlight(Id,customer,flightNum, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1004,7 +1010,7 @@ public class client
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			logger.log(rm.reserveCar(Id,customer,location).timestamp);
+			logger.log(rm.reserveCar(Id,customer,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1023,7 +1029,7 @@ public class client
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			logger.log(rm.reserveRoom(Id,customer,location).timestamp);
+			logger.log(rm.reserveRoom(Id,customer,location, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1047,7 +1053,7 @@ public class client
 			Car = getBoolean(arguments.elementAt(arguments.size()-2));
 			Room = getBoolean(arguments.elementAt(arguments.size()-1));
 			
-			logger.log(rm.itinerary(Id,customer,flightNumbers,location,Car,Room).timestamp);
+			logger.log(rm.itinerary(Id,customer,flightNumbers,location,Car,Room, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1072,7 +1078,7 @@ public class client
 		    try{
 			Id = getInt(arguments.elementAt(1));
 			Cid = getInt(arguments.elementAt(2));
-			logger.log(rm.newCustomer(Id,Cid).timestamp);
+			logger.log(rm.newCustomer(Id,Cid, new Timestamp()).timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1086,8 +1092,7 @@ public class client
 				wrongNumber();
 				break;
 			}
-			try {
-				logger.log(rm.shutdown(getString(arguments.elementAt(1))).timestamp);
+			try {rm.shutdown(getString(arguments.elementAt(1)));
 			}
 			catch (Exception e) {
 				System.out.println("EXCEPTION:");
@@ -1102,7 +1107,7 @@ public class client
 				break;
 			}
 			try {
-				logger.log(rm.start().timestamp);
+				logger.log(rm.start(new Timestamp()).timestamp);
 			}
 			catch(Exception e) {
 				System.out.println("EXCEPTION:");
@@ -1118,7 +1123,7 @@ public class client
 			}
 			try {
 				Id = getInt(arguments.elementAt(1));
-				logger.log(rm.commit(Id).timestamp);
+				logger.log(rm.commit(Id, new Timestamp()).timestamp);
 			}
 			catch(TransactionAbortedException tae) {
 				System.out.println("Transaction previously aborted.");
@@ -1140,7 +1145,7 @@ public class client
 			}
 			try {
 				Id = getInt(arguments.elementAt(1));
-				logger.log(rm.abort(Id).timestamp);
+				logger.log(rm.abort(Id, new Timestamp()).timestamp);
 				System.out.println("Transaction aborted!");
 			}
 			catch(TransactionAbortedException tae) {
