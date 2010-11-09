@@ -1,4 +1,4 @@
-package ResImpl;
+package ResInterface;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
