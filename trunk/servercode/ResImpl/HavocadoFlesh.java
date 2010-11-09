@@ -413,4 +413,19 @@ public class HavocadoFlesh
 		return 0;
 	}
 
+
+	public void unreserveCar(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// DO NOTHING.
+	}
+
+
+	public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// DO NOTHING.
+	}
+
+
+	public void unreserveRoom(int id, int customer, String locationd) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		// DO NOTHING.
+	}
+
 }
