@@ -51,13 +51,13 @@ public class ItineraryRMICommand extends AbstractRMICommand {
     success = true;
     for(int i = 0; i < flightNumbers.size(); i++){
       int flightNum = Integer.parseInt((String) flightNumbers.elementAt(i));
-      success = success && flightRm.reserveFlight(id, customer, flightNum);
+      success = success && flightRm.reserveFlight(id, customer, flightNum, null).result;  // TODO: TIMESTAMP LOGIC.
     }
     if(car && success) {
-      success = success && carRm.reserveCar(id, customer, location);
+      success = success && carRm.reserveCar(id, customer, location, null).result; // TODO: TIMESTAMP LOGIC.
     }
     if(room && success) {
-      success = success && roomRm.reserveRoom(id, customer, location);
+      success = success && roomRm.reserveRoom(id, customer, location, null).result; // TODO: TIMESTAMP LOGIC.
     }
   }
   

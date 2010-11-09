@@ -19,7 +19,7 @@ public class DeleteCarsRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    success = rm.deleteCars(id, location);
+    success = rm.deleteCars(id, location, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

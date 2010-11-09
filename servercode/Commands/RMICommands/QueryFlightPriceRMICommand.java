@@ -18,7 +18,7 @@ public class QueryFlightPriceRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    price = rm.queryFlightPrice(id, flightNumber);
+    price = rm.queryFlightPrice(id, flightNumber, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

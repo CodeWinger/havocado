@@ -21,7 +21,7 @@ public class ReserveRoomRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    success = rm.reserveRoom(id, customer, location);
+    success = rm.reserveRoom(id, customer, location, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

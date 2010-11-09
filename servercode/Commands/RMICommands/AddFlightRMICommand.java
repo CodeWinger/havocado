@@ -24,12 +24,12 @@ public class AddFlightRMICommand extends AbstractRMICommand {
   
   public void doCommand() throws Exception {
     // Perform the command.
-    success = rm.addFlight(id, flightNum, flightSeats, flightPrice);
+    success = rm.addFlight(id, flightNum, flightSeats, flightPrice, null).result;
   }
   
   public void undo() {
 	  try {
-		  rm.deleteFlight(id, flightNum);
+		  rm.deleteFlight(id, flightNum, null);
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

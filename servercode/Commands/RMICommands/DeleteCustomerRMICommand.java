@@ -33,9 +33,9 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
   
   public void doCommand() throws Exception {
   		success = true;
-      success = success && carRm.deleteCustomer(id, customer);
-      success = success && flightRm.deleteCustomer(id, customer);
-      success = success && roomRm.deleteCustomer(id, customer);
+      success = success && carRm.deleteCustomer(id, customer, null).result;  // TODO: TIMESTAMP LOGIC.
+      success = success && flightRm.deleteCustomer(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
+      success = success && roomRm.deleteCustomer(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

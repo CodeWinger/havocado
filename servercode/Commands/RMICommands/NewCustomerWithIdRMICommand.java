@@ -33,9 +33,9 @@ public class NewCustomerWithIdRMICommand extends AbstractRMICommand {
   
   public void doCommand() throws Exception {
   		success = true;
-      success = success && carRm.newCustomer(id, cid);
-      success = success && flightRm.newCustomer(id, cid);
-      success = success && roomRm.newCustomer(id, cid);
+      success = success && carRm.newCustomer(id, cid, null).result;  // TODO: TIMESTAMP LOGIC.
+      success = success && flightRm.newCustomer(id, cid, null).result;  // TODO: TIMESTAMP LOGIC.
+      success = success && roomRm.newCustomer(id, cid, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

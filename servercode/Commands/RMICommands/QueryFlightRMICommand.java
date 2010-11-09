@@ -18,7 +18,7 @@ public class QueryFlightRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    numSeats = rm.queryFlight(id, flightNumber);
+    numSeats = rm.queryFlight(id, flightNumber, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

@@ -30,9 +30,9 @@ public class NewCustomerRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-      carRm.newCustomer(id);
-			roomRm.newCustomer(id);
-      customer = flightRm.newCustomer(id);
+      carRm.newCustomer(id, null);
+			roomRm.newCustomer(id, null);
+      customer = flightRm.newCustomer(id, null).result;  // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

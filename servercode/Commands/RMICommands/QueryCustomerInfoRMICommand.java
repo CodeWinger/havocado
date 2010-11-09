@@ -31,9 +31,9 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-  		String carCustomer = carRm.queryCustomerInfo(id, customer);
-      String flightCustomer = flightRm.queryCustomerInfo(id, customer);
-      String roomCustomer = roomRm.queryCustomerInfo(id, customer); 
+  		String carCustomer = carRm.queryCustomerInfo(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
+      String flightCustomer = flightRm.queryCustomerInfo(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
+      String roomCustomer = roomRm.queryCustomerInfo(id, customer, null).result;  // TODO: TIMESTAMP LOGIC.
 	    customerInfo = "Car: " + carCustomer + "\n" + "Room: " + roomCustomer + "\n" + "Flight: " + flightCustomer;
   }
   

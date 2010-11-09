@@ -21,7 +21,7 @@ public class ReserveCarRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    success = rm.reserveCar(id, customer, location);
+    success = rm.reserveCar(id, customer, location, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

@@ -19,7 +19,7 @@ public class DeleteRoomsRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    success = rm.deleteRooms(id, location);
+    success = rm.deleteRooms(id, location, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

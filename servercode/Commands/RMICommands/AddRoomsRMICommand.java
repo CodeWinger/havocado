@@ -23,12 +23,12 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    success = rm.addRooms(id, location, numRooms, price);
+    success = rm.addRooms(id, location, numRooms, price, null).result;
   }
   
   public void undo() {
 	  try {
-		  rm.deleteRooms(id, location);
+		  rm.deleteRooms(id, location, null);
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

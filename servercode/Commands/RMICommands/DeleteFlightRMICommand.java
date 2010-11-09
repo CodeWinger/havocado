@@ -20,7 +20,7 @@ public class DeleteFlightRMICommand extends AbstractRMICommand {
   
   public void doCommand() throws Exception {
     // Perform the command.
-    success = rm.deleteFlight(id, flightNum);
+    success = rm.deleteFlight(id, flightNum, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {

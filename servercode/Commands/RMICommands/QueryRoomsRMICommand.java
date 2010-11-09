@@ -19,7 +19,7 @@ public class QueryRoomsRMICommand extends AbstractRMICommand {
   }
   
   public void doCommand() throws Exception {
-    numRooms = rm.queryRooms(id, location);
+    numRooms = rm.queryRooms(id, location, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {
