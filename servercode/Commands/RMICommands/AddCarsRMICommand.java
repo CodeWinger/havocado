@@ -22,13 +22,19 @@ public class AddCarsRMICommand extends AbstractRMICommand {
     success = false;
   }
   
+  private int previousNumCars;
+  private int previousPrice;
+  
   public void doCommand() throws Exception {
-    success = rm.addCars(id, location, numCars, price);
+	  
+	  success = rm.addCars(id, location, numCars, price);
   }
   
   public void undo() {
 	  try {
-		  rm.deleteCars(id, location);
+		  // I want to revert back to how many cars there were before, with the previous price.
+		  // step 1: delete the cars that I added.
+		  // step 2: set the price back to the previous price.
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

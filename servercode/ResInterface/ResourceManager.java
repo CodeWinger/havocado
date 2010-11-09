@@ -133,6 +133,12 @@ public interface ResourceManager extends Remote
     public boolean itinerary(int id,int customer,Vector flightNumbers,String location, boolean Car, boolean Room)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException; 
     
+    public void unreserveRoom(int id, int customer, String locationd) throws RemoteException, TransactionAbortedException, InvalidTransactionException;
+    
+    public void unreserveCar(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException;
+    
+    public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException, TransactionAbortedException, InvalidTransactionException;
+    
     /**
      * Start a transaction.
      * @return an integer representing the new transaction ID.
@@ -167,5 +173,4 @@ public interface ResourceManager extends Remote
      */
     public boolean shutdown(String server) throws RemoteException;
     
-    //TODO: MAKE SURE WE HAVE A WAY TO EDIT RESERVATIONS ON THE RESOURCE MANAGER'S SIDE.
 }

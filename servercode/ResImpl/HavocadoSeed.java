@@ -121,6 +121,24 @@ public class HavocadoSeed
 		} // if
 	}
 	
+	protected void editNum(int id, String key, int qty) {
+		ReservableItem curObj = (ReservableItem) readData(id, key);
+		if(curObj == null) {
+			// object doesn't exist.
+		} else {
+			curObj.setCount(qty);
+		}
+	}
+	
+	protected void editPrice(int id, String key, int price) {
+		ReservableItem curObj = (ReservableItem) readData(id, key);
+		if(curObj == null) {
+			// object doesn't exist.
+		} else {
+			curObj.setPrice(price);
+		}
+	}
+	
 
 	// query the number of available seats/rooms/cars
 	protected int queryNum(int id, String key) {
@@ -177,6 +195,40 @@ public class HavocadoSeed
 		}		
 	}
 	
+	/**
+	 * Unreserve an item which has previously been reserved.
+	 * @param id
+	 * @param customerID
+	 * @param key
+	 * @param location
+	 * @return
+	 */
+	protected void unreserveItem(int id, int customerID, String key, String location) {
+		Customer cust = (Customer) readData(id, Customer.getKey(customerID));
+		if(cust == null) {
+			// we've got nothing to do.
+			return;
+		}
+		
+		ReservableItem item = (ReservableItem)readData(id,key);
+		if(item == null) {
+			// nothing to do again!
+			return;
+		} else if (item.getCount() == 0) {
+			// the item can't be un-reserved.
+			return;
+		} else {
+			cust.unreserve(key, location, item.getPrice());
+			writeData(id, cust.getKey(), cust);
+			
+			// increase the number of available items in the storage.
+			item.setCount(item.getCount() + 1);
+			item.setReserved(item.getReserved() - 1);
+			
+			return;
+		}
+	}
+	
 	// Create a new flight, or add seats to existing flight
 	//  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
 	public boolean addFlight(int id, int flightNum, int flightSeats, int flightPrice)
@@ -208,6 +260,16 @@ public class HavocadoSeed
 		throws RemoteException
 	{
 		return deleteItem(id, Flight.getKey(flightNum));
+	}
+	
+	public void setFlight(int id, int flightNum, int count, int price) throws RemoteException {
+		Flight curObj = (Flight) readData(id, Flight.getKey(flightNum));
+		if(curObj == null) {
+			// car doesn't exist. we're done here.
+		} else {
+			editNum(id, Flight.getKey(flightNum), count);
+			editPrice(id, Flight.getKey(flightNum), price);
+		}
 	}
 
 
@@ -244,6 +306,16 @@ public class HavocadoSeed
 		
 	}
 
+	public void setRooms(int id, String location, int count, int price) throws RemoteException {
+		Hotel curObj = (Hotel) readData(id, Hotel.getKey(location));
+		if(curObj == null) {
+			// car doesn't exist. we're done here.
+		} else {
+			editNum(id, Hotel.getKey(location), count);
+			editPrice(id, Hotel.getKey(location), price);
+		}
+	}
+	
 	// Create a new car location or add cars to an existing location
 	//  NOTE: if price <= 0 and the location already exists, it maintains its current price
 	public boolean addCars(int id, String location, int count, int price)
@@ -275,7 +347,16 @@ public class HavocadoSeed
 	{
 		return deleteItem(id, Car.getKey(location));
 	}
-
+	
+	public void setCars(int id, String location, int count, int price) throws RemoteException {
+		Car curObj = (Car) readData(id, Car.getKey(location));
+		if(curObj == null) {
+			// car doesn't exist. we're done here.
+		} else {
+			editNum(id, Car.getKey(location), count);
+			editPrice(id, Car.getKey(location), price);
+		}
+	}
 
 
 	// Returns the number of empty seats on this flight
@@ -473,6 +554,7 @@ public class HavocadoSeed
 	{
 		return reserveItem(id, customerID, Hotel.getKey(location), location);
 	}
+	
 	// Adds flight reservation to this customer.  
 	public boolean reserveFlight(int id, int customerID, int flightNum)
 		throws RemoteException
@@ -486,6 +568,20 @@ public class HavocadoSeed
     	return false;
     }
 
+	public void unreserveCar(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		unreserveItem(id, customer, Car.getKey(location), location);
+	}
+
+
+	public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		unreserveItem(id, customer, Flight.getKey(flightNumber), String.valueOf(flightNumber));
+	}
+
+
+	public void unreserveRoom(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+		unreserveItem(id, customer, Hotel.getKey(location), location);
+	}
+    
 
 	public void abort(int id) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
 		// do nothing.
