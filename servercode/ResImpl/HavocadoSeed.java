@@ -568,17 +568,17 @@ public class HavocadoSeed
     	return false;
     }
 
-	public void unreserveCar(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+	public void unreserveCar(int id, int customer, String location) throws RemoteException {
 		unreserveItem(id, customer, Car.getKey(location), location);
 	}
 
 
-	public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+	public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException {
 		unreserveItem(id, customer, Flight.getKey(flightNumber), String.valueOf(flightNumber));
 	}
 
 
-	public void unreserveRoom(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+	public void unreserveRoom(int id, int customer, String location) throws RemoteException {
 		unreserveItem(id, customer, Hotel.getKey(location), location);
 	}
     

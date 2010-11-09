@@ -414,17 +414,32 @@ public class HavocadoFlesh
 	}
 
 
-	public void unreserveCar(int id, int customer, String location) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+	public void unreserveCar(int id, int customer, String location) throws RemoteException {
 		// DO NOTHING.
 	}
 
 
-	public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+	public void unreserveFlight(int id, int customer, int flightNumber) throws RemoteException {
 		// DO NOTHING.
 	}
 
 
-	public void unreserveRoom(int id, int customer, String locationd) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
+	public void unreserveRoom(int id, int customer, String locationd) throws RemoteException {
+		// DO NOTHING.
+	}
+
+
+	public void setCars(int id, String location, int count, int price) throws RemoteException {
+		// DO NOTHING.
+	}
+
+
+	public void setFlight(int id, int flightNum, int count, int price) throws RemoteException {
+		// DO NOTHING.
+	}
+
+
+	public void setRooms(int id, String location, int count, int price) throws RemoteException {
 		// DO NOTHING.
 	}
 
