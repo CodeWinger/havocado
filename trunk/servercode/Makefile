@@ -1,40 +1,37 @@
-all: Commands.jar ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl
+all: ResInterface.jar
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi willy mimi
 
 many: cars flights rooms
 
-
-cars: ResImpl/HavocadoSeed.class
+cars: ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedCar
-flights: ResImpl/HavocadoSeed.class
+	
+flights: ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedFlight
 
-rooms: ResImpl/HavocadoSeed.class
+rooms: ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedRoom
 
-flesh: Commands.jar ResInterface.jar ResImpl/HavocadoFlesh.class
+flesh: ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi willy mimi
 
-Commands.jar:
-	javac Commands/*.java
-	jar cvf Commands.jar Commands/*.class
-	chmod 644 Commands.jar
-
-ResInterface.jar:
-	javac ResInterface/ResourceManager.java
+ResInterface.jar: lock resimpl
+	javac ResInterface/*.java
 	jar cvf ResInterface.jar ResInterface/*.class
+	chmod 644 LockManager/*.class
+	chmod 644 exceptions/*.class
 	chmod 644 ResImpl/*.class
 	chmod 644 ResInterface.jar
 	chmod 644 ResInterface/*.class
 
-ResImpl/ResourceManagerImpl.class:
-	javac ResImpl/ResourceManagerImpl.java
+resimpl: lock commands
+	javac ResImpl/*.java
 
-ResImpl/HavocadoFlesh.class: Commands.jar
-	javac ResImpl/HavocadoFlesh.java
+commands:
+	javac Commands/*.java Commands/RMICommands/*.java
 
-ResImpl/HavocadoSeed.class: Commands.jar
-	javac ResImpl/HavocadoSeed.java
+lock:
+	javac LockManager/*.java
 
 clean:
-	rm -rf ResImpl/*.class; rm -rf ResInterface/*.class; rm -f Commands.jar; rm -rf Commands/TCPCommands/*.class;
+	rm -rf ResImpl/*.class; rm -rf ResInterface/*.class; rm -f Commands.jar; rm -f ResInterface.jar; rm -rf Commands/TCPCommands/*.class;
