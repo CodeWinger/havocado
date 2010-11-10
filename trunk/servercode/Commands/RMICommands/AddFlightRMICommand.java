@@ -33,10 +33,12 @@ public class AddFlightRMICommand extends AbstractRMICommand {
   
   public void undo() {
 	  try {
-		  timestamp.stamp();
-		  ReturnTuple<Object> r = rm.setFlight(id, flightNum, previousQty, previousPrice, timestamp);
-		  r.timestamp.stamp();
-		  setTimestamp(r.timestamp);
+		  if(success.result) {
+			  timestamp.stamp();
+			  ReturnTuple<Object> r = rm.setFlight(id, flightNum, previousQty, previousPrice, timestamp);
+			  r.timestamp.stamp();
+			  setTimestamp(r.timestamp);
+		  }
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

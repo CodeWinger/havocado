@@ -1,6 +1,7 @@
 package Commands.RMICommands;
 
 import ResInterface.*;
+
 import java.util.Vector;
 
 public class ItineraryRMICommand extends AbstractRMICommand {
@@ -16,7 +17,7 @@ public class ItineraryRMICommand extends AbstractRMICommand {
   public boolean car;
   public boolean room;
   
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public ItineraryRMICommand(
 		ResourceManager pCarRm, 
@@ -43,26 +44,101 @@ public class ItineraryRMICommand extends AbstractRMICommand {
     car = pCar;
     room = pRoom;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
 
+  private Vector<Integer> reservedFlights = new Vector<Integer>();
+  private Vector<String> reservedCars = new Vector<String>();
+  private Vector<String> reservedRooms = new Vector<String>();
   public void doCommand() throws Exception {
-    // do the flights.
-    success = true;
-    for(int i = 0; i < flightNumbers.size(); i++){
-      int flightNum = Integer.parseInt((String) flightNumbers.elementAt(i));
-      success = success && flightRm.reserveFlight(id, customer, flightNum, null).result;  // TODO: TIMESTAMP LOGIC.
-    }
-    if(car && success) {
-      success = success && carRm.reserveCar(id, customer, location, null).result; // TODO: TIMESTAMP LOGIC.
-    }
-    if(room && success) {
-      success = success && roomRm.reserveRoom(id, customer, location, null).result; // TODO: TIMESTAMP LOGIC.
-    }
+	  timestamp.stamp();
+	  
+	  success.result = true;
+	  ReturnTuple<Boolean> temp;
+	
+	  for(int i = 0; i < flightNumbers.size(); i++){
+		  int flightNum = Integer.parseInt((String) flightNumbers.elementAt(i));
+	  	  temp = flightRm.reserveFlight(id, customer, flightNum, timestamp);
+	  	  setTimestamp(temp.timestamp);
+	  	  if(temp.result) {
+			  reservedFlights.add(flightNum);
+	  	  } else {
+	  		  success.result = false;
+	  		  break;
+		  }
+	  }
+	  
+	  if(car && success.result) {
+		  temp = carRm.reserveCar(id, customer, location, timestamp);
+		  setTimestamp(temp.timestamp);
+		  if(temp.result) {
+			  reservedCars.add(location);
+		  } else {
+			  success.result = false;
+		  }
+	  }
+	
+	  if(room && success.result) {
+		  temp = roomRm.reserveRoom(id, customer, location, timestamp);
+		  setTimestamp(temp.timestamp);
+		  if(temp.result) {
+			  reservedRooms.add(location);
+		  } else {
+			  success.result = false;
+		  }
+	  }
+	  
+	  // something awful happened.
+	  ReturnTuple<Object> r;
+	  if(success.result == false) {
+		  // unreserve the flights.
+		  for(Integer flightNum : reservedFlights) {
+			  r = flightRm.unreserveFlight(id, customer, flightNum, timestamp);
+			  setTimestamp(r.timestamp);
+		  }
+		  // unreserve the cars.
+		  for(String location : reservedCars) {
+			  r = carRm.unreserveCar(id, customer, location, timestamp);
+			  setTimestamp(r.timestamp);
+		  }
+		  // unreserve the rooms.
+		  for(String location: reservedRooms) {
+			  r = roomRm.unreserveRoom(id, customer, location, timestamp);
+			  setTimestamp(r.timestamp);
+		  }
+	  }
+	  
+	  timestamp.stamp();
+	  success.timestamp = timestamp;
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  if(success.result) {
+			  timestamp.stamp();
+			  
+			  ReturnTuple<Object> r;
+			  // unreserve the flights.
+			  for(Integer flightNum : reservedFlights) {
+				  r = flightRm.unreserveFlight(id, customer, flightNum, timestamp);
+				  setTimestamp(r.timestamp);
+			  }
+			  // unreserve the cars.
+			  for(String location : reservedCars) {
+				  r = carRm.unreserveCar(id, customer, location, timestamp);
+				  setTimestamp(r.timestamp);
+			  }
+			  // unreserve the rooms.
+			  for(String location: reservedRooms) {
+				  r = roomRm.unreserveRoom(id, customer, location, timestamp);
+				  setTimestamp(r.timestamp);
+			  }
+			  
+			  timestamp.stamp();
+		  }
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override

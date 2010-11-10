@@ -35,7 +35,7 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
   
   
   private ReturnTuple<Vector<String>> previousCarReservations;
-  private ReturnTuple<Vector<String>> previousFlightReservations;
+  private ReturnTuple<Vector<Integer>> previousFlightReservations;
   private ReturnTuple<Vector<String>> previousRoomReservations;
   public void doCommand() throws Exception {
 	  timestamp.stamp();
@@ -50,21 +50,48 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
       
       previousRoomReservations = roomRm.customerRoomReservations(id, customer, timestamp);
       ReturnTuple<Boolean> rr = roomRm.deleteCustomer(id, customer, timestamp);
-      rr.timestamp.stamp();
       setTimestamp(rr.timestamp);
       
       success.result = cr.result && fr.result && rr.result;
+      
+      timestamp.stamp();
+      success.timestamp = timestamp;
   }
   
   public void undo() {
 	  try {
-		  timestamp.stamp();
-		  
-		  ReturnTuple<Boolean> cr = carRm.newCustomer(id, customer, timestamp);
-		  
+		  if(success.result) {
+			  timestamp.stamp();
+			  
+			  ReturnTuple<Boolean> cr = carRm.newCustomer(id, customer, timestamp);
+			  setTimestamp(cr.timestamp);
+			  
+			  ReturnTuple<Boolean> fr = flightRm.newCustomer(id, customer, timestamp);
+			  setTimestamp(fr.timestamp);
+			  
+			  ReturnTuple<Boolean> rr = roomRm.newCustomer(id, customer, timestamp);
+			  setTimestamp(rr.timestamp);
+			  
+			  // re-reserve what was lost.
+			  ReturnTuple<Boolean> temp;
+			  for(String location : previousCarReservations.result){ 
+				  temp = carRm.reserveCar(id, customer, location, timestamp);
+				  setTimestamp(temp.timestamp);
+			  }
+			  for(Integer flightNum : previousFlightReservations.result) {
+				  temp = flightRm.reserveFlight(id, customer, flightNum, timestamp);
+				  setTimestamp(temp.timestamp);
+			  }
+			  for(String location : previousRoomReservations.result) {
+				  temp = roomRm.reserveRoom(id, customer, location, timestamp);
+				  setTimestamp(temp.timestamp);
+			  }
+			  
+			  timestamp.stamp();
+		  }
 		  
 	  } catch (Exception e) {
-		  
+		  e.printStackTrace();
 	  }
   }
 
