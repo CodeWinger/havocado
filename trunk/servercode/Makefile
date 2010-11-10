@@ -1,24 +1,23 @@
-all: Commands.jar ResInterface.jar ResImpl/ResourceManagerImpl.class
+all: Commands.jar ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.ResourceManagerImpl
 
 many: cars flights rooms
 
 
 cars: ResImpl/HavocadoSeed.class
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedCar 11111
-
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedCar
 flights: ResImpl/HavocadoSeed.class
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedFlight 22222
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedFlight
 
 rooms: ResImpl/HavocadoSeed.class
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedRoom 33333
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedRoom
 
 flesh: Commands.jar ResInterface.jar ResImpl/HavocadoFlesh.class
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh 11112 mimi
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi willy mimi
 
 Commands.jar:
-	javac Commands/*.java Commands/TCPCommands/*.java
-	jar cvf Commands.jar Commands/*.class Commands/TCPCommands/*.class
+	javac Commands/*.java
+	jar cvf Commands.jar Commands/*.class
 	chmod 644 Commands.jar
 
 ResInterface.jar:
