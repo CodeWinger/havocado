@@ -15,8 +15,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import exceptions.InvalidTransactionException;
-import exceptions.TransactionAbortedException;
 
 //public class HavocadoSeed extends java.rmi.server.UnicastRemoteObject
 public class HavocadoSeed
