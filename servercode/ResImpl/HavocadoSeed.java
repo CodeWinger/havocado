@@ -677,5 +677,59 @@ public class HavocadoSeed
 		// do nothing. Should never be called by middleware on resource manager.
 		return null;
 	}
+	
+	public ReturnTuple<Vector<String>> customerCarReservations(int id, int customer, Timestamp timestamp)
+	throws RemoteException {
+		timestamp.stamp();
+		Customer cust = (Customer) readData( id, Customer.getKey(customer) );
+		RMHashtable reservations = cust.getReservations();
+		Object key = null;
+		Vector<String> results = new Vector<String>();
+		for (Enumeration e = reservations.keys(); e.hasMoreElements(); ) {
+			key = e.nextElement();
+			ReservedItem item = (ReservedItem) reservations.get( key );
+			for (int i = 0; i < item.getCount(); i++) {
+				results.add(item.getLocation());
+			}
+		}
+		timestamp.stamp();
+		return new ReturnTuple<Vector<String>>(results, timestamp);
+	}
+	
+	public ReturnTuple<Vector<String>> customerRoomReservations(int id, int customer, Timestamp timestamp)
+	throws RemoteException {
+		timestamp.stamp();
+		Customer cust = (Customer) readData( id, Customer.getKey(customer) );
+		RMHashtable reservations = cust.getReservations();
+		Object key = null;
+		Vector<String> results = new Vector<String>();
+		for (Enumeration e = reservations.keys(); e.hasMoreElements(); ) {
+			key = e.nextElement();
+			ReservedItem item = (ReservedItem) reservations.get( key );
+			for (int i = 0; i < item.getCount(); i++) {
+				results.add(item.getLocation());
+			}
+		}
+		timestamp.stamp();
+		return new ReturnTuple<Vector<String>>(results, timestamp);
+	}
+	
+	public ReturnTuple<Vector<Integer>> customerFlightReservations(int id, int customer, Timestamp timestamp)
+	throws RemoteException {
+		timestamp.stamp();
+		Customer cust = (Customer) readData( id, Customer.getKey(customer) );
+		RMHashtable reservations = cust.getReservations();
+		Object key = null;
+		Vector<Integer> results = new Vector<Integer>();
+		for (Enumeration e = reservations.keys(); e.hasMoreElements(); ) {
+			key = e.nextElement();
+			ReservedItem item = (ReservedItem) reservations.get( key );
+			for (int i = 0; i < item.getCount(); i++) {
+				results.add(Integer.parseInt(item.getLocation()));
+			}
+		}
+		timestamp.stamp();
+		return new ReturnTuple<Vector<Integer>>(results, timestamp);
+	}
 
 }
