@@ -26,6 +26,10 @@ public abstract class AbstractRMICommand implements Command {
 	  timestamp = pTimestamp;
   }
   
+  protected void setTimestamp(Timestamp pTimestamp) {
+	  timestamp = pTimestamp;
+  }
+  
   public abstract int getRequiredLock();
   
   public abstract void doCommand() throws Exception;
