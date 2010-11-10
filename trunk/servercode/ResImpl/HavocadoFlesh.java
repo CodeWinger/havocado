@@ -117,6 +117,14 @@ public class HavocadoFlesh
 		result.timestamp.stamp();
 		throw new TransactionAbortedException(result.timestamp);
 	}
+	catch (TransactionAbortedException tae) {
+		tae.t = timestamp;
+		throw tae;
+	}
+	catch (InvalidTransactionException ite) {
+		ite.t = timestamp;
+		throw ite;
+	}
 	result.timestamp.stamp();
 	return result;
     }
@@ -143,6 +151,14 @@ public class HavocadoFlesh
 			overseer.abort(id);
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
+		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
 		}
 		result.timestamp.stamp();
 		return result;
@@ -173,13 +189,21 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
 
     // Delete rooms from a location
     public ReturnTuple<Boolean> deleteRooms(int id, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(rmRooms, id, location);
@@ -198,6 +222,14 @@ public class HavocadoFlesh
 			overseer.abort(id);
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
+		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
 		}
 		result.timestamp.stamp();
 		return result;
@@ -227,6 +259,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -242,7 +282,7 @@ public class HavocadoFlesh
 		ReturnTuple<Boolean> result = null;
 		try {
 			overseer.validTransaction(id);
-			lm.Lock(id, Car.getKey(location), ac.getRequiredLock());
+			lm.Lock(id, Car.getKey(location), dc.getRequiredLock());
 			dc.execute();
 			result = dc.success;
 			if (result.result)
@@ -254,6 +294,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -262,7 +310,7 @@ public class HavocadoFlesh
 
     // Returns the number of empty seats on this flight
     public ReturnTuple<Integer> queryFlight(int id, int flightNum, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
@@ -279,6 +327,14 @@ public class HavocadoFlesh
 			overseer.abort(id);
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
+		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
 		}
 		result.timestamp.stamp();
 		return result;
@@ -300,7 +356,7 @@ public class HavocadoFlesh
 
     // Returns price of this flight
     public ReturnTuple<Integer> queryFlightPrice(int id, int flightNum, Timestamp timestamp )
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFlights, id, flightNum);
@@ -318,6 +374,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -325,7 +389,7 @@ public class HavocadoFlesh
 
     // Returns the number of rooms available at a location
     public ReturnTuple<Integer> queryRooms(int id, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
@@ -343,6 +407,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -352,7 +424,7 @@ public class HavocadoFlesh
 	
     // Returns room price at this location
     public ReturnTuple<Integer> queryRoomsPrice(int id, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
@@ -370,6 +442,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -377,7 +457,7 @@ public class HavocadoFlesh
 
     // Returns the number of cars available at a location
     public ReturnTuple<Integer> queryCars(int id, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
@@ -395,6 +475,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -402,7 +490,7 @@ public class HavocadoFlesh
 
     // Returns price of cars at this location
     public ReturnTuple<Integer> queryCarsPrice(int id, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
 		QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
 		qcp.setTimestampObject(timestamp);
@@ -419,18 +507,26 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
 
     // return a bill
     public ReturnTuple<String> queryCustomerInfo(int id, int customerID, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     { //TODO: Fix customer locking system.
     	timestamp.stamp();
 		QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
 		qci.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
+		ReturnTuple<String> result = null;
 		try {
 			overseer.validTransaction(id);
 			lm.Lock(id, Customer.getKey(customerID), qci.getRequiredLock());
@@ -443,6 +539,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -451,7 +555,7 @@ public class HavocadoFlesh
     // new customer just returns a unique customer identifier
 	
     public ReturnTuple<Integer> newCustomer(int id, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		int rid = Integer.parseInt( String.valueOf(id) +
@@ -473,13 +577,21 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
 
     // I opted to pass in customerID instead. This makes testing easier
     public ReturnTuple<Boolean> newCustomer(int id, int customerID, Timestamp timestamp )
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
@@ -499,6 +611,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -506,7 +626,7 @@ public class HavocadoFlesh
 
     // Deletes customer from the database. 
     public ReturnTuple<Boolean> deleteCustomer(int id, int customerID, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
@@ -525,6 +645,14 @@ public class HavocadoFlesh
 			overseer.abort(id);
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
+		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
 		}
 		result.timestamp.stamp();
 		return result;
@@ -553,7 +681,7 @@ public class HavocadoFlesh
 	
     // Adds car reservation to this customer. 
     public ReturnTuple<Boolean> reserveCar(int id, int customerID, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
@@ -574,6 +702,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -581,7 +717,7 @@ public class HavocadoFlesh
 
     // Adds room reservation to this customer. 
     public ReturnTuple<Boolean> reserveRoom(int id, int customerID, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
@@ -602,6 +738,14 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
@@ -609,7 +753,7 @@ public class HavocadoFlesh
     
     // Adds flight reservation to this customer.  
     public ReturnTuple<Boolean> reserveFlight(int id, int customerID, int flightNum, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
 		ReserveFlightRMICommand rf = new ReserveFlightRMICommand(rmFlights, id, customerID, flightNum);
@@ -630,13 +774,21 @@ public class HavocadoFlesh
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
 		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
+		}
 		result.timestamp.stamp();
 		return result;
     }
 	
     /* reserve an itinerary */
     public ReturnTuple<Boolean> itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room, Timestamp timestamp)
-	throws RemoteException {
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException {
     	timestamp.stamp();
 		ItineraryRMICommand i = new ItineraryRMICommand(rmCars, rmFlights, rmRooms, id, customer, flightNumbers, location, Car, Room);
 		i.setTimestampObject(timestamp);
@@ -659,6 +811,14 @@ public class HavocadoFlesh
 			overseer.abort(id);
 			result.timestamp.stamp();
 			throw new TransactionAbortedException(result.timestamp);
+		}
+		catch (TransactionAbortedException tae) {
+			tae.t = timestamp;
+			throw tae;
+		}
+		catch (InvalidTransactionException ite) {
+			ite.t = timestamp;
+			throw ite;
 		}
 		result.timestamp.stamp();
 		return result;
