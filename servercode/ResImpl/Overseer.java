@@ -86,7 +86,7 @@ public class Overseer extends Thread{
 			if (abortedIds.contains(i))
 				return false;
 			else
-				throw new InvalidTransactionException();
+				throw new InvalidTransactionException(null);
 		}
 		// Commit and delete transaction.
 		boolean result = t.commit();
@@ -106,9 +106,9 @@ public class Overseer extends Thread{
 		// Check validity of tId.
 		if (t == null) {
 			if (abortedIds.contains(i))
-				throw new TransactionAbortedException();
+				throw new TransactionAbortedException(null);
 			else
-				throw new InvalidTransactionException();
+				throw new InvalidTransactionException(null);
 		}
 		// Abort and delete transaction.
 		abortedIds.add(i);
@@ -131,9 +131,9 @@ public class Overseer extends Thread{
 		// Check validity of tId.
 		if (t == null) {
 			if (abortedIds.contains(i))
-				throw new TransactionAbortedException();
+				throw new TransactionAbortedException(null);
 			else
-				throw new InvalidTransactionException();
+				throw new InvalidTransactionException(null);
 		}
 		// Add command and update transaction TTL.
 		t.addCommand(command);
@@ -149,9 +149,9 @@ public class Overseer extends Thread{
 		// Check validity of tId.
 		if (t == null) {
 			if (abortedIds.contains(i))
-				throw new TransactionAbortedException();
+				throw new TransactionAbortedException(null);
 			else
-				throw new InvalidTransactionException();
+				throw new InvalidTransactionException(null);
 		}
 	}
 	
