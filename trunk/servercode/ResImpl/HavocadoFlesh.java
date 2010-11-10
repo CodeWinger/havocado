@@ -11,10 +11,8 @@ import java.rmi.*;
 import java.net.*;
 import java.io.*;
 
-import Commands.*;
 import Commands.RMICommands.*;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
@@ -112,10 +110,10 @@ public class HavocadoFlesh
 			overseer.addCommandToTransaction(id, af);
 	}
 	catch (DeadlockException d) {
-		result.timestamp.stamp();
+		timestamp.stamp();
 		overseer.abort(id);
-		result.timestamp.stamp();
-		throw new TransactionAbortedException(result.timestamp);
+		timestamp.stamp();
+		throw new TransactionAbortedException(timestamp);
 	}
 	catch (TransactionAbortedException tae) {
 		tae.t = timestamp;
@@ -147,10 +145,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, df);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -184,10 +182,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, ar);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -218,10 +216,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, dr);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -254,10 +252,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, ac);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -289,10 +287,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, dc);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -323,10 +321,10 @@ public class HavocadoFlesh
 			result = qf.numSeats;
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -369,10 +367,10 @@ public class HavocadoFlesh
 			result = qfp.price;
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -399,13 +397,13 @@ public class HavocadoFlesh
 			overseer.validTransaction(id);
 			lm.Lock(id, Hotel.getKey(location), qr.getRequiredLock());
 			qr.execute();
-			result = qr.numSeats;
+			result = qr.numRooms;
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -437,10 +435,10 @@ public class HavocadoFlesh
 			result = qrp.price;
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -470,10 +468,10 @@ public class HavocadoFlesh
 			result = qc.numCars;
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -502,10 +500,10 @@ public class HavocadoFlesh
 			result = qcp.price;
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -522,22 +520,37 @@ public class HavocadoFlesh
     // return a bill
     public ReturnTuple<String> queryCustomerInfo(int id, int customerID, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
-    { //TODO: Fix customer locking system.
+    {
     	timestamp.stamp();
 		QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
 		qci.setTimestampObject(timestamp);
 		ReturnTuple<String> result = null;
 		try {
+			Vector<Integer> flightNos;
+			Vector<String> locations;
 			overseer.validTransaction(id);
 			lm.Lock(id, Customer.getKey(customerID), qci.getRequiredLock());
+			qci.execute();
+			flightNos = qci.getCustomerFlightReservations();
+			for (int flightNo : flightNos) {
+				lm.Lock(id, Flight.getKey(flightNo), qci.getRequiredLock());
+			}
+			locations = qci.getCustomerRoomReservations();
+			for (String location : locations) {
+				lm.Lock(id, Hotel.getKey(location), qci.getRequiredLock());
+			}
+			locations = qci.getCustomerCarReservations();
+			for (String location : locations) {
+				lm.Lock(id, Car.getKey(location), qci.getRequiredLock());
+			}
 			qci.execute();
 			result = qci.customerInfo;
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -568,14 +581,14 @@ public class HavocadoFlesh
 			overseer.validTransaction(id);
 			lm.Lock(id, Customer.getKey(rid), nc.getRequiredLock());
 			nc.execute();
-			result = nc.success;
+			result = new ReturnTuple<Integer>(rid, nc.success.timestamp);
 			overseer.addCommandToTransaction(id, nc);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -606,10 +619,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, ncwi);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -641,10 +654,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, dc);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -697,10 +710,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, rc);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -733,10 +746,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, rr);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -769,10 +782,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, rf);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -807,10 +820,10 @@ public class HavocadoFlesh
 				overseer.addCommandToTransaction(id, i);
 		}
 		catch (DeadlockException d) {
-			result.timestamp.stamp();
+			timestamp.stamp();
 			overseer.abort(id);
-			result.timestamp.stamp();
-			throw new TransactionAbortedException(result.timestamp);
+			timestamp.stamp();
+			throw new TransactionAbortedException(timestamp);
 		}
 		catch (TransactionAbortedException tae) {
 			tae.t = timestamp;
@@ -839,8 +852,12 @@ public class HavocadoFlesh
 
 
 	public boolean shutdown(String server) throws RemoteException {
-		if (server.equalsIgnoreCase("middleware"))
+		if (server.equalsIgnoreCase("middleware")) {
+			rmCars.shutdown(null);
+			rmRooms.shutdown(null);
+			rmFlights.shutdown(null);
 			System.exit(0);
+		}
 		else if (server.equalsIgnoreCase("cars"))
 			rmCars.shutdown(null);
 		else if (server.equalsIgnoreCase("rooms"))
@@ -893,5 +910,20 @@ public class HavocadoFlesh
 		// DO NOTHING.
 		return null;
 	}
+    
+    public ReturnTuple<Vector<String>> customerCarReservations(int id, int customer, Timestamp timestamp) throws RemoteException {
+    	// DO NOTHING.
+    	return null;
+    }
+    
+    public ReturnTuple<Vector<Integer>> customerFlightReservations(int id, int customer, Timestamp timestamp) throws RemoteException {
+    	// DO NOTHING.
+    	return null;
+    }
+    
+    public ReturnTuple<Vector<String>> customerRoomReservations(int id, int customer, Timestamp timestamp) throws RemoteException {
+    	// DO NOTHING.
+    	return null;
+    }
 
 }
