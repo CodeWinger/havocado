@@ -7,7 +7,7 @@ public class DeleteFlightRMICommand extends AbstractRMICommand {
   public int id;
   public int flightNum;
 
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public DeleteFlightRMICommand(ResourceManager pRm, int pId, int pFlightNum) {
     super(pRm);
@@ -15,16 +15,29 @@ public class DeleteFlightRMICommand extends AbstractRMICommand {
     id = pId;
     flightNum = pFlightNum;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
-  
+
   public void doCommand() throws Exception {
-    // Perform the command.
-    success = rm.deleteFlight(id, flightNum, null).result; // TODO: TIMESTAMP LOGIC.
+	// Perform the command.
+	timestamp.stamp();
+	previousQty = rm.queryFlight(id, flightNum, timestamp).result;
+	previousPrice = rm.queryFlightPrice(id, flightNum, timestamp).result;
+	success = rm.deleteFlight(id, flightNum, timestamp);
+	success.timestamp.stamp();
+	setTimestamp(success.timestamp);
+	//success = rm.deleteFlight(id, flightNum, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  timestamp.stamp();
+		  ReturnTuple<Boolean> r = rm.addFlight(id, flightNum, previousQty, previousPrice, timestamp);
+		  r.timestamp.stamp();
+		  setTimestamp(r.timestamp);
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override

@@ -134,6 +134,12 @@ public interface ResourceManager extends Remote
     public ReturnTuple<Boolean> itinerary(int id,int customer,Vector flightNumbers,String location, boolean Car, boolean Room, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException; 
     
+    public ReturnTuple<Vector<String>> customerCarReservations(int id, int customer, Timestamp timestamp) throws RemoteException;
+    
+    public ReturnTuple<Vector<String>> customerFlightReservations(int id, int customer, Timestamp timestamp) throws RemoteException;
+    
+    public ReturnTuple<Vector<String>> customerRoomReservations(int id, int customer, Timestamp timestamp) throws RemoteException;
+    
     public ReturnTuple<Object> unreserveRoom(int id, int customer, String locationd, Timestamp timestamp) throws RemoteException;
     
     public ReturnTuple<Object> unreserveCar(int id, int customer, String location, Timestamp timestamp) throws RemoteException;

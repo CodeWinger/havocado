@@ -9,7 +9,7 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
   public int numRooms;
   public int price;
 
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public AddRoomsRMICommand(ResourceManager pRm, int pId, String pLocation, int pNumRooms, int pPrice) {
     super(pRm);
@@ -19,16 +19,25 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
     numRooms = pNumRooms;
     price = pPrice;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
   
   public void doCommand() throws Exception {
-    success = rm.addRooms(id, location, numRooms, price, null).result;
+	  timestamp.stamp();
+	  previousQty = rm.queryRooms(id, location, timestamp).result;
+	  previousPrice = rm.queryRoomsPrice(id, location, timestamp).result;
+	  success = rm.addRooms(id, location, numRooms, price, timestamp);
+	  success.timestamp.stamp();
+	  setTimestamp(success.timestamp);
+	  //success = rm.addRooms(id, location, numRooms, price, null).result;
   }
   
   public void undo() {
 	  try {
-		  rm.deleteRooms(id, location, null);
+		  timestamp.stamp();
+		  ReturnTuple<Object> r = rm.setRooms(id, location, previousQty, previousPrice, timestamp);
+		  r.timestamp.stamp();
+		  setTimestamp(r.timestamp);;
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

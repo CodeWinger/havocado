@@ -9,7 +9,7 @@ public class AddCarsRMICommand extends AbstractRMICommand {
   public int numCars;
   public int price;
   
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public AddCarsRMICommand(ResourceManager pRm, int pId, String pLocation, int pNumCars, int pPrice) {
     super(pRm);
@@ -19,22 +19,25 @@ public class AddCarsRMICommand extends AbstractRMICommand {
     numCars = pNumCars;
     price = pPrice;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
   
-  private int previousNumCars;
-  private int previousPrice;
-  
-  public void doCommand() throws Exception {
-	  
-	  success = rm.addCars(id, location, numCars, price, null).result;  // TODO: TIMESTAMP LOGIC.
+  public void doCommand() throws Exception {  
+	  timestamp.stamp();
+	  previousQty = rm.queryCars(id, location, timestamp).result;
+	  previousPrice = rm.queryCarsPrice(id, location, timestamp).result;
+	  success = rm.addCars(id, location, numCars, price, timestamp);
+	  success.timestamp.stamp();
+	  setTimestamp(success.timestamp);
   }
   
   public void undo() {
 	  try {
-		  // I want to revert back to how many cars there were before, with the previous price.
-		  // step 1: delete the cars that I added.
-		  // step 2: set the price back to the previous price.
+		  timestamp.stamp();
+		  ReturnTuple<Object> r = rm.setCars(id, location, previousQty, previousPrice, timestamp);
+		  r.timestamp.stamp();
+		  setTimestamp(r.timestamp);
+
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

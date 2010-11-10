@@ -1,6 +1,8 @@
 package ResInterface;
 
-public class ReturnTuple<T> {
+import java.io.*;
+
+public class ReturnTuple<T> implements Serializable{
 	public T result;
 	public Timestamp timestamp;
 	

@@ -8,7 +8,10 @@ public abstract class AbstractRMICommand implements Command {
   protected ResourceManager rm;
   protected boolean error;
   
+  protected int previousQty = 0;
+  protected int previousPrice = 0;
   protected Timestamp timestamp;
+  
   
   public AbstractRMICommand(ResourceManager pRm) {
     rm = pRm;
@@ -47,6 +50,10 @@ public abstract class AbstractRMICommand implements Command {
   
   public void execute() {
     try{
+    	if(timestamp == null) {
+    		timestamp = new Timestamp();
+    	}
+    	
       // Perform the command.
       doCommand();
       
