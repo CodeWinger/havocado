@@ -26,7 +26,7 @@ public class QueryFlightRMICommand extends AbstractRMICommand {
   }
 
 	@Override
-	public RequiredLock getRequiredLock() {
-		return RequiredLock.READ;
+	public int getRequiredLock() {
+		return LockManager.LockManager.READ;
 	}
 }
