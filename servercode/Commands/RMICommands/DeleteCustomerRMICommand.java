@@ -1,5 +1,7 @@
 package Commands.RMICommands;
 
+import java.util.Vector;
+
 import ResInterface.*;
 
 public class DeleteCustomerRMICommand extends AbstractRMICommand {
@@ -31,25 +33,39 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
     success = new ReturnTuple<Boolean>(false, null);
   }
   
+  
+  private ReturnTuple<Vector<String>> previousCarReservations;
+  private ReturnTuple<Vector<String>> previousFlightReservations;
+  private ReturnTuple<Vector<String>> previousRoomReservations;
   public void doCommand() throws Exception {
 	  timestamp.stamp();
-      ReturnTuple<Boolean> r1 = carRm.deleteCustomer(id, customer, timestamp);
-      r1.timestamp.stamp();
-      setTimestamp(r1.timestamp);
+	  
+	  previousCarReservations = carRm.customerCarReservations(id, customer, timestamp);
+      ReturnTuple<Boolean> cr = carRm.deleteCustomer(id, customer, timestamp);
+      setTimestamp(cr.timestamp);
       
-      ReturnTuple<Boolean> r2 = flightRm.deleteCustomer(id, customer, timestamp);
-      r2.timestamp.stamp();
-      setTimestamp(r2.timestamp);
+      previousFlightReservations = flightRm.customerFlightReservations(id, customer, timestamp);
+      ReturnTuple<Boolean> fr = flightRm.deleteCustomer(id, customer, timestamp);
+      setTimestamp(fr.timestamp);
       
-      ReturnTuple<Boolean> r3 = roomRm.deleteCustomer(id, customer, timestamp);
-      r3.timestamp.stamp();
-      setTimestamp(r3.timestamp);
+      previousRoomReservations = roomRm.customerRoomReservations(id, customer, timestamp);
+      ReturnTuple<Boolean> rr = roomRm.deleteCustomer(id, customer, timestamp);
+      rr.timestamp.stamp();
+      setTimestamp(rr.timestamp);
       
-      success.result = r1.result && r2.result && r3.result;
+      success.result = cr.result && fr.result && rr.result;
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  timestamp.stamp();
+		  
+		  ReturnTuple<Boolean> cr = carRm.newCustomer(id, customer, timestamp);
+		  
+		  
+	  } catch (Exception e) {
+		  
+	  }
   }
 
 	@Override
