@@ -20,6 +20,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import LockManager.DeadlockException;
 import LockManager.LockManager;
 
 import exceptions.InvalidTransactionException;
@@ -96,27 +97,55 @@ public class HavocadoFlesh
     // Create a new flight, or add seats to existing flight
     //  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
     public ReturnTuple<Boolean> addFlight(int id, int flightNum, int flightSeats, int flightPrice, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
+	timestamp.stamp();
 	AddFlightRMICommand af = new AddFlightRMICommand(rmFlights, id, flightNum, flightSeats, flightPrice);
-	// TODO: toSeeds.add(af);
-	af.waitFor();
-	if (af.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(af.success, null) ;
+	af.setTimestampObject(timestamp);
+	ReturnTuple<Boolean> result = null;
+	try {
+		overseer.validTransaction(id);
+		lm.Lock(id, Flight.getKey(flightNum), af.getRequiredLock());
+		af.execute();
+		result = af.success;
+		if(result.result)
+			overseer.addCommandToTransaction(id, af);
+	}
+	catch (DeadlockException d) {
+		result.timestamp.stamp();
+		overseer.abort(id);
+		result.timestamp.stamp();
+		throw new TransactionAbortedException(result.timestamp);
+	}
+	result.timestamp.stamp();
+	return result;
     }
 
 
 	
     public ReturnTuple<Boolean> deleteFlight(int id, int flightNum, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-	DeleteFlightRMICommand df = new DeleteFlightRMICommand(rmFlights, id, flightNum);
-	// TODO: toSeeds.add(df);
-	df.waitFor();
-	if (df.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(df.success, timestamp);  // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		DeleteFlightRMICommand df = new DeleteFlightRMICommand(rmFlights, id, flightNum);
+		df.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Flight.getKey(flightNum), df.getRequiredLock());
+			df.execute();
+			result = df.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, df);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -124,53 +153,109 @@ public class HavocadoFlesh
     // Create a new room location or add rooms to an existing location
     //  NOTE: if price <= 0 and the room location already exists, it maintains its current price
     public ReturnTuple<Boolean> addRooms(int id, String location, int count, int price, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-	AddRoomsRMICommand ar = new AddRoomsRMICommand(rmRooms, id, location, count, price);
-	// TODO: toSeeds.add(ar);
-	ar.waitFor();
-	if (ar.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(ar.success, timestamp);  // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		AddRoomsRMICommand ar = new AddRoomsRMICommand(rmRooms, id, location, count, price);
+		ar.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Hotel.getKey(location), ar.getRequiredLock());
+			ar.execute();
+			result = ar.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, ar);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
     // Delete rooms from a location
     public ReturnTuple<Boolean> deleteRooms(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
-	DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(rmRooms, id, location);
-	// TODO: toSeeds.add(dr);
-	dr.waitFor();
-	if (dr.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(dr.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(rmRooms, id, location);
+		dr.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Hotel.getKey(location), dr.getRequiredLock());
+			dr.execute();
+			result = dr.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, dr);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
 		
     }
 
     // Create a new car location or add cars to an existing location
     //  NOTE: if price <= 0 and the location already exists, it maintains its current price
     public ReturnTuple<Boolean> addCars(int id, String location, int count, int price, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-	AddCarsRMICommand ac = new AddCarsRMICommand(rmCars, id, location, count, price);
-	// TODO: toSeeds.add(ac);
-	ac.waitFor();
-	if (ac.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(ac.success, timestamp);  // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		AddCarsRMICommand ac = new AddCarsRMICommand(rmCars, id, location, count, price);
+		ac.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Car.getKey(location), ac.getRequiredLock());
+			ac.execute();
+			result = ac.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, ac);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
     // Delete cars from a location
     public ReturnTuple<Boolean> deleteCars(int id, String location, Timestamp timestamp)
-	throws RemoteException
+	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-	DeleteCarsRMICommand dc = new DeleteCarsRMICommand(rmCars, id, location);
-	// TODO: toSeeds.add(dc);
-	dc.waitFor();
-	if (dc.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(dc.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		DeleteCarsRMICommand dc = new DeleteCarsRMICommand(rmCars, id, location);
+		dc.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Car.getKey(location), ac.getRequiredLock());
+			dc.execute();
+			result = dc.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, dc);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -179,12 +264,24 @@ public class HavocadoFlesh
     public ReturnTuple<Integer> queryFlight(int id, int flightNum, Timestamp timestamp)
 	throws RemoteException
     {
-	QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
-	// TODO: toSeeds.add(qf);
-	qf.waitFor();
-	if (qf.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Integer>(qf.numSeats, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
+		qf.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Flight.getKey(flightNum), qf.getRequiredLock());
+			qf.execute();
+			result = qf.numSeats;
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
     // Returns the number of reservations for this flight. 
@@ -205,12 +302,24 @@ public class HavocadoFlesh
     public ReturnTuple<Integer> queryFlightPrice(int id, int flightNum, Timestamp timestamp )
 	throws RemoteException
     {
-	QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFlights, id, flightNum);
-	// TODO: toSeeds.add(qfp);
-	qfp.waitFor();
-	if (qfp.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Integer>(qfp.price, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFlights, id, flightNum);
+		qfp.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Flight.getKey(flightNum), qfp.getRequiredLock());
+			qfp.execute();
+			result = qfp.price;
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -218,12 +327,24 @@ public class HavocadoFlesh
     public ReturnTuple<Integer> queryRooms(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
-	QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
-	// TODO: toSeeds.add(qr);
-	qr.waitFor();
-	if (qr.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Integer>(qr.numRooms, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
+		qr.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Hotel.getKey(location), qr.getRequiredLock());
+			qr.execute();
+			result = qr.numSeats;
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -233,12 +354,24 @@ public class HavocadoFlesh
     public ReturnTuple<Integer> queryRoomsPrice(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
-	QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
-	// TODO: toSeeds.add(qrp);
-	qrp.waitFor();
-	if (qrp.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Integer>(qrp.price, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
+		qrp.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Hotel.getKey(location), qrp.getRequiredLock());
+			qrp.execute();
+			result = qrp.price;
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -246,12 +379,24 @@ public class HavocadoFlesh
     public ReturnTuple<Integer> queryCars(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
-	QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
-	// TODO: toSeeds.add(qc);
-	qc.waitFor();
-	if (qc.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Integer>(qc.numCars, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
+		qc.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Car.getKey(location), qc.getRequiredLock());
+			qc.execute();
+			result = qc.numCars;
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -259,24 +404,47 @@ public class HavocadoFlesh
     public ReturnTuple<Integer> queryCarsPrice(int id, String location, Timestamp timestamp)
 	throws RemoteException
     {
-	QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
-	// TODO: toSeeds.add(qcp);
-	qcp.waitFor();
-	if (qcp.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Integer>(qcp.price, timestamp); // TODO: TIMESTAMP LOGIC.
+		QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
+		qcp.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Car.getKey(location), qcp.getRequiredLock());
+			qcp.execute();
+			result = qcp.price;
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
     // return a bill
     public ReturnTuple<String> queryCustomerInfo(int id, int customerID, Timestamp timestamp)
 	throws RemoteException
-    {
-	QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
-	// TODO: toSeeds.add(qci);
-	qci.waitFor();
-	if (qci.error())
-	    throw new RemoteException();
-	return new ReturnTuple<String>(qci.customerInfo, timestamp); // TODO: TIMESTAMP LOGIC.
+    { //TODO: Fix customer locking system.
+    	timestamp.stamp();
+		QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
+		qci.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(customerID), qci.getRequiredLock());
+			qci.execute();
+			result = qci.customerInfo;
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
     // customer functions
@@ -285,27 +453,54 @@ public class HavocadoFlesh
     public ReturnTuple<Integer> newCustomer(int id, Timestamp timestamp)
 	throws RemoteException
     {
-	int rid = Integer.parseInt( String.valueOf(id) +
-				    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
-				    String.valueOf( Math.round( Math.random() * 100 + 1 )));
-	NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, rid);
-	// TODO: toSeeds.add(nc);
-	nc.waitFor();
-	if (nc.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Integer>(rid, timestamp);  // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		int rid = Integer.parseInt( String.valueOf(id) +
+					    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+					    String.valueOf( Math.round( Math.random() * 100 + 1 )));
+		NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, rid);
+		nc.setTimestampObject(timestamp);
+		ReturnTuple<Integer> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(rid), nc.getRequiredLock());
+			nc.execute();
+			result = nc.success;
+			overseer.addCommandToTransaction(id, nc);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
     // I opted to pass in customerID instead. This makes testing easier
     public ReturnTuple<Boolean> newCustomer(int id, int customerID, Timestamp timestamp )
 	throws RemoteException
     {
-	NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
-	// TODO: toSeeds.add(ncwi);
-	ncwi.waitFor();
-	if (ncwi.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(ncwi.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
+		ncwi.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(customerID), ncwi.getRequiredLock());
+			ncwi.execute();
+			result = ncwi.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, ncwi);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -313,12 +508,26 @@ public class HavocadoFlesh
     public ReturnTuple<Boolean> deleteCustomer(int id, int customerID, Timestamp timestamp)
 	throws RemoteException
     {
-	DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
-	// TODO: toSeeds.add(dc);
-	dc.waitFor();
-	if(dc.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(dc.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
+		dc.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(customerID), dc.getRequiredLock());
+			dc.execute();
+			result = dc.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, dc);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -346,12 +555,27 @@ public class HavocadoFlesh
     public ReturnTuple<Boolean> reserveCar(int id, int customerID, String location, Timestamp timestamp)
 	throws RemoteException
     {
-	ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
-	// TODO: toSeeds.add(rc);
-	rc.waitFor();
-	if (rc.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(rc.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
+		rc.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(customerID), rc.getRequiredLock());
+			lm.Lock(id, Car.getKey(location), rc.getRequiredLock());
+			rc.execute();
+			result = rc.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, rc);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
@@ -359,94 +583,155 @@ public class HavocadoFlesh
     public ReturnTuple<Boolean> reserveRoom(int id, int customerID, String location, Timestamp timestamp)
 	throws RemoteException
     {
-	ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
-	// TODO: toSeeds.add(rr);
-	rr.waitFor();
-	if (rr.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(rr.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
+		rr.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(customerID), rr.getRequiredLock());
+			lm.Lock(id, Hotel.getKey(location), rr.getRequiredLock());
+			rr.execute();
+			result = rr.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, rr);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
+    
+    
     // Adds flight reservation to this customer.  
     public ReturnTuple<Boolean> reserveFlight(int id, int customerID, int flightNum, Timestamp timestamp)
 	throws RemoteException
     {
-	ReserveFlightRMICommand rf = new ReserveFlightRMICommand(rmFlights, id, customerID, flightNum);
-	// TODO: toSeeds.add(rf);
-	rf.waitFor();
-	if (rf.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(rf.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		ReserveFlightRMICommand rf = new ReserveFlightRMICommand(rmFlights, id, customerID, flightNum);
+		rf.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(customerID), rf.getRequiredLock());
+			lm.Lock(id, Flight.getKey(flightNum), rf.getRequiredLock());
+			rf.execute();
+			result = rf.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, rf);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 	
     /* reserve an itinerary */
     public ReturnTuple<Boolean> itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room, Timestamp timestamp)
 	throws RemoteException {
-	ItineraryRMICommand i = new ItineraryRMICommand(rmCars, rmFlights, rmRooms, id, customer, flightNumbers, location, Car, Room);
-	// TODO: toSeeds.add(i);
-	i.waitFor();
-	if (i.error())
-	    throw new RemoteException();
-	return new ReturnTuple<Boolean>(i.success, timestamp); // TODO: TIMESTAMP LOGIC.
+    	timestamp.stamp();
+		ItineraryRMICommand i = new ItineraryRMICommand(rmCars, rmFlights, rmRooms, id, customer, flightNumbers, location, Car, Room);
+		i.setTimestampObject(timestamp);
+		ReturnTuple<Boolean> result = null;
+		try {
+			overseer.validTransaction(id);
+			lm.Lock(id, Customer.getKey(customer), i.getRequiredLock());
+			lm.Lock(id, ResImpl.Car.getKey(location), i.getRequiredLock());
+			lm.Lock(id, Hotel.getKey(location), i.getRequiredLock());
+			for (Object flightNo : flightNumbers) {
+				lm.Lock(id, Flight.getKey(((Integer)flightNo).intValue()), i.getRequiredLock());
+			}
+			i.execute();
+			result = i.success;
+			if (result.result)
+				overseer.addCommandToTransaction(id, i);
+		}
+		catch (DeadlockException d) {
+			result.timestamp.stamp();
+			overseer.abort(id);
+			result.timestamp.stamp();
+			throw new TransactionAbortedException(result.timestamp);
+		}
+		result.timestamp.stamp();
+		return result;
     }
 
 
 	public ReturnTuple<Object> abort(int id, Timestamp timestamp) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-		// TODO Abort the transaction!
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		overseer.abort(id);
+		timestamp.stamp();
+		return new ReturnTuple<Object>(null, timestamp);
 	}
 
 
 	public ReturnTuple<Boolean> commit(int id, Timestamp timestamp) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
-		// TODO Auto-generated method stub
-		return new ReturnTuple<Boolean>(false, timestamp); // TODO: TIMESTAMP LOGIC.
+		return new ReturnTuple<Boolean>(false, timestamp);
 	}
 
 
 	public boolean shutdown(String server) throws RemoteException {
-		// TODO Auto-generated method stub
+		if (server.equalsIgnoreCase("middleware"))
+			System.exit(0);
+		else if (server.equalsIgnoreCase("cars"))
+			rmCars.shutdown(null);
+		else if (server.equalsIgnoreCase("rooms"))
+			rmRooms.shutdown(null);
+		else if (server.equalsIgnoreCase("flights"))
+			rmFlights.shutdown(null);
 		return false;
 	}
 
 
 	public ReturnTuple<Integer> start(Timestamp timestamp) throws RemoteException {
-		// TODO: call the transaction manager!
-		return new ReturnTuple<Integer>(0, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		int tId;
+		tId = overseer.createTransaction(lm);
+		return new ReturnTuple<Integer>(tId, timestamp);
 	}
 
 
 	public ReturnTuple<Object> unreserveCar(int id, int customer, String location, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 
 	public ReturnTuple<Object> unreserveFlight(int id, int customer, int flightNumber, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 
 	public ReturnTuple<Object> unreserveRoom(int id, int customer, String locationd, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 
 	public ReturnTuple<Object> setCars(int id, String location, int count, int price, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 
 	public ReturnTuple<Object> setFlight(int id, int flightNum, int count, int price, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 
 	public ReturnTuple<Object> setRooms(int id, String location, int count, int price, Timestamp timestamp) throws RemoteException {
 		// DO NOTHING.
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 }

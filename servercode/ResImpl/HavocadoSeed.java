@@ -234,6 +234,7 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> addFlight(int id, int flightNum, int flightSeats, int flightPrice, Timestamp timestamp)
 		throws RemoteException
 	{
+		timestamp.stamp();
 		Trace.info("RM::addFlight(" + id + ", " + flightNum + ", $" + flightPrice + ", " + flightSeats + ") called" );
 		Flight curObj = (Flight) readData( id, Flight.getKey(flightNum) );
 		if( curObj == null ) {
@@ -251,7 +252,8 @@ public class HavocadoSeed
 			writeData( id, curObj.getKey(), curObj );
 			Trace.info("RM::addFlight(" + id + ") modified existing flight " + flightNum + ", seats=" + curObj.getCount() + ", price=$" + flightPrice );
 		} // else
-		return new ReturnTuple<Boolean>(true, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Boolean>(true, timestamp);
 	}
 
 
@@ -259,18 +261,23 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> deleteFlight(int id, int flightNum, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Boolean>(deleteItem(id, Flight.getKey(flightNum)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Flight.getKey(flightNum)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 	
 	public ReturnTuple<Object> setFlight(int id, int flightNum, int count, int price, Timestamp timestamp) throws RemoteException {
+		timestamp.stamp();
 		Flight curObj = (Flight) readData(id, Flight.getKey(flightNum));
 		if(curObj == null) {
-			// car doesn't exist. we're done here.
+			// flight doesn't exist. we're done here.
 		} else {
 			editNum(id, Flight.getKey(flightNum), count);
 			editPrice(id, Flight.getKey(flightNum), price);
 		}
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Object>(null, timestamp);
 	}
 
 
@@ -280,6 +287,7 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> addRooms(int id, String location, int count, int price, Timestamp timestamp)
 		throws RemoteException
 	{
+		timestamp.stamp();
 		Trace.info("RM::addRooms(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
 		Hotel curObj = (Hotel) readData( id, Hotel.getKey(location) );
 		if( curObj == null ) {
@@ -296,26 +304,32 @@ public class HavocadoSeed
 			writeData( id, curObj.getKey(), curObj );
 			Trace.info("RM::addRooms(" + id + ") modified existing location " + location + ", count=" + curObj.getCount() + ", price=$" + price );
 		} // else
-		return new ReturnTuple<Boolean>(true, timestamp);  // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Boolean>(true, timestamp);
 	}
 
 	// Delete rooms from a location
 	public ReturnTuple<Boolean> deleteRooms(int id, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Boolean>(deleteItem(id, Hotel.getKey(location)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Hotel.getKey(location)), timestamp);
+		timestamp.stamp();
+		return result;
 		
 	}
 
 	public ReturnTuple<Object> setRooms(int id, String location, int count, int price, Timestamp timestamp) throws RemoteException {
+		timestamp.stamp();
 		Hotel curObj = (Hotel) readData(id, Hotel.getKey(location));
 		if(curObj == null) {
-			// car doesn't exist. we're done here.
+			// hotel doesn't exist. we're done here.
 		} else {
 			editNum(id, Hotel.getKey(location), count);
 			editPrice(id, Hotel.getKey(location), price);
 		}
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Object>(null, timestamp);
 	}
 	
 	// Create a new car location or add cars to an existing location
@@ -323,6 +337,7 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> addCars(int id, String location, int count, int price, Timestamp timestamp)
 		throws RemoteException
 	{
+		timestamp.stamp();
 		Trace.info("RM::addCars(" + id + ", " + location + ", " + count + ", $" + price + ") called" );
 		Car curObj = (Car) readData( id, Car.getKey(location) );
 		if( curObj == null ) {
@@ -339,7 +354,8 @@ public class HavocadoSeed
 			writeData( id, curObj.getKey(), curObj );
 			Trace.info("RM::addCars(" + id + ") modified existing location " + location + ", count=" + curObj.getCount() + ", price=$" + price );
 		} // else
-		return new ReturnTuple<Boolean>(true, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Boolean>(true, timestamp);
 	}
 
 
@@ -347,10 +363,14 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> deleteCars(int id, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Boolean>(deleteItem(id, Car.getKey(location)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Car.getKey(location)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 	
 	public ReturnTuple<Object> setCars(int id, String location, int count, int price, Timestamp timestamp) throws RemoteException {
+		timestamp.stamp();
 		Car curObj = (Car) readData(id, Car.getKey(location));
 		if(curObj == null) {
 			// car doesn't exist. we're done here.
@@ -358,7 +378,8 @@ public class HavocadoSeed
 			editNum(id, Car.getKey(location), count);
 			editPrice(id, Car.getKey(location), price);
 		}
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Object>(null, timestamp);
 	}
 
 
@@ -366,7 +387,10 @@ public class HavocadoSeed
 	public ReturnTuple<Integer> queryFlight(int id, int flightNum, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Integer>(queryNum(id, Flight.getKey(flightNum)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Integer> result = new ReturnTuple<Integer>(queryNum(id, Flight.getKey(flightNum)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 
 	// Returns the number of reservations for this flight. 
@@ -387,7 +411,10 @@ public class HavocadoSeed
 	public ReturnTuple<Integer> queryFlightPrice(int id, int flightNum, Timestamp timestamp )
 		throws RemoteException
 	{
-		return new ReturnTuple<Integer>(queryPrice(id, Flight.getKey(flightNum)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Integer> result = new ReturnTuple<Integer>(queryPrice(id, Flight.getKey(flightNum)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 
 
@@ -395,7 +422,10 @@ public class HavocadoSeed
 	public ReturnTuple<Integer> queryRooms(int id, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Integer>(queryNum(id, Hotel.getKey(location)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Integer> result = new ReturnTuple<Integer>(queryNum(id, Hotel.getKey(location)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 
 
@@ -405,7 +435,9 @@ public class HavocadoSeed
 	public ReturnTuple<Integer> queryRoomsPrice(int id, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Integer>(queryPrice(id, Hotel.getKey(location)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Integer> result = new ReturnTuple<Integer>(queryPrice(id, Hotel.getKey(location)), timestamp);
+		return result;
 	}
 
 
@@ -413,7 +445,10 @@ public class HavocadoSeed
 	public ReturnTuple<Integer> queryCars(int id, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Integer>(queryNum(id, Car.getKey(location)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Integer> result = new ReturnTuple<Integer>(queryNum(id, Car.getKey(location)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 
 
@@ -421,7 +456,10 @@ public class HavocadoSeed
 	public ReturnTuple<Integer> queryCarsPrice(int id, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Integer>(queryPrice(id, Car.getKey(location)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Integer> result = new ReturnTuple<Integer>(queryPrice(id, Car.getKey(location)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 
 	// Returns data structure containing customer reservation info. Returns null if the
@@ -444,16 +482,18 @@ public class HavocadoSeed
 	public ReturnTuple<String> queryCustomerInfo(int id, int customerID, Timestamp timestamp)
 		throws RemoteException
 	{
+		timestamp.stamp();
 		Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + ") called" );
 		Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
 		if( cust == null ) {
 			Trace.warn("RM::queryCustomerInfo(" + id + ", " + customerID + ") failed--customer doesn't exist" );
-			 // TODO: TIMESTAMP LOGIC.
+			 timestamp.stamp();
 			return new ReturnTuple<String>("", timestamp);   // NOTE: don't change this--WC counts on this value indicating a customer does not exist...
 		} else {
 				String s = cust.printBill();
 				Trace.info("RM::queryCustomerInfo(" + id + ", " + customerID + "), bill follows..." );
 				System.out.println( s );
+				timestamp.stamp();
 				return new ReturnTuple<String>(s, timestamp);
 		} // if
 	}
@@ -464,6 +504,7 @@ public class HavocadoSeed
   public ReturnTuple<Integer> newCustomer(int id, Timestamp timestamp)
 		throws RemoteException
 	{
+	  timestamp.stamp();
 		Trace.info("INFO: RM::newCustomer(" + id + ") called" );
 		// Generate a globally unique ID for the new customer
 		int cid = Integer.parseInt( String.valueOf(id) +
@@ -472,23 +513,27 @@ public class HavocadoSeed
 		Customer cust = new Customer( cid );
 		writeData( id, cust.getKey(), cust );
 		Trace.info("RM::newCustomer(" + cid + ") returns ID=" + cid );
-		return new ReturnTuple<Integer>(cid, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Integer>(cid, timestamp);
 	}
 
 	// I opted to pass in customerID instead. This makes testing easier
   public ReturnTuple<Boolean> newCustomer(int id, int customerID, Timestamp timestamp )
 		throws RemoteException
 	{
+	  timestamp.stamp();
 		Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") called" );
 		Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
 		if( cust == null ) {
 			cust = new Customer(customerID);
 			writeData( id, cust.getKey(), cust );
 			Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") created a new customer" );
-			return new ReturnTuple<Boolean>(true, timestamp); // TODO: TIMESTAMP LOGIC.
+			timestamp.stamp();
+			return new ReturnTuple<Boolean>(true, timestamp);
 		} else {
 			Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID + ") failed--customer already exists");
-			return new ReturnTuple<Boolean>(false, timestamp); // TODO: TIMESTAMP LOGIC.
+			timestamp.stamp();
+			return new ReturnTuple<Boolean>(false, timestamp);
 		} // else
 	}
 
@@ -497,11 +542,13 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> deleteCustomer(int id, int customerID, Timestamp timestamp)
 			throws RemoteException
 	{
+		timestamp.stamp();
 		Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") called" );
 		Customer cust = (Customer) readData( id, Customer.getKey(customerID) );
 		if( cust == null ) {
 			Trace.warn("RM::deleteCustomer(" + id + ", " + customerID + ") failed--customer doesn't exist" );
-			return new ReturnTuple<Boolean>(false, timestamp); // TODO: TIMESTAMP LOGIC.
+			timestamp.stamp();
+			return new ReturnTuple<Boolean>(false, timestamp);
 		} else {			
 			// Increase the reserved numbers of all reservable items which the customer reserved. 
 			RMHashtable reservationHT = cust.getReservations();
@@ -519,7 +566,8 @@ public class HavocadoSeed
 			removeData(id, cust.getKey());
 			
 			Trace.info("RM::deleteCustomer(" + id + ", " + customerID + ") succeeded" );
-			return new ReturnTuple<Boolean>(true, timestamp); // TODO: TIMESTAMP LOGIC.
+			timestamp.stamp();
+			return new ReturnTuple<Boolean>(true, timestamp);
 		} // if
 	}
 
@@ -548,7 +596,10 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> reserveCar(int id, int customerID, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Boolean>(reserveItem(id, customerID, Car.getKey(location), location), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Car.getKey(location), location), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 
 
@@ -556,49 +607,62 @@ public class HavocadoSeed
 	public ReturnTuple<Boolean> reserveRoom(int id, int customerID, String location, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Boolean>(reserveItem(id, customerID, Hotel.getKey(location), location), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Hotel.getKey(location), location), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 	
 	// Adds flight reservation to this customer.  
 	public ReturnTuple<Boolean> reserveFlight(int id, int customerID, int flightNum, Timestamp timestamp)
 		throws RemoteException
 	{
-		return new ReturnTuple<Boolean>(reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum)), timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum)), timestamp);
+		timestamp.stamp();
+		return result;
 	}
 	
 	/* reserve an itinerary */
     public ReturnTuple<Boolean> itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room, Timestamp timestamp)
 	throws RemoteException {
-    	return new ReturnTuple<Boolean>(false, timestamp);
+    	// Do nothing. Should never be called by middleware on resource managers.
+    	return null;
     }
 
 	public ReturnTuple<Object> unreserveCar(int id, int customer, String location, Timestamp timestamp) throws RemoteException {
+		timestamp.stamp();
 		unreserveItem(id, customer, Car.getKey(location), location);
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Object>(null, timestamp);
 	}
 
 
 	public ReturnTuple<Object> unreserveFlight(int id, int customer, int flightNumber, Timestamp timestamp) throws RemoteException {
+		timestamp.stamp();
 		unreserveItem(id, customer, Flight.getKey(flightNumber), String.valueOf(flightNumber));
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Object>(null, timestamp);
 	}
 
 
 	public ReturnTuple<Object> unreserveRoom(int id, int customer, String location, Timestamp timestamp) throws RemoteException {
+		timestamp.stamp();
 		unreserveItem(id, customer, Hotel.getKey(location), location);
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		timestamp.stamp();
+		return new ReturnTuple<Object>(null, timestamp);
 	}
     
 
 	public ReturnTuple<Object> abort(int id, Timestamp timestamp) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
 		// do nothing.
-		return new ReturnTuple<Object>(null, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 
 	public ReturnTuple<Boolean> commit(int id, Timestamp timestamp) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
 		// do nothing.
-		return new ReturnTuple<Boolean>(true, timestamp); // TODO: TIMESTAMP LOGIC.
+		return null;
 	}
 
 
@@ -610,8 +674,8 @@ public class HavocadoSeed
 
 
 	public ReturnTuple<Integer> start(Timestamp timestamp) throws RemoteException {
-		// do nothing.
-		return new ReturnTuple<Integer>(-1, timestamp); // TODO: TIMESTAMP LOGIC.
+		// do nothing. Should never be called by middleware on resource manager.
+		return null;
 	}
 
 }
