@@ -7,7 +7,7 @@ public class QueryRoomsPriceRMICommand extends AbstractRMICommand {
   public int id;
   public String location;
   
-  public int price;
+  public ReturnTuple<Integer> price;
 
   public QueryRoomsPriceRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);
@@ -15,15 +15,18 @@ public class QueryRoomsPriceRMICommand extends AbstractRMICommand {
     id = pId;
     location = pLocation;
     
-    price = -1;
+    price = new ReturnTuple<Integer>(-1, null);
   }
   
   public void doCommand() throws Exception {
-    price = rm.queryRoomsPrice(id, location, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+	  price = rm.queryRoomsPrice(id, location, timestamp);
+	  price.timestamp.stamp();
+	  setTimestamp(price.timestamp);
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  // do nothing.
   }
 
 	@Override

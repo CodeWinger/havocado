@@ -8,7 +8,7 @@ public class ReserveFlightRMICommand extends AbstractRMICommand {
   public int customer;
   public int flightNumber;
   
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public ReserveFlightRMICommand(ResourceManager pRm, int pId, int pCustomer, int pFlightNumber) {
     super(pRm);
@@ -17,15 +17,29 @@ public class ReserveFlightRMICommand extends AbstractRMICommand {
     customer = pCustomer;
     flightNumber = pFlightNumber;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
   
   public void doCommand() throws Exception {
-    success = rm.reserveFlight(id, customer, flightNumber, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+	  success = rm.reserveFlight(id, customer, flightNumber, timestamp);
+	  success.timestamp.stamp();
+	  setTimestamp(success.timestamp);
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  if(success.result) {
+			  timestamp.stamp();
+			  
+			  ReturnTuple<Object> r = rm.unreserveFlight(id, customer, flightNumber, timestamp);
+			  setTimestamp(r.timestamp);
+			  
+			  timestamp.stamp();
+		  }
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override

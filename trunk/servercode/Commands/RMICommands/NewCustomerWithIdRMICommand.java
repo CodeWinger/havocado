@@ -11,7 +11,7 @@ public class NewCustomerWithIdRMICommand extends AbstractRMICommand {
   public int id;
   public int cid;
   
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public NewCustomerWithIdRMICommand(
   	ResourceManager pCarRm, 
@@ -28,18 +28,47 @@ public class NewCustomerWithIdRMICommand extends AbstractRMICommand {
     id = pId;
     cid = pCid;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
   
   public void doCommand() throws Exception {
-  		success = true;
-      success = success && carRm.newCustomer(id, cid, null).result;  // TODO: TIMESTAMP LOGIC.
-      success = success && flightRm.newCustomer(id, cid, null).result;  // TODO: TIMESTAMP LOGIC.
-      success = success && roomRm.newCustomer(id, cid, null).result; // TODO: TIMESTAMP LOGIC.
+  		timestamp.stamp();
+  		success.result = true;
+  		
+  		ReturnTuple<Boolean> c = carRm.newCustomer(id, cid, timestamp);
+  		setTimestamp(c.timestamp);
+  		
+      	ReturnTuple<Boolean> f = flightRm.newCustomer(id, cid, timestamp);
+      	setTimestamp(f.timestamp);
+      	
+      	ReturnTuple<Boolean> r = roomRm.newCustomer(id, cid, timestamp);
+      	setTimestamp(r.timestamp);
+      
+      	success.result = c.result && f.result && r.result;
+      	
+		timestamp.stamp();
+		success.timestamp = timestamp;
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+	  	if(success.result) {
+	  		timestamp.stamp();
+	  		
+	  		ReturnTuple<Boolean> c = carRm.deleteCustomer(id, cid, timestamp);
+	  		setTimestamp(c.timestamp);
+	  		
+	  		ReturnTuple<Boolean> f = flightRm.deleteCustomer(id, cid, timestamp);
+	  		setTimestamp(f.timestamp);
+	  		
+	  		ReturnTuple<Boolean> r = roomRm.deleteCustomer(id, cid, timestamp);
+	  		setTimestamp(r.timestamp);
+	  		
+	  		timestamp.stamp();
+	  	}
+	  } catch(Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override

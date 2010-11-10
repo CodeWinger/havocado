@@ -7,7 +7,7 @@ public class QueryCarsRMICommand extends AbstractRMICommand {
   public int id;
   public String location;
   
-  public int numCars;
+  public ReturnTuple<Integer> numCars;
 
   public QueryCarsRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);
@@ -15,15 +15,18 @@ public class QueryCarsRMICommand extends AbstractRMICommand {
     id = pId;
     location = pLocation;
     
-    numCars = -1;
+    numCars = new ReturnTuple<Integer>(-1, null);
   }
   
   public void doCommand() throws Exception {
-    numCars = rm.queryCars(id, location, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+	  numCars = rm.queryCars(id, location, timestamp);
+	  numCars.timestamp.stamp();
+	  setTimestamp(numCars.timestamp);
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  // do nothing.
   }
 
 	@Override
