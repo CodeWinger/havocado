@@ -136,7 +136,7 @@ public interface ResourceManager extends Remote
     
     public ReturnTuple<Vector<String>> customerCarReservations(int id, int customer, Timestamp timestamp) throws RemoteException;
     
-    public ReturnTuple<Vector<String>> customerFlightReservations(int id, int customer, Timestamp timestamp) throws RemoteException;
+    public ReturnTuple<Vector<Integer>> customerFlightReservations(int id, int customer, Timestamp timestamp) throws RemoteException;
     
     public ReturnTuple<Vector<String>> customerRoomReservations(int id, int customer, Timestamp timestamp) throws RemoteException;
     
