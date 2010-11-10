@@ -848,7 +848,7 @@ public class HavocadoFlesh
 		timestamp.stamp();
 		overseer.commit(id);
 		timestamp.stamp();
-		return new ReturnTuple<Boolean>(false, timestamp);
+		return new ReturnTuple<Boolean>(true, timestamp);
 	}
 
 
