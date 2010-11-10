@@ -24,7 +24,7 @@ public class Overseer extends Thread{
 	private HashSet<Integer> abortedIds;
 	
 	/** The next transaction id to be returned */
-	private int nextTId = 1;
+	private int nextTId = 0;
 	
 	/** A boolean that is used to kill the thread. */
 	private boolean alive = true;
@@ -77,8 +77,6 @@ public class Overseer extends Thread{
 	 * @return false if tId is invalid or if commit fails, true otherewise.
 	 */
 	public synchronized boolean commit(int tId) throws TransactionAbortedException, InvalidTransactionException {
-		if (tId == 0)
-			return false;
 		Integer i = new Integer(tId);
 		Transaction t = currentTransactions.get(i);
 		// Check validity of tId.
@@ -99,8 +97,6 @@ public class Overseer extends Thread{
 	 * @param tId The ID of the transaction to be aborted.
 	 */
 	public synchronized void abort(int tId) throws TransactionAbortedException, InvalidTransactionException {
-		if (tId == 0)
-			return;
 		Integer i = new Integer(tId);
 		Transaction t = currentTransactions.get(i);
 		// Check validity of tId.
@@ -124,8 +120,6 @@ public class Overseer extends Thread{
 	 * @return false if the ID is invalid, true otherwise.
 	 */
 	public synchronized boolean addCommandToTransaction(int tId, AbstractRMICommand command) throws TransactionAbortedException, InvalidTransactionException {
-		if (tId == 0)
-			return false;
 		Integer i = new Integer(tId);
 		Transaction t = currentTransactions.get(i);
 		// Check validity of tId.
@@ -142,8 +136,6 @@ public class Overseer extends Thread{
 	}
 	
 	public synchronized void validTransaction(int tId) throws TransactionAbortedException, InvalidTransactionException {
-		if (tId == 0)
-			return;
 		Integer i = new Integer(tId);
 		Transaction t = currentTransactions.get(i);
 		// Check validity of tId.
