@@ -30,10 +30,12 @@ public class DeleteCarsRMICommand extends AbstractRMICommand {
   
   public void undo() {
 	  try {
-		  timestamp.stamp();
-		  ReturnTuple<Boolean> r = rm.addCars(id, location, previousQty, previousPrice, timestamp);
-		  r.timestamp.stamp();
-		  setTimestamp(r.timestamp);
+		  if(success.result){
+			  timestamp.stamp();
+			  ReturnTuple<Boolean> r = rm.addCars(id, location, previousQty, previousPrice, timestamp);
+			  r.timestamp.stamp();
+			  setTimestamp(r.timestamp);
+		  }
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

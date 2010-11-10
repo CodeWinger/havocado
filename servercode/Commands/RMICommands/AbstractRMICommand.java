@@ -22,7 +22,7 @@ public abstract class AbstractRMICommand implements Command {
 	  return timestamp;
   }
   
-  public void setTimestamp(Timestamp pTimestamp) {
+  public void setTimestampObject(Timestamp pTimestamp) {
 	  timestamp = pTimestamp;
   }
   
