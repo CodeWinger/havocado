@@ -20,10 +20,10 @@ public class Overseer extends Thread{
 	 * A set of the currently active transactions. All methods that modify this
 	 * should be synchronized, since HashSets aren't.
 	 */
-	private Hashtable<Integer, Transaction> currentTransactions;
+	private Hashtable<Integer, Transaction> currentTransactions = new Hashtable<Integer,Transaction>();
 	
 	/** The IDs of the transactions that have been aborted. */
-	private HashSet<Integer> abortedIds;
+	private HashSet<Integer> abortedIds = new HashSet<Integer>();
 	
 	/** The next transaction id to be returned */
 	private int nextTId = 0;
