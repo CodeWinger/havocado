@@ -2,17 +2,28 @@ package Commands.RMICommands;
 
 import Commands.*;
 import ResInterface.*;
+import LockManager.LockManager;
 
 public abstract class AbstractRMICommand implements Command {
   protected ResourceManager rm;
   protected boolean error;
+  
+  protected Timestamp timestamp;
   
   public AbstractRMICommand(ResourceManager pRm) {
     rm = pRm;
     error = false;
   }
   
-  public abstract RequiredLock getRequiredLock();
+  public Timestamp getTimestamp() {
+	  return timestamp;
+  }
+  
+  public void setTimestamp(Timestamp pTimestamp) {
+	  timestamp = pTimestamp;
+  }
+  
+  public abstract int getRequiredLock();
   
   public abstract void doCommand() throws Exception;
   

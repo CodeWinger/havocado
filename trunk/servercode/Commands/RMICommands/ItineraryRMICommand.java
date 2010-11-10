@@ -66,7 +66,7 @@ public class ItineraryRMICommand extends AbstractRMICommand {
   }
 
 	@Override
-	public RequiredLock getRequiredLock() {
-		return RequiredLock.WRITE;
+	public int getRequiredLock() {
+		return LockManager.LockManager.WRITE;
 	}
 }
