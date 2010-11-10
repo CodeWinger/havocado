@@ -21,8 +21,6 @@ import java.rmi.server.UnicastRemoteObject;
 import LockManager.DeadlockException;
 import LockManager.LockManager;
 
-import exceptions.InvalidTransactionException;
-import exceptions.TransactionAbortedException;
 
 //public class HavocadoFlesh extends java.rmi.server.UnicastRemoteObject
 public class HavocadoFlesh
