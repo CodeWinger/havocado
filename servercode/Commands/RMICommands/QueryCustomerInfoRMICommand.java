@@ -1,5 +1,8 @@
 package Commands.RMICommands;
 
+import java.rmi.RemoteException;
+import java.util.Vector;
+
 import ResInterface.*;
 
 public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
@@ -28,6 +31,36 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
     customer = pCustomer;
     
     customerInfo = new ReturnTuple<String>("", null);
+  }
+  
+  public Vector<String> getCustomerCarReservations() throws RemoteException {
+	  timestamp.stamp();
+	  
+	  ReturnTuple<Vector<String>> r = carRm.customerCarReservations(id, customer, timestamp);
+	  setTimestamp(r.timestamp);
+	  timestamp.stamp();
+	  
+	  return r.result;
+  }
+  
+  public Vector<String> getCustomerRoomReservations() throws RemoteException {
+	  timestamp.stamp();
+	  
+	  ReturnTuple<Vector<String>> r = roomRm.customerRoomReservations(id, customer, timestamp);
+	  setTimestamp(r.timestamp);
+	  timestamp.stamp();
+	  
+	  return r.result;
+  }
+  
+  public Vector<Integer> getCustomerFlightReservations() throws RemoteException {
+	  timestamp.stamp();
+	  
+	  ReturnTuple<Vector<Integer>> r = flightRm.customerFlightReservations(id, customer, timestamp);
+	  setTimestamp(r.timestamp);
+	  timestamp.stamp();
+	  
+	  return r.result;
   }
   
   public void doCommand() throws Exception {
