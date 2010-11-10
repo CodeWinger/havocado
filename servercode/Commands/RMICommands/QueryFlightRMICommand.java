@@ -7,22 +7,25 @@ public class QueryFlightRMICommand extends AbstractRMICommand {
   public int id;
   public int flightNumber;
   
-  public int numSeats;
+  public ReturnTuple<Integer> numSeats;
 
   public QueryFlightRMICommand(ResourceManager pRm, int pId, int pFlightNumber) {
     super(pRm);
     // Store our attributes.
     id = pId;
     flightNumber = pFlightNumber;
-    numSeats = -1;
+    numSeats = new ReturnTuple<Integer>(-1, null);
   }
   
   public void doCommand() throws Exception {
-    numSeats = rm.queryFlight(id, flightNumber, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+	  numSeats = rm.queryFlight(id, flightNumber, timestamp);
+	  numSeats.timestamp.stamp();
+	  setTimestamp(numSeats.timestamp);
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  // do nothing.
   }
 
 	@Override

@@ -7,22 +7,25 @@ public class QueryFlightPriceRMICommand extends AbstractRMICommand {
   public int id;
   public int flightNumber;
   
-  public int price;
+  public ReturnTuple<Integer> price;
 
   public QueryFlightPriceRMICommand(ResourceManager pRm, int pId, int pFlightNumber) {
     super(pRm);
     // Store our attributes.
     id = pId;
     flightNumber = pFlightNumber;
-    price = -1;
+    price = new ReturnTuple<Integer>(-1, null);
   }
   
   public void doCommand() throws Exception {
-    price = rm.queryFlightPrice(id, flightNumber, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+	  price = rm.queryFlightPrice(id, flightNumber, timestamp);
+	  price.timestamp.stamp();
+	  setTimestamp(price.timestamp);
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  	// do nothing.
   }
 
 	@Override

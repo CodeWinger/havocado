@@ -8,7 +8,7 @@ public class ReserveCarRMICommand extends AbstractRMICommand {
   public int customer;
   public String location;
   
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public ReserveCarRMICommand(ResourceManager pRm, int pId, int pCustomer, String pLocation) {
     super(pRm);
@@ -17,15 +17,29 @@ public class ReserveCarRMICommand extends AbstractRMICommand {
     customer = pCustomer;
     location = pLocation;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
   
   public void doCommand() throws Exception {
-    success = rm.reserveCar(id, customer, location, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+	  success = rm.reserveCar(id, customer, location, timestamp);
+	  success.timestamp.stamp();
+	  setTimestamp(success.timestamp);
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  try {
+		  if(success.result) {
+			  timestamp.stamp();
+			  
+			  ReturnTuple<Object> r = rm.unreserveCar(id, customer, location, timestamp);
+			  setTimestamp(r.timestamp);
+			  
+			  timestamp.stamp();
+		  }
+	  } catch (Exception e) {
+		  e.printStackTrace();
+	  }
   }
 
 	@Override

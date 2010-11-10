@@ -11,7 +11,7 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
   public int id;
   public int customer;
   
-  public String customerInfo;
+  public ReturnTuple<String> customerInfo;
 
   public QueryCustomerInfoRMICommand(
 		ResourceManager pCarRm, 
@@ -27,18 +27,29 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
     id = pId;
     customer = pCustomer;
     
-    customerInfo = null;
+    customerInfo = new ReturnTuple<String>("", null);
   }
   
   public void doCommand() throws Exception {
-  		String carCustomer = carRm.queryCustomerInfo(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
-      String flightCustomer = flightRm.queryCustomerInfo(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
-      String roomCustomer = roomRm.queryCustomerInfo(id, customer, null).result;  // TODO: TIMESTAMP LOGIC.
-	    customerInfo = "Car: " + carCustomer + "\n" + "Room: " + roomCustomer + "\n" + "Flight: " + flightCustomer;
+	  	timestamp.stamp();
+  		
+	  	ReturnTuple<String> carCustomer = carRm.queryCustomerInfo(id, customer, timestamp);
+  		setTimestamp(carCustomer.timestamp);
+	  	
+  		ReturnTuple<String> flightCustomer = flightRm.queryCustomerInfo(id, customer, timestamp);
+  		setTimestamp(flightCustomer.timestamp);
+  		
+      	ReturnTuple<String> roomCustomer = roomRm.queryCustomerInfo(id, customer, timestamp);
+      	setTimestamp(roomCustomer.timestamp);
+      	
+	    customerInfo.result = "Car: " + carCustomer.result + "\n" + "Room: " + roomCustomer.result + "\n" + "Flight: " + flightCustomer.result;
+	    
+	    timestamp.stamp();
+	    customerInfo.timestamp = timestamp;
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  	// do nothing.
   }
 
 	@Override

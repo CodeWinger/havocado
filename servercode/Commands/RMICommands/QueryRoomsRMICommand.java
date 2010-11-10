@@ -7,7 +7,7 @@ public class QueryRoomsRMICommand extends AbstractRMICommand {
   public int id;
   public String location;
   
-  public int numRooms;
+  public ReturnTuple<Integer> numRooms;
 
   public QueryRoomsRMICommand(ResourceManager pRm, int pId, String pLocation) {
     super(pRm);
@@ -15,15 +15,18 @@ public class QueryRoomsRMICommand extends AbstractRMICommand {
     id = pId;
     location = pLocation;
     
-    numRooms = -1;
+    numRooms = new ReturnTuple<Integer>(-1, null);
   }
   
   public void doCommand() throws Exception {
-    numRooms = rm.queryRooms(id, location, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+	  numRooms = rm.queryRooms(id, location, timestamp);
+	  numRooms.timestamp.stamp();
+	  setTimestamp(numRooms.timestamp);
   }
   
   public void undo() {
-	  // TODO: undo this operation.
+	  // do nothing.
   }
 
 	@Override
