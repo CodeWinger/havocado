@@ -9,7 +9,7 @@ public class AddFlightRMICommand extends AbstractRMICommand {
   public int flightSeats;
   public int flightPrice;
 
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public AddFlightRMICommand(ResourceManager pRm, int pId, int pFlightNum, int pFlightSeats, int pFlightPrice) {
     super(pRm);
@@ -19,17 +19,24 @@ public class AddFlightRMICommand extends AbstractRMICommand {
     flightSeats = pFlightSeats;
     flightPrice = pFlightPrice;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
   
   public void doCommand() throws Exception {
-    // Perform the command.
-    success = rm.addFlight(id, flightNum, flightSeats, flightPrice, null).result;
+    timestamp.stamp();
+    previousQty = rm.queryFlight(id, flightNum, timestamp).result;
+    previousPrice = rm.queryFlightPrice(id, flightNum, timestamp).result;
+    success = rm.addFlight(id, flightNum, flightSeats, flightPrice, timestamp);
+    success.timestamp.stamp();
+    setTimestamp(success.timestamp);
   }
   
   public void undo() {
 	  try {
-		  rm.deleteFlight(id, flightNum, null);
+		  timestamp.stamp();
+		  ReturnTuple<Object> r = rm.setFlight(id, flightNum, previousQty, previousPrice, timestamp);
+		  r.timestamp.stamp();
+		  setTimestamp(r.timestamp);
 	  } catch (Exception e) {
 		  e.printStackTrace();
 	  }

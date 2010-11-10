@@ -11,7 +11,7 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
   public int id;
   public int customer;
   
-  public boolean success;
+  public ReturnTuple<Boolean> success;
 
   public DeleteCustomerRMICommand(
 		ResourceManager pCarRm, 
@@ -28,14 +28,24 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
     id = pId;
     customer = pCustomer;
     
-    success = false;
+    success = new ReturnTuple<Boolean>(false, null);
   }
   
   public void doCommand() throws Exception {
-  		success = true;
-      success = success && carRm.deleteCustomer(id, customer, null).result;  // TODO: TIMESTAMP LOGIC.
-      success = success && flightRm.deleteCustomer(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
-      success = success && roomRm.deleteCustomer(id, customer, null).result; // TODO: TIMESTAMP LOGIC.
+	  timestamp.stamp();
+      ReturnTuple<Boolean> r1 = carRm.deleteCustomer(id, customer, timestamp);
+      r1.timestamp.stamp();
+      setTimestamp(r1.timestamp);
+      
+      ReturnTuple<Boolean> r2 = flightRm.deleteCustomer(id, customer, timestamp);
+      r2.timestamp.stamp();
+      setTimestamp(r2.timestamp);
+      
+      ReturnTuple<Boolean> r3 = roomRm.deleteCustomer(id, customer, timestamp);
+      r3.timestamp.stamp();
+      setTimestamp(r3.timestamp);
+      
+      success.result = r1.result && r2.result && r3.result;
   }
   
   public void undo() {

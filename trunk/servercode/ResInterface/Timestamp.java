@@ -5,8 +5,9 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.io.*;
 
-public class Timestamp {
+public class Timestamp implements Serializable{
 	/** A hashtable mapping the name of a computer to a vector of timestamps. */
 	private Hashtable<String, Vector<Long>>stamps = new Hashtable<String, Vector<Long>>();
 	
