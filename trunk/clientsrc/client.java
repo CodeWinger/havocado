@@ -725,7 +725,7 @@ public class client
 		switch(findChoice((String)arguments.elementAt(0))){
 		case 2:  //new flight
 		    if(arguments.size()!=5){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    
@@ -745,7 +745,7 @@ public class client
 		    
 		case 3:  //new Car
 		    if(arguments.size()!=5){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -764,7 +764,7 @@ public class client
 		    
 		case 4:  //new Room
 		    if(arguments.size()!=5){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -783,7 +783,7 @@ public class client
 		    
 		case 5:  //new Customer
 		    if(arguments.size()!=2){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -799,7 +799,7 @@ public class client
 		    
 		case 6: //delete Flight
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -816,7 +816,7 @@ public class client
 		    
 		case 7: //delete Car
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -834,7 +834,7 @@ public class client
 		    
 		case 8: //delete Room
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -851,7 +851,7 @@ public class client
 		    
 		case 9: //delete Customer
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -868,7 +868,7 @@ public class client
 		    
 		case 10: //querying a flight
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -885,7 +885,7 @@ public class client
 		    
 		case 11: //querying a Car Location
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -902,7 +902,7 @@ public class client
 		    
 		case 12: //querying a Room location
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -919,7 +919,7 @@ public class client
 		    
 		case 13: //querying Customer Information
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -936,7 +936,7 @@ public class client
 		    
 		case 14: //querying a flight Price
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -953,7 +953,7 @@ public class client
 		    
 		case 15: //querying a Car Price
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -970,7 +970,7 @@ public class client
 
 		case 16: //querying a Room price
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -987,7 +987,7 @@ public class client
 		    
 		case 17:  //reserve a flight
 		    if(arguments.size()!=4){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -1005,7 +1005,7 @@ public class client
 		    
 		case 18:  //reserve a car
 		    if(arguments.size()!=4){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    
@@ -1025,7 +1025,7 @@ public class client
 		    
 		case 19:  //reserve a room
 		    if(arguments.size()!=4){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -1044,7 +1044,7 @@ public class client
 		    
 		case 20:  //reserve an Itinerary
 		    if(arguments.size()<7){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -1068,7 +1068,7 @@ public class client
 		    		    
 		case 21:  //quit the client
 		    if(arguments.size()!=1){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    return;
@@ -1076,7 +1076,7 @@ public class client
 		    
 		case 22:  //new Customer given id
 		    if(arguments.size()!=3){
-			wrongNumber();
+			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
 		    try{
@@ -1093,7 +1093,7 @@ public class client
 		    
 		case 23:  //shutdown a server
 			if (arguments.size()!=2){
-				wrongNumber();
+				System.out.println("Wrong number of args on line "+lineno);
 				break;
 			}
 			try {rm.shutdown(getString(arguments.elementAt(1)));
@@ -1108,7 +1108,7 @@ public class client
 		case 24:  //start a transaction
 			System.out.println("");
 			if (arguments.size()!=1) {
-				wrongNumber();
+				System.out.println("Wrong number of args on line "+lineno);
 				break;
 			}
 			try {
@@ -1123,7 +1123,7 @@ public class client
 			
 		case 25:  //commit a transaction
 			if (arguments.size()!=2) {
-				wrongNumber();
+				System.out.println("Wrong number of args on line "+lineno);
 				break;
 			}
 			try {
@@ -1145,7 +1145,7 @@ public class client
 			
 		case 26:  //abort a transaction
 			if (arguments.size()!=2) {
-				wrongNumber();
+				System.out.println("Wrong number of args on line "+lineno);
 				break;
 			}
 			try {
