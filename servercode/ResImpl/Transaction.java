@@ -81,6 +81,10 @@ public class Transaction {
 		return timeOfLastUpdate;
 	}
 	
+	public int getID() {
+		return tId;
+	}
+	
 	/**
 	 * Adds the command to this transaction and records the time.
 	 * @param command The command to be added to this transaction.

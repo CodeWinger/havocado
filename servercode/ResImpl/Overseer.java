@@ -35,12 +35,22 @@ public class Overseer extends Thread{
 	 * too long.
 	 */
 	public void run() {
+		HashSet<Integer>toDelete = new HashSet<Integer>();
 		while(alive) {
+			toDelete.clear();
 			synchronized (this) {
 				for (Transaction t : currentTransactions.values()) {
-					System.out.println("Time diff: "+(System.currentTimeMillis() - t.getTime()));
+					//System.out.println("Time diff: "+(System.currentTimeMillis() - t.getTime()));
 					if (System.currentTimeMillis() - t.getTime() > timeout)
-						t.abort();
+						toDelete.add(t.getID());
+				}
+				for (int i : toDelete) {
+					try {
+						abort(i);
+					}
+					catch (Exception e) {
+						// Do nothing
+					}
 				}
 			}
 			try {
