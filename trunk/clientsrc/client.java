@@ -684,6 +684,7 @@ public class client
 	    String location;
 	    String shutdownServer;
 	    ScriptLogger logger = null;
+	    int lineno = -1;
 	    
 	    BufferedReader scriptFile;
 	    
@@ -702,6 +703,7 @@ public class client
 		try{
 		    //read the next command
 		    command = scriptFile.readLine();
+		    lineno++;
 		    if (command == null) {
 			    System.out.println("Script complete");
 		    	logger.stop();
@@ -1165,7 +1167,7 @@ public class client
 			break;
 		    
 		default:
-		    System.out.println("Invalid script command:"+command);
+		    System.out.println("Invalid script command on line "+lineno+": "+command);
 		    break;
 		}//end of switch
 	    }//end of while(true)
