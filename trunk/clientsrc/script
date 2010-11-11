@@ -1,0 +1,166 @@
+# addFlight
+start
+newflight, 0, 774, 200, 450
+commit, 0
+
+#addFlightAbort
+start
+newflight, 1, 775, 201, 451
+abort, 1
+
+#addCars
+start
+newcar, 2, cars1, 250, 75
+commit, 2
+
+#addCarsAbort
+start
+newcar, 3, cars2, 251, 76
+abort, 3
+
+#addRooms
+start
+newroom, 4, hotel1, 500, 135
+commit, 4
+
+#addRoomsAbort
+start
+newroom, 5, hotel2, 501, 136
+abort, 5
+
+#newCustomer
+start
+newcustomer, 6
+commit, 6
+
+#newCustomerAbort
+start
+newcustomer, 7
+commit, 7
+
+#newCustomerWithID
+start
+newcustomerid, 8, 45
+commit, 8
+
+#newCustomerWithIDAbort
+start
+newcustomerid, 9, 46
+abort, 9
+
+#deleteFlightAbort
+start
+deleteflight, 10, 774
+abort, 10
+
+#deleteFlight
+start
+deleteflight, 11, 774
+commit, 11
+
+#deleteCarsAbort
+start
+deletecar, 12, cars1
+abort, 12
+
+#deleteCars
+start
+deletecar, 13, cars1
+commit, 13
+
+#deleteRoomsAbort
+start
+deleteroom, 14, hotel1
+abort, 14
+
+#deleteRooms
+start
+deleteroom, 15, hotel1
+abort, 15
+
+#deleteCustomer
+start
+deletecustomer, 16, 45
+abort, 16
+
+#deleteCustomerAbort
+start
+deletecustomer, 17, 45
+commit, 17
+
+#queryflight
+start
+newflight, 18, 8850, 690, 510
+commit, 18
+start
+queryflight, 19, 8850
+commit, 19
+
+#querycars
+start
+newcar, 20, cars2, 700, 46
+commit, 20
+start
+querycar, 21, cars2
+commit, 21
+
+#queryrooms
+start
+newroom, 22, hotel2, 1200, 325
+commit, 22
+start
+queryroom, 23, hotel2
+commit, 23
+
+#queryflightprice
+start
+queryflightprice, 24, 8850
+commit, 24
+
+#querycarsprice
+start
+querycarprice, 25, cars2
+commit, 25
+
+#queryroomsprice
+start
+queryroomprice, 26, hotel2
+commit, 26
+
+#reserveflightAbort
+start
+newcustomerid, 27, 46
+commit, 27
+start
+reserveflight, 28, 46, 8850
+abort, 28
+
+#reserveFlight
+start
+reserveflight, 29, 46, 8850
+commit, 29
+
+#reserveCarAbort
+start
+reservecar, 30, 46, cars2
+abort, 30
+
+#reserveCar
+start
+reservecar, 31, 46, cars2
+commit, 31
+
+#reserveRoomAbort
+start
+reserveroom, 32, 46, hotel2
+abort, 32
+
+#reserveRoom
+start
+reserveroom, 33, 46, hotel2
+commit, 33
+
+#querycustomerinfo
+start
+querycustomer, 34, 46
+commit, 34
