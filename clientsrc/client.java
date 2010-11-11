@@ -685,6 +685,7 @@ public class client
 	    String shutdownServer;
 	    ScriptLogger logger = null;
 	    int lineno = 0;
+		Timestamp timestamp;
 	    
 	    BufferedReader scriptFile;
 	    
@@ -721,6 +722,7 @@ public class client
 		//remove heading and trailing white space
 		command=command.trim();
 		arguments=parse(command);
+		timestamp = new Timestamp();
 		
 		//decide which of the commands this was
 		switch(findChoice((String)arguments.elementAt(0))){
@@ -731,11 +733,14 @@ public class client
 		    }
 		    
 		    try{
+		    	timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
 			flightSeats = getInt(arguments.elementAt(3));
 			flightPrice = getInt(arguments.elementAt(4));
-			logger.log(rm.addFlight(Id,flightNum,flightSeats,flightPrice, new Timestamp()).timestamp);
+			timestamp = rm.addFlight(Id,flightNum,flightSeats,flightPrice, timestamp).timestamp;
+			timestamp.stamp();
+			logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -750,11 +755,14 @@ public class client
 			break;
 		    }
 		    try{
+		    	timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
 			numCars = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
 			logger.log(rm.addCars(Id,location,numCars,price, new Timestamp()).timestamp);
+			timestamp.stamp();
+			logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -769,11 +777,14 @@ public class client
 			break;
 		    }
 		    try{
+		    	timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
 			numRooms = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			logger.log(rm.addRooms(Id,location,numRooms,price, new Timestamp()).timestamp);
+			timestamp = rm.addRooms(Id,location,numRooms,price, new Timestamp()).timestamp;
+			timestamp.stamp();
+			logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -787,9 +798,9 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
-			logger.log(rm.newCustomer(Id, new Timestamp()).timestamp);
+			timestamp = (rm.newCustomer(Id, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -803,10 +814,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			logger.log(rm.deleteFlight(Id,flightNum, new Timestamp()).timestamp);
+			timestamp = (rm.deleteFlight(Id,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -820,11 +831,11 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
 			
-			logger.log(rm.deleteCars(Id,location, new Timestamp()).timestamp);
+			timestamp = (rm.deleteCars(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -838,10 +849,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.deleteRooms(Id,location, new Timestamp()).timestamp);
+			timestamp = (rm.deleteRooms(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -855,10 +866,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			logger.log(rm.deleteCustomer(Id,customer, new Timestamp()).timestamp);
+			timestamp = (rm.deleteCustomer(Id,customer, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -872,10 +883,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			logger.log(rm.queryFlight(Id,flightNum, new Timestamp()).timestamp);
+			timestamp = (rm.queryFlight(Id,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -889,10 +900,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryCars(Id,location, new Timestamp()).timestamp);
+			timestamp = (rm.queryCars(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -906,10 +917,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryRooms(Id,location, new Timestamp()).timestamp);
+			timestamp = (rm.queryRooms(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -923,10 +934,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			logger.log(rm.queryCustomerInfo(Id,customer, new Timestamp()).timestamp);
+			timestamp = (rm.queryCustomerInfo(Id,customer, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -940,10 +951,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			logger.log(rm.queryFlightPrice(Id,flightNum, new Timestamp()).timestamp);
+			timestamp = (rm.queryFlightPrice(Id,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -957,10 +968,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryCarsPrice(Id,location, new Timestamp()).timestamp);
+			timestamp = (rm.queryCarsPrice(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -974,10 +985,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			logger.log(rm.queryRoomsPrice(Id,location, new Timestamp()).timestamp);
+			timestamp = (rm.queryRoomsPrice(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -991,11 +1002,11 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
 			flightNum = getInt(arguments.elementAt(3));
-			logger.log(rm.reserveFlight(Id,customer,flightNum, new Timestamp()).timestamp);
+			timestamp = (rm.reserveFlight(Id,customer,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1010,12 +1021,12 @@ public class client
 			break;
 		    }
 		    
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			logger.log(rm.reserveCar(Id,customer,location, new Timestamp()).timestamp);
+			timestamp = (rm.reserveCar(Id,customer,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1029,12 +1040,12 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			logger.log(rm.reserveRoom(Id,customer,location, new Timestamp()).timestamp);
+			timestamp = (rm.reserveRoom(Id,customer,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1048,7 +1059,7 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
 			Vector flightNumbers = new Vector();
@@ -1058,7 +1069,7 @@ public class client
 			Car = getBoolean(arguments.elementAt(arguments.size()-2));
 			Room = getBoolean(arguments.elementAt(arguments.size()-1));
 			
-			logger.log(rm.itinerary(Id,customer,flightNumbers,location,Car,Room, new Timestamp()).timestamp);
+			timestamp = (rm.itinerary(Id,customer,flightNumbers,location,Car,Room, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1080,10 +1091,10 @@ public class client
 			System.out.println("Wrong number of args on line "+lineno);
 			break;
 		    }
-		    try{
+		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			Cid = getInt(arguments.elementAt(2));
-			logger.log(rm.newCustomer(Id,Cid, new Timestamp()).timestamp);
+			timestamp = (rm.newCustomer(Id,Cid, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1113,7 +1124,10 @@ public class client
 				break;
 			}
 			try {
-				logger.log(rm.start(new Timestamp()).timestamp);
+				timestamp.stamp();
+				timestamp = (rm.start(new Timestamp()).timestamp);
+				timestamp.stamp();
+				logger.log(timestamp);
 			}
 			catch(Exception e) {
 				System.out.println("EXCEPTION:");
@@ -1128,8 +1142,11 @@ public class client
 				break;
 			}
 			try {
+				timestamp.stamp();
 				Id = getInt(arguments.elementAt(1));
-				logger.log(rm.commit(Id, new Timestamp()).timestamp);
+				timestamp = (rm.commit(Id, new Timestamp()).timestamp);
+				timestamp.stamp();
+				logger.log(timestamp);
 			}
 			catch(TransactionAbortedException tae) {
 				System.out.println("Transaction previously aborted.");
@@ -1150,8 +1167,11 @@ public class client
 				break;
 			}
 			try {
+				timestamp.stamp();
 				Id = getInt(arguments.elementAt(1));
-				logger.log(rm.abort(Id, new Timestamp()).timestamp);
+				timestamp = (rm.abort(Id, new Timestamp()).timestamp);
+				timestamp.stamp();
+				logger.log(timestamp);
 				System.out.println("Transaction aborted!");
 			}
 			catch(TransactionAbortedException tae) {
