@@ -78,6 +78,9 @@ public class HavocadoFlesh
 		    registry = LocateRegistry.getRegistry(roomSeed);
 		    rmRooms = (ResourceManager) registry.lookup("HavocadoSeedRoom");
 		    // TODO: Check for null rm.
+		    
+		    // Start the overseer thread
+		    obj.overseer.start();
 		} 
 		catch (Exception e) 
 	    {
