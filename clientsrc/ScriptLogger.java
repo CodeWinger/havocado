@@ -3,6 +3,7 @@
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Enumeration;
+import java.util.Queue;
 import java.util.Vector;
 
 import ResInterface.Timestamp;
@@ -27,7 +28,7 @@ public class ScriptLogger {
 				out.println(s+": "+stamp);
 			}
 		}*/
-		Vector<String> v = t.getStamps();
+		Queue<String> v = t.getStamps();
 		for (String s : v) {
 			out.println(s);
 		}
