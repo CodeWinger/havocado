@@ -20,7 +20,7 @@ public class ScriptLogger {
 		Enumeration<String> comps = t.getStampers();
 		Vector<Long> v;
 		String s = comps.nextElement();
-		while (s != null) {
+		while (comps.hasMoreElements()) {
 			v = t.getStamps(s);
 			for (Long stamp : v) {
 				out.println(s+": "+stamp);
