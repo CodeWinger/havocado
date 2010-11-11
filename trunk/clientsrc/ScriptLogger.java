@@ -17,7 +17,7 @@ public class ScriptLogger {
 	}
 	
 	public void log(Timestamp t) {
-		Enumeration<String> comps = t.getStampers();
+		/*Enumeration<String> comps = t.getStampers();
 		Vector<Long> v;
 		String s;
 		while (comps.hasMoreElements()) {
@@ -26,6 +26,10 @@ public class ScriptLogger {
 			for (Long stamp : v) {
 				out.println(s+": "+stamp);
 			}
+		}*/
+		Vector<String> v = t.getStamps();
+		for (String s : v) {
+			out.println(s);
 		}
 	}
 	
