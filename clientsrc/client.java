@@ -684,7 +684,7 @@ public class client
 	    String location;
 	    String shutdownServer;
 	    ScriptLogger logger = null;
-	    int lineno = -1;
+	    int lineno = 0;
 	    
 	    BufferedReader scriptFile;
 	    
