@@ -121,6 +121,7 @@ public class Overseer extends Thread{
 		// Abort and delete transaction.
 		abortedIds.add(i);
 		t.abort();
+		System.out.println("Transaction "+tId+" aborted by overseer");
 		deleteTransaction(tId);
 		return;
 	}
