@@ -99,6 +99,7 @@ public class Overseer extends Thread{
 				throw new InvalidTransactionException(null);
 		}
 		// Commit and delete transaction.
+		System.out.println("Commiting transaction "+tId);
 		boolean result = t.commit();
 		deleteTransaction(tId);
 		return result;
