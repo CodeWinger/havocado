@@ -888,6 +888,7 @@ public class HavocadoFlesh
 		timestamp.stamp();
 		int tId;
 		tId = overseer.createTransaction(lm);
+		timestamp.stamp();
 		return new ReturnTuple<Integer>(tId, timestamp);
 	}
 
