@@ -760,7 +760,7 @@ public class client
 			location = getString(arguments.elementAt(2));
 			numCars = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			logger.log(rm.addCars(Id,location,numCars,price, timestamp).timestamp);
+			timestamp = rm.addCars(Id,location,numCars,price, timestamp).timestamp;
 			timestamp.stamp();
 			logger.log(timestamp);
 		    }
