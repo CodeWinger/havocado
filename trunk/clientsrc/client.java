@@ -707,7 +707,7 @@ public class client
 		    	logger.stop();
 		    	return;
 		    }
-		    if (command.startsWith("#"))
+		    if (command.startsWith("#") || command.isEmpty())
 		    	continue;
 		}
 		catch (IOException io){
