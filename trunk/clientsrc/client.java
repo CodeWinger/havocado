@@ -699,7 +699,6 @@ public class client
 	    }
 
 	    while(true){
-		System.out.print("\n>");
 		try{
 		    //read the next command
 		    command = scriptFile.readLine();
@@ -708,6 +707,8 @@ public class client
 		    	logger.stop();
 		    	return;
 		    }
+		    if (command.startsWith("#"))
+		    	continue;
 		}
 		catch (IOException io){
 		    System.out.println("Error reading from script");
