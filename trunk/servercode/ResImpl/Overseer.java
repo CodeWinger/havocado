@@ -38,6 +38,7 @@ public class Overseer extends Thread{
 		while(alive) {
 			synchronized (this) {
 				for (Transaction t : currentTransactions.values()) {
+					System.out.println("Time diff: "+(System.currentTimeMillis() - t.getTime()));
 					if (System.currentTimeMillis() - t.getTime() > timeout)
 						t.abort();
 				}
