@@ -25,6 +25,7 @@ public class ScriptLogger {
 			for (Long stamp : v) {
 				out.println(s+": "+stamp);
 			}
+			s = comps.nextElement();
 		}
 	}
 	
