@@ -64,9 +64,11 @@ public class LockManager
                             // lock conversion 
                             // *** ADD CODE HERE *** to carry out the lock conversion in the
                             TrxnObj readTrxnObj = new TrxnObj(xid, strData, READ);
-                            System.out.println("Conversion removal: "+this.lockTable.remove(readTrxnObj));
-                            this.lockTable.add(trxnObj);
-                            this.lockTable.add(dataObj);
+                            DataObj readDataObj = new DataObj(xid, strData, READ);
+                            lockTable.remove(readTrxnObj);
+                            lockTable.remove(readDataObj);
+                            lockTable.add(trxnObj);
+                            lockTable.add(dataObj);
                             // lock table
                         } else {
                             // a lock request that is not lock conversion
