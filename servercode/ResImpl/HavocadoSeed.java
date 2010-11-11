@@ -152,13 +152,13 @@ public class HavocadoSeed
 	
 	// query the price of an item
 	protected int queryPrice(int id, String key){
-		Trace.info("RM::queryCarsPrice(" + id + ", " + key + ") called" );
+		Trace.info("RM::queryPrice(" + id + ", " + key + ") called" );
 		ReservableItem curObj = (ReservableItem) readData( id, key);
 		int value = 0; 
 		if( curObj != null ) {
 			value = curObj.getPrice();
 		} // else
-		Trace.info("RM::queryCarsPrice(" + id + ", " + key + ") returns cost=$" + value );
+		Trace.info("RM::queryPrice(" + id + ", " + key + ") returns cost=$" + value );
 		return value;		
 	}
 	
@@ -168,7 +168,7 @@ public class HavocadoSeed
 		// Read customer object if it exists (and read lock it)
 		Customer cust = (Customer) readData( id, Customer.getKey(customerID) );		
 		if( cust == null ) {
-			Trace.warn("RM::reserveCar( " + id + ", " + customerID + ", " + key + ", "+location+")  failed--customer doesn't exist" );
+			Trace.warn("RM::reserveItem( " + id + ", " + customerID + ", " + key + ", "+location+")  failed--customer doesn't exist" );
 			return false;
 		} 
 		
