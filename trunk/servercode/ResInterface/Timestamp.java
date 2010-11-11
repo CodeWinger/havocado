@@ -38,7 +38,7 @@ public class Timestamp implements Serializable{
 		else {
 			v.add(new Long(System.currentTimeMillis()));
 		}*/
-		stamps.add(name+System.currentTimeMillis());
+		stamps.add(name+" "+System.currentTimeMillis());
 	}
 	
 	/**
