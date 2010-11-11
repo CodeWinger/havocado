@@ -11,6 +11,8 @@ public class client
     static String message = "blank";
     static ResourceManager rm = null;
 
+    int lastTransaction = 0;
+
     public static void main(String args[])
 	{
 	    client obj = new client();
@@ -1125,7 +1127,9 @@ public class client
 			}
 			try {
 				timestamp.stamp();
-				timestamp = (rm.start(timestamp).timestamp);
+				ReturnTuple<Integer> rt = rm.start(timestamp);
+				lastTransaction = rt.result;
+				timestamp = rt.timestamp;
 				timestamp.stamp();
 				logger.log(timestamp);
 			}
@@ -1480,6 +1484,8 @@ public class client
 
     public int getInt(Object temp) throws Exception {
 	try {
+		if (((String)temp).startsWith("$"))
+			return lastTransaction;
 		return (new Integer((String)temp)).intValue();
 	    }
 	catch(Exception e) {
