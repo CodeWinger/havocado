@@ -19,13 +19,13 @@ public class ScriptLogger {
 	public void log(Timestamp t) {
 		Enumeration<String> comps = t.getStampers();
 		Vector<Long> v;
-		String s = comps.nextElement();
+		String s;
 		while (comps.hasMoreElements()) {
+			s = comps.nextElement();
 			v = t.getStamps(s);
 			for (Long stamp : v) {
 				out.println(s+": "+stamp);
 			}
-			s = comps.nextElement();
 		}
 	}
 	
