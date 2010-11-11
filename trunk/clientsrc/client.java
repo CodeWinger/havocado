@@ -1102,6 +1102,7 @@ public class client
 			break;
 			
 		case 24:  //start a transaction
+			System.out.println("");
 			if (arguments.size()!=1) {
 				wrongNumber();
 				break;
