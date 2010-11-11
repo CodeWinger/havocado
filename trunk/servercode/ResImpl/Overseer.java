@@ -13,7 +13,7 @@ public class Overseer extends Thread{
 	 * The number of milliseconds after which a transaction will be aborted if
 	 * no new commands are sent.
 	 */
-	private final static long timeout = 10000;
+	private final static long timeout = 30000;
 	
 	/**
 	 * A set of the currently active transactions. All methods that modify this
