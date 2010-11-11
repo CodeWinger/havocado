@@ -702,9 +702,14 @@ public class client
 		try{
 		    //read the next command
 		    command = scriptFile.readLine();
+		    if (command == null) {
+			    System.out.println("Script complete");
+		    	logger.stop();
+		    	return;
+		    }
 		}
 		catch (IOException io){
-		    System.out.println("Script complete");
+		    System.out.println("Error reading from script");
 		    logger.stop();
 		    return;
 		}
