@@ -857,9 +857,21 @@ public class HavocadoFlesh
 
 	public boolean shutdown(String server) throws RemoteException {
 		if (server.equalsIgnoreCase("middleware")) {
-			rmCars.shutdown(null);
-			rmRooms.shutdown(null);
-			rmFlights.shutdown(null);
+			try {
+				rmCars.shutdown(null);
+			} catch (Exception e) {
+				// nothing
+			}
+			try {
+				rmRooms.shutdown(null);
+			} catch (Exception e) {
+				// nothing
+			}
+			try {
+				rmFlights.shutdown(null);
+			} catch (Exception e) {
+				// nothing
+			}
 			System.exit(0);
 		}
 		else if (server.equalsIgnoreCase("cars"))
