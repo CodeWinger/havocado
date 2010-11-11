@@ -37,13 +37,11 @@ public class AddCarsRMICommand extends AbstractRMICommand {
 			  timestamp.stamp();
 			  
 			  if(previousQty == 0) {
-				  ReturnTuple<Boolean> r;
-				  r = rm.deleteCars(id, location, timestamp);
+				  ReturnTuple<Boolean> r = rm.deleteCars(id, location, timestamp);
 				  r.timestamp.stamp();
 				  setTimestamp(r.timestamp);
 			  } else {
-				  ReturnTuple<Object> r;
-				  r = rm.setCars(id, location, previousQty, previousPrice, timestamp);
+				  ReturnTuple<Object> r = rm.setCars(id, location, previousQty, previousPrice, timestamp);
 				  r.timestamp.stamp();
 				  setTimestamp(r.timestamp);
 			  }
