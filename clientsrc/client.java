@@ -660,6 +660,7 @@ public class client
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			break;
 		    
 		default:
 		    System.out.println("The interface does not support this command.");
