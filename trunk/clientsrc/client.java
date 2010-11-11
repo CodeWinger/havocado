@@ -760,7 +760,7 @@ public class client
 			location = getString(arguments.elementAt(2));
 			numCars = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			logger.log(rm.addCars(Id,location,numCars,price, new Timestamp()).timestamp);
+			logger.log(rm.addCars(Id,location,numCars,price, timestamp).timestamp);
 			timestamp.stamp();
 			logger.log(timestamp);
 		    }
@@ -782,7 +782,7 @@ public class client
 			location = getString(arguments.elementAt(2));
 			numRooms = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			timestamp = rm.addRooms(Id,location,numRooms,price, new Timestamp()).timestamp;
+			timestamp = rm.addRooms(Id,location,numRooms,price, timestamp).timestamp;
 			timestamp.stamp();
 			logger.log(timestamp);
 		    }
@@ -800,7 +800,7 @@ public class client
 		    }
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
-			timestamp = (rm.newCustomer(Id, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.newCustomer(Id, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -817,7 +817,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			timestamp = (rm.deleteFlight(Id,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.deleteFlight(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -835,7 +835,7 @@ public class client
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
 			
-			timestamp = (rm.deleteCars(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.deleteCars(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -852,7 +852,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.deleteRooms(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.deleteRooms(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -869,7 +869,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			timestamp = (rm.deleteCustomer(Id,customer, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.deleteCustomer(Id,customer, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -886,7 +886,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			timestamp = (rm.queryFlight(Id,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.queryFlight(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -903,7 +903,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryCars(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.queryCars(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -920,7 +920,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryRooms(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.queryRooms(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -937,7 +937,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			timestamp = (rm.queryCustomerInfo(Id,customer, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.queryCustomerInfo(Id,customer, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -954,7 +954,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			timestamp = (rm.queryFlightPrice(Id,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.queryFlightPrice(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -971,7 +971,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryCarsPrice(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.queryCarsPrice(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -988,7 +988,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryRoomsPrice(Id,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.queryRoomsPrice(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1006,7 +1006,7 @@ public class client
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
 			flightNum = getInt(arguments.elementAt(3));
-			timestamp = (rm.reserveFlight(Id,customer,flightNum, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.reserveFlight(Id,customer,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1026,7 +1026,7 @@ public class client
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			timestamp = (rm.reserveCar(Id,customer,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.reserveCar(Id,customer,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1045,7 +1045,7 @@ public class client
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			timestamp = (rm.reserveRoom(Id,customer,location, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.reserveRoom(Id,customer,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1069,7 +1069,7 @@ public class client
 			Car = getBoolean(arguments.elementAt(arguments.size()-2));
 			Room = getBoolean(arguments.elementAt(arguments.size()-1));
 			
-			timestamp = (rm.itinerary(Id,customer,flightNumbers,location,Car,Room, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.itinerary(Id,customer,flightNumbers,location,Car,Room, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1094,7 +1094,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			Cid = getInt(arguments.elementAt(2));
-			timestamp = (rm.newCustomer(Id,Cid, new Timestamp()).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (rm.newCustomer(Id,Cid, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1125,7 +1125,7 @@ public class client
 			}
 			try {
 				timestamp.stamp();
-				timestamp = (rm.start(new Timestamp()).timestamp);
+				timestamp = (rm.start(timestamp).timestamp);
 				timestamp.stamp();
 				logger.log(timestamp);
 			}
@@ -1144,7 +1144,7 @@ public class client
 			try {
 				timestamp.stamp();
 				Id = getInt(arguments.elementAt(1));
-				timestamp = (rm.commit(Id, new Timestamp()).timestamp);
+				timestamp = (rm.commit(Id, timestamp).timestamp);
 				timestamp.stamp();
 				logger.log(timestamp);
 			}
@@ -1169,7 +1169,7 @@ public class client
 			try {
 				timestamp.stamp();
 				Id = getInt(arguments.elementAt(1));
-				timestamp = (rm.abort(Id, new Timestamp()).timestamp);
+				timestamp = (rm.abort(Id, timestamp).timestamp);
 				timestamp.stamp();
 				logger.log(timestamp);
 				System.out.println("Transaction aborted!");
