@@ -711,6 +711,7 @@ public class client
 		    }
 		    if (command.startsWith("#") || command.isEmpty())
 		    	continue;
+		    System.out.println("Executing command: "+command);
 		}
 		catch (IOException io){
 		    System.out.println("Error reading from script");
