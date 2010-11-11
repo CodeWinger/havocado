@@ -26,6 +26,7 @@ public class Transaction {
 	public Transaction(LockManager lockManager, int tId) {
 		this.lockManager = lockManager;
 		this.tId = tId;
+		setTime();
 		commandStack = new Stack<AbstractRMICommand>();
 	}
 	
