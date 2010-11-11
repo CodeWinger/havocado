@@ -32,6 +32,7 @@ public class ScriptLogger {
 		for (String s : v) {
 			out.println(s);
 		}
+		out.println();
 	}
 	
 	public void stop() {
