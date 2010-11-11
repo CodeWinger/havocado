@@ -1,9 +1,6 @@
 #!/usr/bin/python
 
-
-outputFilename = "PerformanceAnalysis.txt"
-outputFilename2 = "PerformanceAnalysis2.txt"
-filenames = ["benchmark1.log"]
+filenames = ["benchmark1", "benchmark2", "lockScript"]
 
 machineCounter = 1
 machineMap = {}
@@ -116,9 +113,9 @@ def writeOutput2(fname):
 
 def main():
 	for filename in filenames:
-		processFile(filename)
-		processFile2(filename)
-	
-	writeOutput(outputFilename)
-	writeOutput2(outputFilename2)
+		processFile(filename + ".log")
+		writeOutput(filename + ".out")		
+		processFile2(filename + ".log")
+		writeOutput2(filename + ".nls")
+
 main()
