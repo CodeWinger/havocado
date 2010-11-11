@@ -35,9 +35,16 @@ public class AddFlightRMICommand extends AbstractRMICommand {
 	  try {
 		  if(success.result) {
 			  timestamp.stamp();
-			  ReturnTuple<Object> r = rm.setFlight(id, flightNum, previousQty, previousPrice, timestamp);
-			  r.timestamp.stamp();
-			  setTimestamp(r.timestamp);
+			  
+			  if(previousQty == 0) {
+				  ReturnTuple<Boolean> r = rm.deleteFlight(id, flightNum, timestamp);
+				  r.timestamp.stamp();
+				  setTimestamp(r.timestamp);
+			  } else {
+				  ReturnTuple<Object> r = rm.setFlight(id, flightNum, previousQty, previousPrice, timestamp);
+				  r.timestamp.stamp();
+				  setTimestamp(r.timestamp);
+			  }
 		  }
 	  } catch (Exception e) {
 		  e.printStackTrace();

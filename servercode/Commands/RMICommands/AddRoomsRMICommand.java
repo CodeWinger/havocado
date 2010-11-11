@@ -36,9 +36,16 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
 	  try {
 		  if(success.result) {
 			  timestamp.stamp();
-			  ReturnTuple<Object> r = rm.setRooms(id, location, previousQty, previousPrice, timestamp);
-			  r.timestamp.stamp();
-			  setTimestamp(r.timestamp);
+			  
+			  if(previousQty == 0) {
+				  ReturnTuple<Boolean> r = rm.deleteRooms(id, location, timestamp);
+				  r.timestamp.stamp();
+				  setTimestamp(r.timestamp);
+			  } else {
+				  ReturnTuple<Object> r = rm.setRooms(id, location, previousQty, previousPrice, timestamp);
+				  r.timestamp.stamp();
+				  setTimestamp(r.timestamp);
+			  }
 		  }
 	  } catch (Exception e) {
 		  e.printStackTrace();
