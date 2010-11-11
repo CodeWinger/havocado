@@ -23,7 +23,7 @@ public class ScriptLogger {
 		while (s != null) {
 			v = t.getStamps(s);
 			for (Long stamp : v) {
-				out.print(s+": "+stamp);
+				out.println(s+": "+stamp);
 			}
 		}
 	}
