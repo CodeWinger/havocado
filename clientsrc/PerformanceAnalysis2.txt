@@ -1,0 +1,3 @@
+average time spent in mimi.cs.mcgill.ca: 7.37037037037ms
+average time spent in lab2-3: 1.44444444444ms
+average time spent in willy.cs.mcgill.ca: 4.33333333333ms
