@@ -849,9 +849,9 @@ public class HavocadoFlesh
 
 	public ReturnTuple<Boolean> commit(int id, Timestamp timestamp) throws RemoteException, TransactionAbortedException, InvalidTransactionException {
 		timestamp.stamp();
-		overseer.commit(id);
+		boolean result = overseer.commit(id);
 		timestamp.stamp();
-		return new ReturnTuple<Boolean>(true, timestamp);
+		return new ReturnTuple<Boolean>(result, timestamp);
 	}
 
 
