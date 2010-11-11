@@ -46,6 +46,7 @@ public class Transaction {
 	 */
 	private void releaseLocks() {
 		lockManager.UnlockAll(tId);
+		System.out.println("Releasing locks for transaction "+tId);
 	}
 	
 	/**
