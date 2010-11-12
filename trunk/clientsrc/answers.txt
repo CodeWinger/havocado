@@ -1,0 +1,6 @@
+a) Network latency from client to middleware: 1.016797294
+   Network latency from middleware to RM: 9.731408568
+b) Network latency from client to middleware: 1.0975
+   Network latency from middleware to RM: 7.700483948
+c) Network latency from client to middleware: 1.142115185
+   Network latency from middleware to RM: 7.2289923427
