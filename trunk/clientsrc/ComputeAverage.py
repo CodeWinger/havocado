@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
-filenames = ["benchmark1", "benchmark2", "lockScript"]
+filenames = ["benchmark1", "benchmark2", "benchmark3", "benchmark4"]
 
 machineCounter = 1
 machineMap = {}
 machineMap2 = {}
+machineMap3 = {}
 timestamps = {}
 
 def newMachine(name):
@@ -16,6 +17,10 @@ def newMachine(name):
 def newMachine2(name):
 	if not (name in machineMap2):
 		machineMap2[name] = []
+		
+def newMachine3(name):
+	if not (name in machineMap3):
+		machineMap3[name] = []
 
 def processBuffer(buff):
 	size = len(buff)
@@ -48,6 +53,14 @@ def processBuffer(buff):
 				newMachine2(labName)
 				labTime = machineMap2[labName]
 				labTime.append(labLastTime - labFirstTime)
+				
+				wName = buff[i-1].split(' ')[0]
+				wFirstTime = long(buff[i-1].split(' ')[1])
+				wLastTime = long(buff[i+2].split(' ')[1])
+				newMachine3(wName)
+				wTime = machineMap3[wName]
+				wTime.append(wLastTime - wFirstTime)
+				
 				foundLab = 1
 			else:
 				foundLab = 0
@@ -98,6 +111,7 @@ def writeOutput(fname):
 def writeOutput2(fname):
 
 	f = open(fname, 'w')
+	
 	for key in machineMap2:
 		print key
 		timestampList = machineMap2[key]
@@ -109,13 +123,24 @@ def writeOutput2(fname):
 		avg = float(acc) / float(tSize)
 		f.write("average time spent in " + key + ": " + str(avg) + "ms\n");
 	
+	for key in machineMap3:
+		print key
+		timestampList = machineMap3[key]
+		tSize = len(timestampList)
+		acc = 0
+		for i in range(tSize):
+			print timestampList[i]
+			acc = acc + timestampList[i]
+		avg = float(acc) / float(tSize)
+		f.write("average time spent waiting for the RM in " + key + ": " + str(avg) + "ms\n");
+	
 	f.close()
 
 def main():
 	for filename in filenames:
 		processFile(filename + ".log")
-		writeOutput(filename + ".out")		
 		processFile2(filename + ".log")
+		''' writeOutput(filename)'''
 		writeOutput2(filename + ".nls")
-
+	
 main()
