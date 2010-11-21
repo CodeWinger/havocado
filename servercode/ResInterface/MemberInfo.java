@@ -1,3 +1,5 @@
+package ResInterface;
+
 public class MemberInfo {
 	public String machineName;
 	public String rmiName;
