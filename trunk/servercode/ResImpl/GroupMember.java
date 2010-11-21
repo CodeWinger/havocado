@@ -10,11 +10,18 @@ import org.jgroups.Message;
 import org.jgroups.Address;
 import org.jgroups.ChannelException;
 
+import ResInterface.MemberInfo;
+
 public class GroupMember implements Receiver {
 	private JChannel channel;
 	private List<MemberInfo> currentMembers;
 	private MemberInfo myInfo;
 	protected boolean isMaster;
+	
+	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName) {
+		// TODO fill this in.
+	}
+	
 	@Override
 	public byte[] getState() {
 		// TODO Auto-generated method stub
