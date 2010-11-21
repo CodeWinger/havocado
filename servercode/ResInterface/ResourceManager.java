@@ -190,4 +190,8 @@ public interface ResourceManager extends Remote
      */
     public boolean shutdown(String server) throws RemoteException;
     
+    /**
+     * Simulate a crash on a specified server.
+     */
+    public void crash(MemberInfo m) throws RemoteException;
 }
