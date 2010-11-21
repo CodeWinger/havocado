@@ -11,6 +11,7 @@ import org.jgroups.Address;
 import org.jgroups.ChannelException;
 
 import ResInterface.MemberInfo;
+import ResInterface.ResourceManager;
 
 public class GroupMember implements Receiver {
 	private JChannel channel;
@@ -20,6 +21,15 @@ public class GroupMember implements Receiver {
 	
 	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName) {
 		// TODO fill this in.
+	}
+	
+	public void promoteToMaster() {
+		// TODO fill this in.
+	}
+	
+	public ResourceManager getMaster() {
+		// TODO fill this in.
+		return null;
 	}
 	
 	@Override
