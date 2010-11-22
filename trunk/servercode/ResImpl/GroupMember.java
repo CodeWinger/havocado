@@ -90,7 +90,7 @@ public abstract class GroupMember implements Receiver {
 		return null;
 	}
 	
-	public ResourceManager memberInfoToResourceManager(MemberInfo mi) {
+	public static ResourceManager memberInfoToResourceManager(MemberInfo mi) {
 		try {
 			return (ResourceManager)LocateRegistry.getRegistry().lookup(mi.rmiName);
 		} catch (AccessException e) {
