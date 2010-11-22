@@ -1,5 +1,9 @@
 package ResImpl;
 
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -22,14 +26,13 @@ import ResInterface.MemberInfo;
 import ResInterface.ResourceManager;
 
 public abstract class GroupMember implements Receiver {
-	private JChannel channel;
+	protected JChannel channel;
 	protected LinkedList<MemberInfo> currentMembers = new LinkedList<MemberInfo>();
 	private MemberInfo myInfo = null;
 	protected MemberInfo master = null;
 	protected boolean isMaster;
 	
 	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName) {
-		// TODO fill this in.
 		try {
 			this.isMaster = isMaster;
 			myInfo = new MemberInfo(myRMIServiceName, InetAddress.getLocalHost());
@@ -46,55 +49,109 @@ public abstract class GroupMember implements Receiver {
 		}
 		//TODO Master specific stuff.
 		//TODO Slave specific stuff.
+		if (!isMaster) {
+			try {
+				channel.send(null, null, myInfo);
+			} catch (ChannelNotConnectedException e) {
+				e.printStackTrace();
+			} catch (ChannelClosedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
+	/**
+	 * Promotes this group member to a master.
+	 * Specifically, sets the 'master' info to this member's info, sets the
+	 * boolean 'isMaster' to true, and updates all other members' member list.
+	 */
 	public void promoteToMaster() {
-		// TODO fill this in.
 		master = myInfo;
 		isMaster = true;
 		try {
 			channel.send(null, null, currentMembers);
 		} catch (ChannelNotConnectedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ChannelClosedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public ResourceManager getMaster() {
-		// TODO fill this in.
+		try {
+			return (ResourceManager)LocateRegistry.getRegistry().lookup(master.rmiName);
+		} catch (AccessException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public ResourceManager memberInfoToResourceManager(MemberInfo mi) {
+		try {
+			return (ResourceManager)LocateRegistry.getRegistry().lookup(mi.rmiName);
+		} catch (AccessException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
 	public byte[] getState() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not supported");
 	}
 
-	public void receive(Message arg0) {
-		// TODO Auto-generated method stub
-		
+	@SuppressWarnings("unchecked")
+	/**
+	 * @param msg The message being received. 
+	 */
+	public void receive(Message msg) {
+		// If we're master, if we get new member information, add the new member to
+		// the list and broadcast the list.
+		if (isMaster) {
+			if (msg.getObject() instanceof MemberInfo) {
+				currentMembers.add((MemberInfo)msg.getObject());
+				try {
+					channel.send(null, null, currentMembers);
+				} catch (ChannelNotConnectedException e) {
+					e.printStackTrace();
+				} catch (ChannelClosedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		// If we're slave, and we get a list of MemberInfo, update our list.
+		else {
+			if (msg.getObject() instanceof LinkedList<?>) {
+				currentMembers = (LinkedList<MemberInfo>)msg.getObject();
+			}
+		}
+		specialReceive(msg);
 	}
 	
 	protected abstract void specialReceive(Message arg0);
 	
 	public void setState(byte[] arg0) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported");
 	}
 	
 	public void block() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported");
 	}
 	
 	public void suspect(Address arg0) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported");
 	}
 	
+	/**
+	 * @param arg0 The new view.
+	 */
 	public void viewAccepted(View arg0) {
 		Vector<Address> addresses = arg0.getMembers();
 		PriorityQueue<Integer> toRemove = new PriorityQueue<Integer>(1, Collections.reverseOrder());
