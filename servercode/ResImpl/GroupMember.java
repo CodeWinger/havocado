@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import org.jgroups.Receiver;
 import org.jgroups.View;
 import org.jgroups.protocols.pbcast.NAKACK;
+import org.jgroups.stack.IpAddress;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.Address;
@@ -20,24 +21,23 @@ import ResInterface.ResourceManager;
 public abstract class GroupMember implements Receiver {
 	private JChannel channel;
 	protected List<MemberInfo> currentMembers = new LinkedList<MemberInfo>();
-	private MemberInfo myInfo;
+	private MemberInfo myInfo = null;
 	protected boolean isMaster;
 	
 	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName) {
 		// TODO fill this in.
 		try {
 			this.isMaster = isMaster;
-			myInfo = new MemberInfo(InetAddress.getLocalHost().getHostName(), myRMIServiceName);
-			//TODO currentMembers.add(myInfo);
+			myInfo = new MemberInfo(InetAddress.getLocalHost().getHostName(), myRMIServiceName, null);
+			currentMembers.add(myInfo);
 			channel = new JChannel("jconfig_FIFO.xml");
 			channel.connect(groupName);
 			channel.setReceiver(this);
-			channel.
 			NAKACK nak = (NAKACK)channel.getProtocolStack().findProtocol(NAKACK.class);
 			nak.setLogDiscardMessages(false);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
 		} catch (ChannelException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 	}
@@ -79,12 +79,26 @@ public abstract class GroupMember implements Receiver {
 	public void viewAccepted(View arg0) {
 		// TODO Auto-generated method stub
 		Vector<Address> addresses = arg0.getMembers();
+		if (myInfo.address == null) {
+			try {
+				for (Address a : addresses) {
+					IpAddress ipa = (IpAddress)a;
+					if (ipa.getIpAddress().equals(InetAddress.getLocalHost()))
+						myInfo.address = ipa;
+				}
+			}
+			catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+		}
 		if (isMaster) {
+			// For everyone in currentmembers, if they aren't in the view, remove from list and send new list.
 			for (Address a : addresses) {
 				//a.
 			}
 		}
 		else {
+			// If the master dies and we're next in line, become a master.
 			if (addresses.contains(currentMembers.get(0)))
 				promoteToMaster();
 		}
