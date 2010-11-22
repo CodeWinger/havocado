@@ -28,7 +28,7 @@ public abstract class GroupMember implements Receiver {
 		// TODO fill this in.
 		try {
 			this.isMaster = isMaster;
-			myInfo = new MemberInfo(InetAddress.getLocalHost().getHostName(), myRMIServiceName, null);
+			myInfo = new MemberInfo(myRMIServiceName, InetAddress.getLocalHost());
 			currentMembers.add(myInfo);
 			channel = new JChannel("jconfig_FIFO.xml");
 			channel.connect(groupName);
