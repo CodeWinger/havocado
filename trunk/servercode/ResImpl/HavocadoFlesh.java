@@ -943,4 +943,10 @@ public class HavocadoFlesh
     	return null;
     }
 
+
+	public void crash(MemberInfo m) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

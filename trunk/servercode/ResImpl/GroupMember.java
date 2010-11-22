@@ -32,32 +32,31 @@ public class GroupMember implements Receiver {
 		return null;
 	}
 	
-	@Override
 	public byte[] getState() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
+
 	public void receive(Message arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void setState(byte[] arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void block() {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void suspect(Address arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void viewAccepted(View arg0) {
 		// TODO Auto-generated method stub
 		
