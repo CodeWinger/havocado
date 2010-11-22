@@ -26,11 +26,13 @@ public abstract class GroupMember implements Receiver {
 	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName) {
 		// TODO fill this in.
 		try {
+			this.isMaster = isMaster;
 			myInfo = new MemberInfo(InetAddress.getLocalHost().getHostName(), myRMIServiceName);
-			currentMembers.add(myInfo);
+			//TODO currentMembers.add(myInfo);
 			channel = new JChannel("jconfig_FIFO.xml");
 			channel.connect(groupName);
 			channel.setReceiver(this);
+			channel.
 			NAKACK nak = (NAKACK)channel.getProtocolStack().findProtocol(NAKACK.class);
 			nak.setLogDiscardMessages(false);
 		} catch (UnknownHostException e) {
@@ -78,7 +80,13 @@ public abstract class GroupMember implements Receiver {
 		// TODO Auto-generated method stub
 		Vector<Address> addresses = arg0.getMembers();
 		if (isMaster) {
-			//addresses.
+			for (Address a : addresses) {
+				//a.
+			}
+		}
+		else {
+			if (addresses.contains(currentMembers.get(0)))
+				promoteToMaster();
 		}
 	}
 }
