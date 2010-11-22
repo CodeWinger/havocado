@@ -736,4 +736,10 @@ public class HavocadoSeed
 		
 	}
 
+
+	public List<MemberInfo> getGroupMembers() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -1,11 +1,13 @@
 package Commands.RMICommands;
 
+import java.io.Serializable;
+
 import Commands.*;
 import ResInterface.*;
 import LockManager.LockManager;
 
-public abstract class AbstractRMICommand implements Command {
-  protected ResourceManager rm;
+public abstract class AbstractRMICommand implements Command, Serializable {
+  protected transient ResourceManager rm;
   protected boolean error;
   
   protected int previousQty = 0;
