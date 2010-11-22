@@ -730,4 +730,10 @@ public class HavocadoSeed
 		return new ReturnTuple<Vector<Integer>>(results, timestamp);
 	}
 
+
+	public void crash(MemberInfo m) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
