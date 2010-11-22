@@ -254,9 +254,15 @@ public class HavocadoSeed extends GroupMember
 		} // else
 		
 		// Propogate command to slaves.
-		for (MemberInfo mi : currentMembers) {
-			
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).addFlight(id, flightNum, flightSeats, flightPrice, timestamp).timestamp;
+			}
 		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return new ReturnTuple<Boolean>(true, timestamp);
 	}
@@ -268,6 +274,17 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Flight.getKey(flightNum)), timestamp);
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).deleteFlight(id, flightNum, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return result;
 	}
@@ -281,6 +298,17 @@ public class HavocadoSeed extends GroupMember
 			editNum(id, Flight.getKey(flightNum), count);
 			editPrice(id, Flight.getKey(flightNum), price);
 		}
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).setFlight(id, flightNum, count, price, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return new ReturnTuple<Object>(null, timestamp);
 	}
@@ -309,6 +337,17 @@ public class HavocadoSeed extends GroupMember
 			writeData( id, curObj.getKey(), curObj );
 			Trace.info("RM::addRooms(" + id + ") modified existing location " + location + ", count=" + curObj.getCount() + ", price=$" + price );
 		} // else
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).addRooms(id, location, count, price, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return new ReturnTuple<Boolean>(true, timestamp);
 	}
@@ -319,6 +358,17 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Hotel.getKey(location)), timestamp);
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).deleteRooms(id, location, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return result;
 		
@@ -333,6 +383,17 @@ public class HavocadoSeed extends GroupMember
 			editNum(id, Hotel.getKey(location), count);
 			editPrice(id, Hotel.getKey(location), price);
 		}
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).setRooms(id, location, count, price, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return new ReturnTuple<Object>(null, timestamp);
 	}
@@ -359,6 +420,17 @@ public class HavocadoSeed extends GroupMember
 			writeData( id, curObj.getKey(), curObj );
 			Trace.info("RM::addCars(" + id + ") modified existing location " + location + ", count=" + curObj.getCount() + ", price=$" + price );
 		} // else
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).addCars(id, location, count, price, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return new ReturnTuple<Boolean>(true, timestamp);
 	}
@@ -370,6 +442,17 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Car.getKey(location)), timestamp);
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).deleteCars(id, location, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return result;
 	}
@@ -383,6 +466,17 @@ public class HavocadoSeed extends GroupMember
 			editNum(id, Car.getKey(location), count);
 			editPrice(id, Car.getKey(location), price);
 		}
+		
+		// Propogate command to slaves.
+		try {
+			for (MemberInfo mi : currentMembers) {
+				timestamp = memberInfoToResourceManager(mi).setCars(id, location, count, price, timestamp).timestamp;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		timestamp.stamp();
 		return new ReturnTuple<Object>(null, timestamp);
 	}
@@ -746,21 +840,6 @@ public class HavocadoSeed extends GroupMember
 
 	public List<MemberInfo> getGroupMembers() throws RemoteException {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public ResourceManager getMaster() {
-		try {
-			return (ResourceManager)LocateRegistry.getRegistry().lookup(master.rmiName);
-		} catch (AccessException e) {
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
-		}
 		return null;
 	}
 
