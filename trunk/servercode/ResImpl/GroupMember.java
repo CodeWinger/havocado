@@ -79,18 +79,6 @@ public abstract class GroupMember implements Receiver {
 	public void viewAccepted(View arg0) {
 		// TODO Auto-generated method stub
 		Vector<Address> addresses = arg0.getMembers();
-		if (myInfo.address == null) {
-			try {
-				for (Address a : addresses) {
-					IpAddress ipa = (IpAddress)a;
-					if (ipa.getIpAddress().equals(InetAddress.getLocalHost()))
-						myInfo.address = ipa;
-				}
-			}
-			catch (UnknownHostException e) {
-				e.printStackTrace();
-			}
-		}
 		if (isMaster) {
 			// For everyone in currentmembers, if they aren't in the view, remove from list and send new list.
 			for (Address a : addresses) {
