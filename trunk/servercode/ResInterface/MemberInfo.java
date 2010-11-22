@@ -1,6 +1,8 @@
 package ResInterface;
 
-public class MemberInfo {
+import java.io.Serializable;
+
+public class MemberInfo implements Serializable{
 	public String machineName;
 	public String rmiName;
 	public MemberInfo(String pMachineName, String pRmiName) {

@@ -23,7 +23,8 @@ import LockManager.LockManager;
 
 
 //public class HavocadoFlesh extends java.rmi.server.UnicastRemoteObject
-public class HavocadoFlesh
+public class HavocadoFlesh 
+	extends GroupMember 
     implements ResourceManager {
 	
 	/** Static resource manager references */
@@ -947,6 +948,10 @@ public class HavocadoFlesh
 	public void crash(MemberInfo m) throws RemoteException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public List<MemberInfo> getGroupMembers() throws RemoteException {
+		return this.;
 	}
 
 }
