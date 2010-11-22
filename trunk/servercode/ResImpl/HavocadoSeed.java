@@ -15,9 +15,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import org.jgroups.Message;
+
 
 //public class HavocadoSeed extends java.rmi.server.UnicastRemoteObject
-public class HavocadoSeed
+public class HavocadoSeed extends GroupMember
 	implements ResourceManager {
 	
 	protected RMHashtable m_itemHT = new RMHashtable();
@@ -25,51 +27,51 @@ public class HavocadoSeed
 
 	public static void main(String args[]) {
         // Figure out where server is running
-        String name = "";
+		boolean isMaster = false;
+		String groupName = "";
+        String rmiName = "";
 
-        if (args.length == 1) {
-        	name = args[0];
-        } else if (args.length != 1) {
+        if (args.length == 3) {
+        	if (args[0].compareToIgnoreCase("master") == 0)
+        		isMaster = true;
+        	else if (args[0].compareToIgnoreCase("replica") == 0)
+        		isMaster = false;
+        	else {
+        		System.err.println("Wrong usage");
+        		System.out.println("<role> must be \"master\" or \"replica\", not "+args[0]);
+        	}
+        	
+        	groupName = args[1];
+        	rmiName = args[2];
+        } else {
         	System.err.println ("Wrong usage");
-        	System.out.println("Usage: java ResImpl.HavocadoSeed [port]");
+        	System.out.println("Usage: java ResImpl.HavocadoSeed <role> <groupName> <rmiName>");
             System.exit(1);
         }
 		
 		try 
 		{
 			// create a new Server object
-			HavocadoSeed obj = new HavocadoSeed();
-			// dynamically generate the stub (client proxy)
-			ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
-
-			// Bind the remote object's stub in the registry
-			Registry registry = LocateRegistry.getRegistry();
-			registry.rebind(name, rm);
-
-			System.err.println("Server ready");
+			new HavocadoSeed(isMaster, rmiName, groupName);
 		} 
 		catch (Exception e) 
 		{
 			System.err.println("Server exception: " + e.toString());
 			e.printStackTrace();
 		}
-
-         // Create and install a security manager
- //        if (System.getSecurityManager() == null) {
- //          System.setSecurityManager(new RMISecurityManager());
- //        }
- //        try {
- //               HavocadoSeed obj = new HavocadoSeed();
- //               Naming.rebind("rmi://" + server + "/RM", obj);
- //               System.out.println("RM bound");
- //        } 
- //        catch (Exception e) {
- //               System.out.println("RM not bound:" + e);
- //        }
     }
 
     
-    public HavocadoSeed() throws RemoteException {
+    public HavocadoSeed(boolean isMaster, String myRMIServiceName, String groupName) throws RemoteException {
+    	super(isMaster, myRMIServiceName, groupName);
+		// dynamically generate the stub (client proxy)
+		ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(this, 0);
+
+		// Bind the remote object's stub in the registry
+		Registry registry = LocateRegistry.getRegistry();
+		registry.rebind(myRMIServiceName, rm);
+
+		System.err.println("Server ready");
     }
 
 
@@ -250,6 +252,11 @@ public class HavocadoSeed
 			writeData( id, curObj.getKey(), curObj );
 			Trace.info("RM::addFlight(" + id + ") modified existing flight " + flightNum + ", seats=" + curObj.getCount() + ", price=$" + flightPrice );
 		} // else
+		
+		// Propogate command to slaves.
+		for (MemberInfo mi : currentMembers) {
+			
+		}
 		timestamp.stamp();
 		return new ReturnTuple<Boolean>(true, timestamp);
 	}
@@ -740,6 +747,27 @@ public class HavocadoSeed
 	public List<MemberInfo> getGroupMembers() throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public ResourceManager getMaster() {
+		try {
+			return (ResourceManager)LocateRegistry.getRegistry().lookup(master.rmiName);
+		} catch (AccessException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	@Override
+	protected void specialReceive(Message arg0) {
+		// Do nothing.
 	}
 
 }
