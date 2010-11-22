@@ -1,6 +1,10 @@
 package ResImpl;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.jgroups.Receiver;
 import org.jgroups.View;
@@ -13,14 +17,27 @@ import org.jgroups.ChannelException;
 import ResInterface.MemberInfo;
 import ResInterface.ResourceManager;
 
-public class GroupMember implements Receiver {
+public abstract class GroupMember implements Receiver {
 	private JChannel channel;
-	private List<MemberInfo> currentMembers;
+	protected List<MemberInfo> currentMembers = new LinkedList<MemberInfo>();
 	private MemberInfo myInfo;
 	protected boolean isMaster;
 	
 	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName) {
 		// TODO fill this in.
+		try {
+			myInfo = new MemberInfo(InetAddress.getLocalHost().getHostName(), myRMIServiceName);
+			currentMembers.add(myInfo);
+			channel = new JChannel("jconfig_FIFO.xml");
+			channel.connect(groupName);
+			channel.setReceiver(this);
+			NAKACK nak = (NAKACK)channel.getProtocolStack().findProtocol(NAKACK.class);
+			nak.setLogDiscardMessages(false);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (ChannelException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void promoteToMaster() {
@@ -59,6 +76,9 @@ public class GroupMember implements Receiver {
 	
 	public void viewAccepted(View arg0) {
 		// TODO Auto-generated method stub
-		
+		Vector<Address> addresses = arg0.getMembers();
+		if (isMaster) {
+			//addresses.
+		}
 	}
 }
