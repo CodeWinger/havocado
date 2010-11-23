@@ -42,6 +42,19 @@ public class Transaction {
 	}
 	
 	/**
+	 * Replicate an undo on all the commands on the stack. Does not actually
+	 * call undo() on all the commands. Clears the stack.
+	 */
+	private void replicateUndoAll() {
+		AbstractRMICommand c;
+		while(!commandStack.isEmpty()) {
+			c = commandStack.pop();
+			// do not actually undo() the command, because we do not need
+			// to perform the undo action.
+		}
+	}
+	
+	/**
 	 * Releases all locks associated with this transaction.
 	 */
 	private void releaseLocks() {
@@ -55,6 +68,14 @@ public class Transaction {
 	 */
 	public void abort() {
 		undoAll();
+		releaseLocks();
+	}
+	
+	/**
+	 * Replicate an abort call.
+	 */
+	public void replicateAbort() {
+		replicateUndoAll();
 		releaseLocks();
 	}
 	

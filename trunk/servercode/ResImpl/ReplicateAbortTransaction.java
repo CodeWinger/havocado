@@ -9,8 +9,7 @@ public class ReplicateAbortTransaction implements ReplicationCommand {
 	}
 	
 	public void execute(HavocadoFlesh f) {
-		// TODO Auto-generated method stub
-
+		// tell the overseer to replicate the abort command.
+		f.overseer.replicateAbort(id);
 	}
-
 }

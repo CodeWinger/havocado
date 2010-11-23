@@ -86,7 +86,7 @@ public class Overseer extends Thread{
 	/**
 	 * Commits the transaction with tId.
 	 * @param tId The ID of the transaction
-	 * @return false if tId is invalid or if commit fails, true otherewise.
+	 * @return false if tId is invalid or if commit fails, true otherwise.
 	 */
 	public synchronized boolean commit(int tId) throws TransactionAbortedException, InvalidTransactionException {
 		Integer i = new Integer(tId);
@@ -123,6 +123,19 @@ public class Overseer extends Thread{
 		abortedIds.add(i);
 		t.abort();
 		System.out.println("Transaction "+tId+" aborted by overseer");
+		deleteTransaction(tId);
+		return;
+	}
+	
+	public synchronized void replicateAbort(int tId) {
+		Integer i = new Integer(tId);
+		Transaction t = currentTransactions.get(i);
+		if(t == null) {
+			return;
+		}
+		abortedIds.add(i);
+		t.replicateAbort();
+		System.out.println("Transaction " + tId + " aborted by overseer");
 		deleteTransaction(tId);
 		return;
 	}
