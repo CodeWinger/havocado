@@ -24,6 +24,12 @@ public abstract class AbstractRMICommand implements Command, Serializable {
     error = false;
   }
   
+  /**
+   * Get an available resource manager within the provided list.
+   * Returns null if no resource manager is available.
+   * @param memberList
+   * @return
+   */
   public static ResourceManager getAvailableRM(LinkedList<MemberInfo> memberList) {
 	  int listSize = memberList.size();
 	  for(int i = 0; i < listSize; i++) {
@@ -43,6 +49,19 @@ public abstract class AbstractRMICommand implements Command, Serializable {
 	  return null;
   }
   
+  /**
+   * Populate the resource manager of this command with an available one, 
+   * based on the MemberInfo list passed in the constructor.
+   * @throws Exception
+   */
+  protected void populateResourceManagers() throws Exception {
+	  ResourceManager r = getAvailableRM(rmGroup);
+	  if (r == null) {
+		  throw new Exception("Unavailable resource manager");
+	  }
+	  rm = getAvailableRM(rmGroup);
+  }
+  
   public Timestamp getTimestamp() {
 	  return timestamp;
   }
@@ -57,14 +76,10 @@ public abstract class AbstractRMICommand implements Command, Serializable {
   
   public abstract int getRequiredLock();
   
-  public void populateResourceManagers() throws Exception {
-	  ResourceManager r = getAvailableRM(rmGroup);
-	  if (r == null) {
-		  throw new Exception("Unavailable resource manager");
-	  }
-	  rm = getAvailableRM(rmGroup);
-  }
-  
+  /**
+   * Perform the command with the populated resource managers.
+   * @throws Exception
+   */
   public abstract void doCommand() throws Exception;
   
   public synchronized void waitFor() { 

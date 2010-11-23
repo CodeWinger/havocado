@@ -1,5 +1,7 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
+
 import ResInterface.*;
 
 public class AddRoomsRMICommand extends AbstractRMICommand {
@@ -11,8 +13,8 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
 
   public ReturnTuple<Boolean> success;
 
-  public AddRoomsRMICommand(ResourceManager pRm, int pId, String pLocation, int pNumRooms, int pPrice) {
-    super(pRm);
+  public AddRoomsRMICommand(LinkedList<MemberInfo> pRmGroup, int pId, String pLocation, int pNumRooms, int pPrice) {
+    super(pRmGroup);
     // Store our attributes.
     id = pId;
     location = pLocation;

@@ -1,14 +1,19 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
 import java.util.Vector;
 
 import ResInterface.*;
 
 public class DeleteCustomerRMICommand extends AbstractRMICommand {
 
+  public LinkedList<MemberInfo> carRmGroup;
+  public LinkedList<MemberInfo> flightRmGroup;
+  public LinkedList<MemberInfo> roomRmGroup;
+  
   public ResourceManager carRm;
   public ResourceManager flightRm;
-	public ResourceManager roomRm;
+  public ResourceManager roomRm;
 
   public int id;
   public int customer;
@@ -16,15 +21,15 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
   public ReturnTuple<Boolean> success;
 
   public DeleteCustomerRMICommand(
-		ResourceManager pCarRm, 
-		ResourceManager pFlightRm, 
-		ResourceManager pRoomRm, 
-		int pId, int pCustomer) 
+		  LinkedList<MemberInfo> pCarRmGroup,
+		  LinkedList<MemberInfo> pFlightRmGroup,
+		  LinkedList<MemberInfo> pRoomRmGroup,
+		  int pId, int pCustomer) 
 	{
-    super(pCarRm); // initialize the abstract constructor - this is only to set the error code to false.
-    carRm = pCarRm;
-    flightRm = pFlightRm;
-    roomRm = pRoomRm;
+    super(pCarRmGroup); // initialize the abstract constructor - this is only to set the error code to false.
+    carRmGroup = pCarRmGroup;
+    flightRmGroup = pFlightRmGroup;
+    roomRmGroup = pRoomRmGroup;
     
     // Store our attributes.
     id = pId;
@@ -33,6 +38,21 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
     success = new ReturnTuple<Boolean>(false, null);
   }
   
+  /**
+   * Override the populateResourceManagers function.
+   */
+  @Override
+  protected void populateResourceManagers() throws Exception {
+	  ResourceManager c = getAvailableRM(carRmGroup);
+	  ResourceManager f = getAvailableRM(flightRmGroup);
+	  ResourceManager r = getAvailableRM(roomRmGroup);
+	  if (c == null || f == null || r == null) {
+		  throw new Exception("One resource manager is unavailable");
+	  }
+	  carRm = c;
+	  flightRm = f;
+	  roomRm = r;
+  }
   
   private ReturnTuple<Vector<String>> previousCarReservations;
   private ReturnTuple<Vector<Integer>> previousFlightReservations;

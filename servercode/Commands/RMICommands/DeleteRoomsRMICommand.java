@@ -1,5 +1,7 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
+
 import ResInterface.*;
 
 public class DeleteRoomsRMICommand extends AbstractRMICommand {
@@ -9,8 +11,8 @@ public class DeleteRoomsRMICommand extends AbstractRMICommand {
   
   public ReturnTuple<Boolean> success;
 
-  public DeleteRoomsRMICommand(ResourceManager pRm, int pId, String pLocation) {
-    super(pRm);
+  public DeleteRoomsRMICommand(LinkedList<MemberInfo> pRmGroup, int pId, String pLocation) {
+    super(pRmGroup);
     // Store our attributes.
     id = pId;
     location = pLocation;

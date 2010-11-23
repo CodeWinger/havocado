@@ -1,5 +1,7 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
+
 import ResInterface.*;
 
 public class DeleteFlightRMICommand extends AbstractRMICommand {
@@ -9,8 +11,8 @@ public class DeleteFlightRMICommand extends AbstractRMICommand {
 
   public ReturnTuple<Boolean> success;
 
-  public DeleteFlightRMICommand(ResourceManager pRm, int pId, int pFlightNum) {
-    super(pRm);
+  public DeleteFlightRMICommand(LinkedList<MemberInfo> pRmGroup, int pId, int pFlightNum) {
+    super(pRmGroup);
     // Store our attributes.
     id = pId;
     flightNum = pFlightNum;
