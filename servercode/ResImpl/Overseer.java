@@ -30,6 +30,14 @@ public class Overseer extends Thread{
 	/** A boolean that is used to kill the thread. */
 	private boolean alive = true;
 	
+	/** A reference to the HavocadoFlesh to which the Overseer belongs, to inform it of any
+	 * automated transaction aborts. */
+	private final HavocadoFlesh flesh;
+	
+	Overseer(HavocadoFlesh pF) {
+		flesh = pF;
+	}
+	
 	/**
 	 * Check each transaction and kills ones that have been inactive for
 	 * too long.

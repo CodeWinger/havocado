@@ -31,10 +31,10 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	public static final String FORCE_SHUTDOWN = "force";
 
     /** The middleware's lock manager. All lock management is done on the middleware side */
-    LockManager lm = new LockManager();
+    final LockManager lm = new LockManager();
     
     /** The middleware's transaction manager. Handles keeping track of transactions. */
-    Overseer overseer = new Overseer();
+    final Overseer overseer;
 
     private final LinkedList<MemberInfo> carGroup = new LinkedList<MemberInfo>();
     private final LinkedList<MemberInfo> flightGroup = new LinkedList<MemberInfo>();
@@ -116,6 +116,9 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     	// Create the group member.
     	super(isMaster, myRMIServiceName, groupName);
     	
+    	// Initialize the overseer
+    	this.overseer = new Overseer(this);
+    	
     	// initialize the RMI service.
 	    ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(this, 0);
 
@@ -145,14 +148,43 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     	    this.roomGroup.addAll(rmRooms.getGroupMembers());
     	}
     	
-	    // Start the overseer thread
-	    this.overseer.start();
+	    // Start the overseer thread if I am a master.
+    	if(this.isMaster) {
+    		this.overseer.start();
+    	}
     }
     
     // helper constructor for slaves.
     private HavocadoFlesh(boolean isMaster, String myRMIServiceName, String groupName) throws RemoteException, NotBoundException {
     	this(isMaster, myRMIServiceName, groupName, null, null, null, null, null, null);
     }
+    
+    void lockSet(int tId, int lockType, String resource) {
+    	if(this.isMaster) {
+    		ReplicationCommand r = new ReplicateSetLock(tId, lockType, resource);
+    		this.send(r);
+    	}
+    }
+    
+    void commandAddedToTransaction(int tId, AbstractRMICommand pCommand) {
+    	if(this.isMaster) {
+    		
+    	}
+    }
+    
+    void transactionAborted(int tId) {
+    	if(this.isMaster) {
+    		
+    	}
+    }
+    
+    void transactionCommitted(int tId) {
+    	if(this.isMaster) {
+    		
+    	}
+    }
+    
+
         
     private ResourceManager getRmCars() {
     	MemberInfo carMI = carGroup.peekFirst();
