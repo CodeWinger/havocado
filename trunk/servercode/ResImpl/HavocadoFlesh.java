@@ -31,7 +31,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	public static final String FORCE_SHUTDOWN = "force";
 
     /** The middleware's lock manager. All lock management is done on the middleware side */
-    private LockManager lm = new LockManager();
+    LockManager lm = new LockManager();
     
     /** The middleware's transaction manager. Handles keeping track of transactions. */
     Overseer overseer = new Overseer();

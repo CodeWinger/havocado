@@ -1,5 +1,7 @@
 package ResImpl;
 
+import LockManager.DeadlockException;
+
 public class ReplicateSetLock implements ReplicationCommand {
 
 	public int id;
@@ -13,8 +15,11 @@ public class ReplicateSetLock implements ReplicationCommand {
 	}
 	
 	public void execute(HavocadoFlesh f) {
-		// TODO Auto-generated method stub
-
+		try {
+			f.lm.Lock(id, resource, lockType);
+		} catch (DeadlockException e) {
+			// this should never happen.
+			e.printStackTrace();
+		}
 	}
-
 }

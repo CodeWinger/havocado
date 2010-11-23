@@ -9,8 +9,7 @@ public class ReplicateCommitTransaction implements ReplicationCommand {
 	}
 	
 	public void execute(HavocadoFlesh f) {
-		// TODO Auto-generated method stub
-
+		f.overseer.replicateCommit(id);
 	}
 
 }
