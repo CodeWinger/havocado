@@ -1066,7 +1066,7 @@ public class HavocadoSeed extends GroupMember
 	}
 
 
-	public void crash(MemberInfo m) throws RemoteException {
+	public void crash() throws RemoteException {
 		System.exit(0);
 	}
 
