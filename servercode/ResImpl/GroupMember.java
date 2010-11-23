@@ -28,7 +28,7 @@ import ResInterface.ResourceManager;
 public abstract class GroupMember implements Receiver {
 	protected JChannel channel;
 	protected LinkedList<MemberInfo> currentMembers = new LinkedList<MemberInfo>();
-	private MemberInfo myInfo = null;
+	protected MemberInfo myInfo = null;
 	protected MemberInfo master = null;
 	protected boolean isMaster;
 	

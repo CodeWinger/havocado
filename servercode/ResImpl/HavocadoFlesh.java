@@ -28,12 +28,13 @@ import LockManager.LockManager;
 public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	private static final String MASTER_FLAG = "master";
 	private static final String SLAVE_FLAG = "slave";
+	public static final String FORCE_SHUTDOWN = "force";
 
     /** The middleware's lock manager. All lock management is done on the middleware side */
     private LockManager lm = new LockManager();
     
     /** The middleware's transaction manager. Handles keeping track of transactions. */
-    private Overseer overseer = new Overseer();
+    Overseer overseer = new Overseer();
 
     private final LinkedList<MemberInfo> carGroup = new LinkedList<MemberInfo>();
     private final LinkedList<MemberInfo> flightGroup = new LinkedList<MemberInfo>();
@@ -156,19 +157,19 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     private ResourceManager getRmCars() {
     	MemberInfo carMI = carGroup.peekFirst();
     	if(carMI == null) return null;
-    	return this.memberInfoToResourceManager(carMI);
+    	return GroupMember.memberInfoToResourceManager(carMI);
     }
     
     private ResourceManager getRmFlights() {
     	MemberInfo flightMI = flightGroup.peekFirst();
     	if(flightMI == null) return null;
-    	return this.memberInfoToResourceManager(flightMI);
+    	return GroupMember.memberInfoToResourceManager(flightMI);
     }
     
     private ResourceManager getRmRooms() {
     	MemberInfo roomMI = roomGroup.peekFirst();
     	if(roomMI == null) return null;
-    	return this.memberInfoToResourceManager(roomMI);
+    	return GroupMember.memberInfoToResourceManager(roomMI);
     }
 
     // Create a new flight, or add seats to existing flight
@@ -177,7 +178,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
 	timestamp.stamp();
-	AddFlightRMICommand af = new AddFlightRMICommand(rmFlights, id, flightNum, flightSeats, flightPrice);
+	AddFlightRMICommand af = new AddFlightRMICommand(flightGroup, id, flightNum, flightSeats, flightPrice);
 	af.setTimestampObject(timestamp);
 	ReturnTuple<Boolean> result = null;
 	try {
@@ -212,7 +213,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		DeleteFlightRMICommand df = new DeleteFlightRMICommand(rmFlights, id, flightNum);
+		DeleteFlightRMICommand df = new DeleteFlightRMICommand(flightGroup, id, flightNum);
 		df.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -249,7 +250,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		AddRoomsRMICommand ar = new AddRoomsRMICommand(rmRooms, id, location, count, price);
+		AddRoomsRMICommand ar = new AddRoomsRMICommand(roomGroup, id, location, count, price);
 		ar.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -283,7 +284,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(rmRooms, id, location);
+		DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(roomGroup, id, location);
 		dr.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -319,7 +320,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		AddCarsRMICommand ac = new AddCarsRMICommand(rmCars, id, location, count, price);
+		AddCarsRMICommand ac = new AddCarsRMICommand(carGroup, id, location, count, price);
 		ac.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -354,7 +355,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		DeleteCarsRMICommand dc = new DeleteCarsRMICommand(rmCars, id, location);
+		DeleteCarsRMICommand dc = new DeleteCarsRMICommand(carGroup, id, location);
 		dc.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -390,7 +391,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		QueryFlightRMICommand qf = new QueryFlightRMICommand(rmFlights, id, flightNum);
+		QueryFlightRMICommand qf = new QueryFlightRMICommand(flightGroup, id, flightNum);
 		qf.setTimestampObject(timestamp);
 		ReturnTuple<Integer> result = null;
 		try {
@@ -436,7 +437,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(rmFlights, id, flightNum);
+		QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(flightGroup, id, flightNum);
 		qfp.setTimestampObject(timestamp);
 		ReturnTuple<Integer> result = null;
 		try {
@@ -469,7 +470,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		QueryRoomsRMICommand qr = new QueryRoomsRMICommand(rmRooms, id, location);
+		QueryRoomsRMICommand qr = new QueryRoomsRMICommand(roomGroup, id, location);
 		qr.setTimestampObject(timestamp);
 		ReturnTuple<Integer> result = null;
 		try {
@@ -504,7 +505,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(rmRooms, id, location);
+		QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(roomGroup, id, location);
 		qrp.setTimestampObject(timestamp);
 		ReturnTuple<Integer> result = null;
 		try {
@@ -537,7 +538,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		QueryCarsRMICommand qc = new QueryCarsRMICommand(rmCars, id, location);
+		QueryCarsRMICommand qc = new QueryCarsRMICommand(carGroup, id, location);
 		qc.setTimestampObject(timestamp);
 		ReturnTuple<Integer> result = null;
 		try {
@@ -569,7 +570,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> queryCarsPrice(int id, String location, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-		QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(rmRooms, id, location);
+		QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(roomGroup, id, location);
 		qcp.setTimestampObject(timestamp);
 		ReturnTuple<Integer> result = null;
 		try {
@@ -601,7 +602,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
+		QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
 		qci.setTimestampObject(timestamp);
 		ReturnTuple<String> result = null;
 		try {
@@ -653,7 +654,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		int rid = Integer.parseInt( String.valueOf(id) +
 					    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
 					    String.valueOf( Math.round( Math.random() * 100 + 1 )));
-		NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, rid);
+		NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(carGroup, flightGroup, roomGroup, id, rid);
 		nc.setTimestampObject(timestamp);
 		ReturnTuple<Integer> result = null;
 		try {
@@ -686,7 +687,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
+		NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
 		ncwi.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -721,7 +722,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(rmCars, rmFlights, rmRooms, id, customerID);
+		DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
 		dc.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -776,7 +777,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		ReserveCarRMICommand rc = new ReserveCarRMICommand(rmCars, id, customerID, location);
+		ReserveCarRMICommand rc = new ReserveCarRMICommand(carGroup, id, customerID, location);
 		rc.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -812,7 +813,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		ReserveRoomRMICommand rr = new ReserveRoomRMICommand(rmRooms, id, customerID, location);
+		ReserveRoomRMICommand rr = new ReserveRoomRMICommand(roomGroup, id, customerID, location);
 		rr.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -848,7 +849,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
     	timestamp.stamp();
-		ReserveFlightRMICommand rf = new ReserveFlightRMICommand(rmFlights, id, customerID, flightNum);
+		ReserveFlightRMICommand rf = new ReserveFlightRMICommand(flightGroup, id, customerID, flightNum);
 		rf.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -882,7 +883,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Boolean> itinerary(int id,int customer,Vector flightNumbers,String location,boolean Car,boolean Room, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException {
     	timestamp.stamp();
-		ItineraryRMICommand i = new ItineraryRMICommand(rmCars, rmFlights, rmRooms, id, customer, flightNumbers, location, Car, Room);
+		ItineraryRMICommand i = new ItineraryRMICommand(carGroup, flightGroup, roomGroup, id, customer, flightNumbers, location, Car, Room);
 		i.setTimestampObject(timestamp);
 		ReturnTuple<Boolean> result = null;
 		try {
@@ -931,34 +932,69 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		timestamp.stamp();
 		return new ReturnTuple<Boolean>(result, timestamp);
 	}
-
-
-	public boolean shutdown(String server) throws RemoteException {
-		if (server.equalsIgnoreCase("middleware")) {
-			try {
-				rmCars.shutdown(null);
-			} catch (Exception e) {
-				// nothing
-			}
-			try {
-				rmRooms.shutdown(null);
-			} catch (Exception e) {
-				// nothing
-			}
-			try {
-				rmFlights.shutdown(null);
-			} catch (Exception e) {
-				// nothing
-			}
-			System.exit(0);
+	
+	private void shutdownGroup(LinkedList<MemberInfo> members) {
+		for(MemberInfo m: members) {
+			shutdownMember(m);
 		}
-		else if (server.equalsIgnoreCase("cars"))
-			rmCars.shutdown(null);
-		else if (server.equalsIgnoreCase("rooms"))
-			rmRooms.shutdown(null);
-		else if (server.equalsIgnoreCase("flights"))
-			rmFlights.shutdown(null);
-		return false;
+	}
+	
+	/**
+	 * Shutdown a specific member.
+	 * @param m
+	 */
+	private void shutdownMember(MemberInfo m) {
+		ResourceManager rm = GroupMember.memberInfoToResourceManager(m);
+		if(rm != null) {
+			try{
+				rm.shutdown(FORCE_SHUTDOWN);
+			} catch(Exception e) {
+				// do nothing.
+			}
+		}
+	}
+	
+	public boolean shutdown(String server) throws RemoteException {
+		if (server.equalsIgnoreCase(FORCE_SHUTDOWN)) {
+			System.exit(0);
+			return true;
+			
+		} else if (server.equalsIgnoreCase("middleware")) {
+			// Shutdown the cars group.
+			shutdownGroup(this.carGroup);
+			
+			// Shutdown the rooms group.
+			shutdownGroup(this.roomGroup);
+			
+			// Shutdown the flights group.
+			shutdownGroup(this.flightGroup);
+			
+			// Shutdown all the middleware servers except yourself.
+			for(MemberInfo m: this.currentMembers) {
+				if(m != this.myInfo){
+					shutdownMember(m);
+				}
+			}
+			
+			// Shut yourself down.
+			System.exit(0);
+			return true;
+			
+		} else if (server.equalsIgnoreCase("cars")) {
+			shutdownGroup(this.carGroup);
+			return true;
+			
+		} else if (server.equalsIgnoreCase("rooms")) {
+			shutdownGroup(this.roomGroup);
+			return true;
+			
+		} else if (server.equalsIgnoreCase("flights")) {
+			shutdownGroup(this.flightGroup);
+			return true;
+			
+		} else {
+			return false;
+		}
 	}
 
 
@@ -1036,6 +1072,12 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	protected void specialReceive(Message arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public void poke() throws RemoteException {
+		// do nothing.
 	}
 
 }
