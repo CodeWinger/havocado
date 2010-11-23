@@ -38,7 +38,7 @@ public abstract class GroupMember implements Receiver {
 			this.isMaster = isMaster;
 			myInfo = new MemberInfo(myRMIServiceName, InetAddress.getLocalHost());
 			currentMembers.add(myInfo);
-			channel = new JChannel("jconfig_FIFO.xml");
+			channel = new JChannel("jconfig.xml");
 			channel.connect(groupName);
 			channel.setReceiver(this);
 			NAKACK nak = (NAKACK)channel.getProtocolStack().findProtocol(NAKACK.class);
