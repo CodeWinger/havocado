@@ -10,8 +10,9 @@ import LockManager.LockManager;
 import ResImpl.GroupMember;
 
 public abstract class AbstractRMICommand implements Command, Serializable {
-  // protected transient ResourceManager rm;
-  protected transient LinkedList<MemberInfo> rmGroup;
+
+// protected transient ResourceManager rm;
+  protected LinkedList<MemberInfo> rmGroup;
   protected transient ResourceManager rm;
   protected boolean error;
   
