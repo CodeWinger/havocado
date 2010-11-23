@@ -913,8 +913,15 @@ public class HavocadoSeed extends GroupMember
 
 	public boolean shutdown(String server) throws RemoteException {
 		// shut the resource manager down, and disregard the string.
-		System.exit(1);
-		return true;
+		if (isMaster) {
+			sendRMGroupCommand(new ShutdownRMGroupCommand());
+			System.exit(0);
+			return true;
+		}
+		else {
+			getMaster().shutdown(server);
+			return true;
+		}
 	}
 
 
