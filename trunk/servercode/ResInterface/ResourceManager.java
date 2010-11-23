@@ -193,7 +193,7 @@ public interface ResourceManager extends Remote
     /**
      * Simulate a crash on a specified server.
      */
-    public void crash(MemberInfo m) throws RemoteException;
+    public void crash() throws RemoteException;
     
     public LinkedList<MemberInfo> getGroupMembers() throws RemoteException;
     
