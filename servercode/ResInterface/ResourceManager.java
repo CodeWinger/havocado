@@ -195,5 +195,7 @@ public interface ResourceManager extends Remote
      */
     public void crash(MemberInfo m) throws RemoteException;
     
-    public List<MemberInfo> getGroupMembers() throws RemoteException;
+    public LinkedList<MemberInfo> getGroupMembers() throws RemoteException;
+    
+    public void poke() throws RemoteException;
 }
