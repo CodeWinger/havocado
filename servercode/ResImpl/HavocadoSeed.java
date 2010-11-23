@@ -278,10 +278,15 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().addFlight(id, flightNum, flightSeats, flightPrice, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).addFlight(id, flightNum, flightSeats, flightPrice, timestamp);
+					break;
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -302,10 +307,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().deleteFlight(id, flightNum, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).deleteFlight(id, flightNum, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -329,10 +338,15 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Object> result = null;
-			try {
-				result = getMaster().setFlight(id, flightNum, count, price, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi)
+							.setFlight(id, flightNum, count, price, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -376,10 +390,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().addRooms(id, location, count, price, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).addRooms(id, location, count, price, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -399,10 +417,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().deleteRooms(id, location, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).deleteRooms(id, location, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -427,10 +449,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Object> result = null;
-			try {
-				result = getMaster().setRooms(id, location, count, price, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).setRooms(id, location, count, price, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -471,10 +497,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().addCars(id, location, count, price, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).addCars(id, location, count, price, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -495,10 +525,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().deleteCars(id, location, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).deleteCars(id, location, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -522,10 +556,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Object> result = null;
-			try {
-				result = getMaster().setCars(id, location, count, price, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).setCars(id, location, count, price, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -657,10 +695,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Integer> result = null;
-			try {
-				result = getMaster().newCustomer(id, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).newCustomer(id, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -693,10 +735,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().newCustomer(id, customerID, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).newCustomer(id, customerID, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -749,10 +795,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().deleteCustomer(id, customerID, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).deleteCustomer(id, customerID, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -772,10 +822,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().reserveCar(id, customerID, location, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).reserveCar(id, customerID, location, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -796,10 +850,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().reserveRoom(id, customerID, location, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).reserveRoom(id, customerID, location, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -819,10 +877,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Boolean> result = null;
-			try {
-				result = getMaster().reserveFlight(id, customerID, flightNum, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).reserveFlight(id, customerID, flightNum, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -846,10 +908,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Object> result = null;
-			try {
-				result = getMaster().unreserveCar(id, customer, location, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).unreserveCar(id, customer, location, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -867,10 +933,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Object> result = null;
-			try {
-				result = getMaster().unreserveFlight(id, customer, flightNumber, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).unreserveFlight(id, customer, flightNumber, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -888,10 +958,14 @@ public class HavocadoSeed extends GroupMember
 		}
 		else {
 			ReturnTuple<Object> result = null;
-			try {
-				result = getMaster().unreserveRoom(id, customer, location, timestamp);
-			} catch (Exception e) {
-				e.printStackTrace();
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					result = GroupMember.memberInfoToResourceManager(mi).unreserveRoom(id, customer, location, timestamp);
+				} catch (RemoteException e) {
+					continue;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result.timestamp.stamp();
 			return result;
@@ -919,7 +993,14 @@ public class HavocadoSeed extends GroupMember
 			return true;
 		}
 		else {
-			getMaster().shutdown(server);
+			for (MemberInfo mi : getGroupMembers()) {
+				try {
+					GroupMember.memberInfoToResourceManager(mi).shutdown(server);
+					break;
+				} catch (RemoteException e) {
+					continue;
+				}
+			}
 			return true;
 		}
 	}
