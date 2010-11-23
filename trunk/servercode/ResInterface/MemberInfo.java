@@ -10,4 +10,9 @@ public class MemberInfo implements Serializable{
 		rmiName = pRmiName;
 		address = pAddress;
 	}
+	
+	public boolean equals(MemberInfo other) {
+		return other.rmiName.equals(this.rmiName)
+			&& other.address.equals(this.address);
+	}
 }
