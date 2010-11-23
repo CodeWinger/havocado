@@ -73,6 +73,11 @@ public class Overseer extends Thread{
 		return nextTId++;
 	}
 	
+	public synchronized void replicateCreateTransaction(LockManager lockManager, int tId) {
+		Transaction t = new Transaction(lockManager, tId);
+		currentTransactions.put(new Integer(tId), t);
+	}
+	
 	/**
 	 * Removes a transaction from the hashset and the id from the hashmap.
 	 * Should only be called in commit() or abort().
@@ -103,6 +108,18 @@ public class Overseer extends Thread{
 		boolean result = t.commit();
 		deleteTransaction(tId);
 		return result;
+	}
+	
+	public synchronized void replicateCommit(int tId) {
+		Integer i = new Integer(tId);
+		Transaction t = currentTransactions.get(i);
+		if (t == null) {
+			return;
+		}
+		// Commit and delete the transaction
+		System.out.println("Commiting transaction " + tId);
+		t.replicateCommit();
+		deleteTransaction(tId);
 	}
 	
 	/**
@@ -160,6 +177,23 @@ public class Overseer extends Thread{
 		t.addCommand(command);
 		t.setTime();
 		return true;
+	}
+	
+	/**
+	 * Replicate the addition of a command into a transaction.
+	 * @param tId
+	 * @param command
+	 */
+	public synchronized void replicateAddCommandToTransaction(int tId, AbstractRMICommand command) {
+		Integer i = new Integer(tId);
+		Transaction t = currentTransactions.get(i);
+		// validate tId
+		if (t == null) {
+			return;
+		}
+		// add command and update transaction TTL.
+		t.replicateAddCommand(command);
+		t.setTime();
 	}
 	
 	public synchronized void validTransaction(int tId) throws TransactionAbortedException, InvalidTransactionException {

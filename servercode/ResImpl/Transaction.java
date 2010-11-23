@@ -72,7 +72,7 @@ public class Transaction {
 	}
 	
 	/**
-	 * Replicate an abort call.
+	 * Replicate an abort.
 	 */
 	public void replicateAbort() {
 		replicateUndoAll();
@@ -86,6 +86,13 @@ public class Transaction {
 	public boolean commit() {
 		releaseLocks();
 		return true;
+	}
+	
+	/**
+	 * Replicate a commit.
+	 */
+	public void replicateCommit() {
+		releaseLocks();
 	}
 	
 	/**
@@ -112,6 +119,11 @@ public class Transaction {
 	 * @param command The command to be added to this transaction.
 	 */
 	public void addCommand(AbstractRMICommand command) {
+		commandStack.push(command);
+		setTime();
+	}
+	
+	public void replicateAddCommand(AbstractRMICommand command) {
 		commandStack.push(command);
 		setTime();
 	}
