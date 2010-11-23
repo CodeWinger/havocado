@@ -1058,9 +1058,9 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     }
 
 
-	public void crash(MemberInfo m) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public void crash() throws RemoteException {
+		System.out.println("CRASHING.");
+		System.exit(-1);
 	}
 
 	public LinkedList<MemberInfo> getGroupMembers() throws RemoteException {
@@ -1074,10 +1074,8 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		
 	}
 
-
 	@Override
 	public void poke() throws RemoteException {
 		// do nothing.
 	}
-
 }
