@@ -4,6 +4,7 @@
 //
 package ResImpl;
 
+import Commands.RMGroupCommands.*;
 import ResInterface.*;
 
 import java.util.*;
@@ -15,6 +16,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import org.jgroups.ChannelClosedException;
+import org.jgroups.ChannelNotConnectedException;
 import org.jgroups.Message;
 
 
@@ -76,7 +79,7 @@ public class HavocadoSeed extends GroupMember
 
 
 	// Reads a data item
-	private RMItem readData( int id, String key )
+	public RMItem readData( int id, String key )
 	{
 		synchronized(m_itemHT){
 			return (RMItem) m_itemHT.get(key);
@@ -84,7 +87,7 @@ public class HavocadoSeed extends GroupMember
 	}
 
 	// Writes a data item
-	private void writeData( int id, String key, RMItem value )
+	public void writeData( int id, String key, RMItem value )
 	{
 		synchronized(m_itemHT){
 			m_itemHT.put(key, value);
@@ -92,7 +95,7 @@ public class HavocadoSeed extends GroupMember
 	}
 	
 	// Remove the item out of storage
-	protected RMItem removeData(int id, String key){
+	public RMItem removeData(int id, String key){
 		synchronized(m_itemHT){
 			return (RMItem)m_itemHT.remove(key);
 		}
@@ -100,7 +103,7 @@ public class HavocadoSeed extends GroupMember
 	
 	
 	// deletes the entire item
-	protected boolean deleteItem(int id, String key)
+	public boolean deleteItem(int id, String key)
 	{
 		Trace.info("RM::deleteItem(" + id + ", " + key + ") called" );
 		ReservableItem curObj = (ReservableItem) readData( id, key );
@@ -121,7 +124,7 @@ public class HavocadoSeed extends GroupMember
 		} // if
 	}
 	
-	protected void editNum(int id, String key, int qty) {
+	public void editNum(int id, String key, int qty) {
 		ReservableItem curObj = (ReservableItem) readData(id, key);
 		if(curObj == null) {
 			// object doesn't exist.
@@ -130,7 +133,7 @@ public class HavocadoSeed extends GroupMember
 		}
 	}
 	
-	protected void editPrice(int id, String key, int price) {
+	public void editPrice(int id, String key, int price) {
 		ReservableItem curObj = (ReservableItem) readData(id, key);
 		if(curObj == null) {
 			// object doesn't exist.
@@ -141,7 +144,7 @@ public class HavocadoSeed extends GroupMember
 	
 
 	// query the number of available seats/rooms/cars
-	protected int queryNum(int id, String key) {
+	public int queryNum(int id, String key) {
 		Trace.info("RM::queryNum(" + id + ", " + key + ") called" );
 		ReservableItem curObj = (ReservableItem) readData( id, key);
 		int value = 0;  
@@ -153,7 +156,7 @@ public class HavocadoSeed extends GroupMember
 	}	
 	
 	// query the price of an item
-	protected int queryPrice(int id, String key){
+	public int queryPrice(int id, String key){
 		Trace.info("RM::queryPrice(" + id + ", " + key + ") called" );
 		ReservableItem curObj = (ReservableItem) readData( id, key);
 		int value = 0; 
@@ -165,7 +168,7 @@ public class HavocadoSeed extends GroupMember
 	}
 	
 	// reserve an item
-	protected boolean reserveItem(int id, int customerID, String key, String location){
+	public boolean reserveItem(int id, int customerID, String key, String location){
 		Trace.info("RM::reserveItem( " + id + ", customer=" + customerID + ", " +key+ ", "+location+" ) called" );		
 		// Read customer object if it exists (and read lock it)
 		Customer cust = (Customer) readData( id, Customer.getKey(customerID) );		
@@ -203,7 +206,7 @@ public class HavocadoSeed extends GroupMember
 	 * @param location
 	 * @return
 	 */
-	protected void unreserveItem(int id, int customerID, String key, String location) {
+	public void unreserveItem(int id, int customerID, String key, String location) {
 		Customer cust = (Customer) readData(id, Customer.getKey(customerID));
 		if(cust == null) {
 			// we've got nothing to do.
@@ -229,6 +232,18 @@ public class HavocadoSeed extends GroupMember
 		}
 	}
 	
+	// TODO Create interface for RMGroupCommands.
+	
+	private void sendRMGroupCommand(AbstractRMGroupCommand c) {
+		try {
+			channel.send(null, null, c);
+		} catch (ChannelNotConnectedException e) {
+			e.printStackTrace();
+		} catch (ChannelClosedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	// Create a new flight, or add seats to existing flight
 	//  NOTE: if flightPrice <= 0 and the flight already exists, it maintains its current price
 	public ReturnTuple<Boolean> addFlight(int id, int flightNum, int flightSeats, int flightPrice, Timestamp timestamp)
@@ -243,6 +258,7 @@ public class HavocadoSeed extends GroupMember
 				// doesn't exist...add it
 				Flight newObj = new Flight(flightNum, flightSeats, flightPrice);
 				writeData(id, newObj.getKey(), newObj);
+				sendRMGroupCommand(new WriteDataRMGroupCommand(id, newObj.getKey(), newObj));
 				Trace.info("RM::addFlight(" + id + ") created new flight "
 						+ flightNum + ", seats=" + flightSeats + ", price=$"
 						+ flightPrice);
@@ -253,20 +269,12 @@ public class HavocadoSeed extends GroupMember
 					curObj.setPrice(flightPrice);
 				} // if
 				writeData(id, curObj.getKey(), curObj);
+				sendRMGroupCommand(new WriteDataRMGroupCommand(id, curObj.getKey(), curObj));
 				Trace.info("RM::addFlight(" + id
 						+ ") modified existing flight " + flightNum
 						+ ", seats=" + curObj.getCount() + ", price=$"
 						+ flightPrice);
 			} // else
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).addFlight(id,
-							flightNum, flightSeats, flightPrice, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			timestamp.stamp();
 			return new ReturnTuple<Boolean>(true, timestamp);
 		}
@@ -289,17 +297,8 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		if (isMaster) {
-			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(
-					id, Flight.getKey(flightNum)), timestamp);
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).deleteFlight(
-							id, flightNum, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Flight.getKey(flightNum)), timestamp);
+			sendRMGroupCommand(new DeleteItemRMGroupCommand(id, Flight.getKey(flightNum)));
 			timestamp.stamp();
 			return result;
 		}
@@ -314,7 +313,7 @@ public class HavocadoSeed extends GroupMember
 			return result;
 		}
 	}
-	
+
 	public ReturnTuple<Object> setFlight(int id, int flightNum, int count, int price, Timestamp timestamp) throws RemoteException {
 		timestamp.stamp();
 		if (isMaster) {
@@ -324,15 +323,8 @@ public class HavocadoSeed extends GroupMember
 			} else {
 				editNum(id, Flight.getKey(flightNum), count);
 				editPrice(id, Flight.getKey(flightNum), price);
-			}
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).setFlight(id,
-							flightNum, count, price, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				sendRMGroupCommand(new EditNumRMGroupCommand(id, Flight.getKey(flightNum), count));
+				sendRMGroupCommand(new EditPriceRMGroupCommand(id, Flight.getKey(flightNum), price));
 			}
 			timestamp.stamp();
 			return new ReturnTuple<Object>(null, timestamp);
@@ -365,6 +357,7 @@ public class HavocadoSeed extends GroupMember
 				// doesn't exist...add it
 				Hotel newObj = new Hotel(location, count, price);
 				writeData(id, newObj.getKey(), newObj);
+				sendRMGroupCommand(new WriteDataRMGroupCommand(id, newObj.getKey(), newObj));
 				Trace.info("RM::addRooms(" + id
 						+ ") created new room location " + location
 						+ ", count=" + count + ", price=$" + price);
@@ -375,19 +368,11 @@ public class HavocadoSeed extends GroupMember
 					curObj.setPrice(price);
 				} // if
 				writeData(id, curObj.getKey(), curObj);
+				sendRMGroupCommand(new WriteDataRMGroupCommand(id, curObj.getKey(), curObj));
 				Trace.info("RM::addRooms(" + id
 						+ ") modified existing location " + location
 						+ ", count=" + curObj.getCount() + ", price=$" + price);
 			} // else
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).addRooms(id,
-							location, count, price, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			timestamp.stamp();
 			return new ReturnTuple<Boolean>(true, timestamp);
 		}
@@ -409,17 +394,8 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		if (isMaster) {
-			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(
-					id, Hotel.getKey(location)), timestamp);
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).deleteRooms(id,
-							location, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Hotel.getKey(location)), timestamp);
+			sendRMGroupCommand(new DeleteItemRMGroupCommand(id, Hotel.getKey(location)));
 			timestamp.stamp();
 			return result;
 		}
@@ -445,15 +421,8 @@ public class HavocadoSeed extends GroupMember
 			} else {
 				editNum(id, Hotel.getKey(location), count);
 				editPrice(id, Hotel.getKey(location), price);
-			}
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).setRooms(id,
-							location, count, price, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				sendRMGroupCommand(new EditNumRMGroupCommand(id, Hotel.getKey(location), count));
+				sendRMGroupCommand(new EditPriceRMGroupCommand(id, Hotel.getKey(location), price));
 			}
 			timestamp.stamp();
 			return new ReturnTuple<Object>(null, timestamp);
@@ -484,6 +453,7 @@ public class HavocadoSeed extends GroupMember
 				// car location doesn't exist...add it
 				Car newObj = new Car(location, count, price);
 				writeData(id, newObj.getKey(), newObj);
+				sendRMGroupCommand(new WriteDataRMGroupCommand(id, newObj.getKey(), newObj));
 				Trace.info("RM::addCars(" + id + ") created new location "
 						+ location + ", count=" + count + ", price=$" + price);
 			} else {
@@ -493,19 +463,11 @@ public class HavocadoSeed extends GroupMember
 					curObj.setPrice(price);
 				} // if
 				writeData(id, curObj.getKey(), curObj);
+				sendRMGroupCommand(new WriteDataRMGroupCommand(id, curObj.getKey(), curObj));
 				Trace.info("RM::addCars(" + id
 						+ ") modified existing location " + location
 						+ ", count=" + curObj.getCount() + ", price=$" + price);
 			} // else
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).addCars(id,
-							location, count, price, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			timestamp.stamp();
 			return new ReturnTuple<Boolean>(true, timestamp);
 		}
@@ -528,17 +490,8 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		if (isMaster) {
-			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(
-					id, Car.getKey(location)), timestamp);
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).deleteCars(id,
-							location, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(deleteItem(id, Car.getKey(location)), timestamp);
+			sendRMGroupCommand(new DeleteItemRMGroupCommand(id, Car.getKey(location)));
 			timestamp.stamp();
 			return result;
 		}
@@ -563,15 +516,8 @@ public class HavocadoSeed extends GroupMember
 			} else {
 				editNum(id, Car.getKey(location), count);
 				editPrice(id, Car.getKey(location), price);
-			}
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).setCars(id,
-							location, count, price, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				sendRMGroupCommand(new EditNumRMGroupCommand(id, Car.getKey(location), count));
+				sendRMGroupCommand(new EditPriceRMGroupCommand(id, Car.getKey(location), price));
 			}
 			timestamp.stamp();
 			return new ReturnTuple<Object>(null, timestamp);
@@ -706,15 +652,8 @@ public class HavocadoSeed extends GroupMember
 					+ String.valueOf(Math.round(Math.random() * 100 + 1)));
 			Customer cust = new Customer(cid);
 			writeData(id, cust.getKey(), cust);
+			sendRMGroupCommand(new WriteDataRMGroupCommand(id, cust.getKey(), cust));
 			Trace.info("RM::newCustomer(" + cid + ") returns ID=" + cid);
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).newCustomer(id, cid, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			timestamp.stamp();
 			return new ReturnTuple<Integer>(cid, timestamp);
 		}
@@ -742,17 +681,9 @@ public class HavocadoSeed extends GroupMember
 			if (cust == null) {
 				cust = new Customer(customerID);
 				writeData(id, cust.getKey(), cust);
+				sendRMGroupCommand(new WriteDataRMGroupCommand(id, cust.getKey(), cust));
 				Trace.info("INFO: RM::newCustomer(" + id + ", " + customerID
 						+ ") created a new customer");
-				// Propogate command to slaves.
-				try {
-					for (MemberInfo mi : currentMembers) {
-						timestamp = memberInfoToResourceManager(mi)
-								.newCustomer(id, customerID, timestamp).timestamp;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 				timestamp.stamp();
 				return new ReturnTuple<Boolean>(true, timestamp);
 			} else {
@@ -794,36 +725,26 @@ public class HavocadoSeed extends GroupMember
 				RMHashtable reservationHT = cust.getReservations();
 				for (Enumeration e = reservationHT.keys(); e.hasMoreElements();) {
 					String reservedkey = (String) (e.nextElement());
-					ReservedItem reserveditem = cust
-							.getReservedItem(reservedkey);
+					ReservedItem reserveditem = cust.getReservedItem(reservedkey);
 					Trace.info("RM::deleteCustomer(" + id + ", " + customerID
 							+ ") has reserved " + reserveditem.getKey() + " "
 							+ reserveditem.getCount() + " times");
-					ReservableItem item = (ReservableItem) readData(id,
-							reserveditem.getKey());
+					ReservableItem item = (ReservableItem) readData(id, reserveditem.getKey());
 					Trace.info("RM::deleteCustomer(" + id + ", " + customerID
 							+ ") has reserved " + reserveditem.getKey()
 							+ "which is reserved" + item.getReserved()
 							+ " times and is still available "
 							+ item.getCount() + " times");
-					item.setReserved(item.getReserved()
-							- reserveditem.getCount());
+					item.setReserved(item.getReserved() - reserveditem.getCount());
 					item.setCount(item.getCount() + reserveditem.getCount());
 				}
 
 				// remove the customer from the storage
 				removeData(id, cust.getKey());
+				sendRMGroupCommand(new RemoveDataRMGroupCommand(id, cust.getKey()));
 
 				Trace.info("RM::deleteCustomer(" + id + ", " + customerID
 						+ ") succeeded");
-				// Propogate command to slaves.
-				try {
-					for (MemberInfo mi : currentMembers) {
-						timestamp = memberInfoToResourceManager(mi).deleteCustomer(id, customerID, timestamp).timestamp;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 				timestamp.stamp();
 				return new ReturnTuple<Boolean>(true, timestamp);
 			} // if
@@ -846,17 +767,8 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		if (isMaster) {
-			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(
-					id, customerID, Car.getKey(location), location), timestamp);
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).reserveCar(id,
-							customerID, location, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Car.getKey(location), location), timestamp);
+			sendRMGroupCommand(new ReserveItemRMGroupCommand(id, customerID, Car.getKey(location), location));
 			timestamp.stamp();
 			return result;
 		}
@@ -879,17 +791,8 @@ public class HavocadoSeed extends GroupMember
 	{
 		timestamp.stamp();
 		if (isMaster) {
-			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(
-					id, customerID, Hotel.getKey(location), location),
-					timestamp);
-			// Propogate command to slaves.
-			try {
-				for (MemberInfo mi : currentMembers) {
-					timestamp = memberInfoToResourceManager(mi).reserveRoom(id, customerID, location, timestamp).timestamp;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Hotel.getKey(location), location), timestamp);
+			sendRMGroupCommand(new ReserveItemRMGroupCommand(id, customerID, Car.getKey(location), location));
 			timestamp.stamp();
 			return result;
 		}
@@ -910,9 +813,22 @@ public class HavocadoSeed extends GroupMember
 		throws RemoteException
 	{
 		timestamp.stamp();
-		ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum)), timestamp);
-		timestamp.stamp();
-		return result;
+		if (isMaster) {
+			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum)), timestamp);
+			sendRMGroupCommand(new ReserveItemRMGroupCommand(id, customerID, Flight.getKey(flightNum), String.valueOf(flightNum)));
+			timestamp.stamp();
+			return result;
+		}
+		else {
+			ReturnTuple<Boolean> result = null;
+			try {
+				result = getMaster().reserveFlight(id, customerID, flightNum, timestamp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result.timestamp.stamp();
+			return result;
+		}
 	}
 	
 	/* reserve an itinerary */
@@ -924,25 +840,64 @@ public class HavocadoSeed extends GroupMember
 
 	public ReturnTuple<Object> unreserveCar(int id, int customer, String location, Timestamp timestamp) throws RemoteException {
 		timestamp.stamp();
-		unreserveItem(id, customer, Car.getKey(location), location);
-		timestamp.stamp();
-		return new ReturnTuple<Object>(null, timestamp);
+		if (isMaster) {
+			unreserveItem(id, customer, Car.getKey(location), location);
+			sendRMGroupCommand(new UnreserveItemRMGroupCommand(id, customer, Car.getKey(location), location));
+			timestamp.stamp();
+			return new ReturnTuple<Object>(null, timestamp);
+		}
+		else {
+			ReturnTuple<Object> result = null;
+			try {
+				result = getMaster().unreserveCar(id, customer, location, timestamp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result.timestamp.stamp();
+			return result;
+		}
 	}
 
 
 	public ReturnTuple<Object> unreserveFlight(int id, int customer, int flightNumber, Timestamp timestamp) throws RemoteException {
 		timestamp.stamp();
-		unreserveItem(id, customer, Flight.getKey(flightNumber), String.valueOf(flightNumber));
-		timestamp.stamp();
-		return new ReturnTuple<Object>(null, timestamp);
+		if (isMaster) {
+			unreserveItem(id, customer, Flight.getKey(flightNumber), String.valueOf(flightNumber));
+			sendRMGroupCommand(new UnreserveItemRMGroupCommand(id, customer, Flight.getKey(flightNumber), String.valueOf(flightNumber)));
+			timestamp.stamp();
+			return new ReturnTuple<Object>(null, timestamp);
+		}
+		else {
+			ReturnTuple<Object> result = null;
+			try {
+				result = getMaster().unreserveFlight(id, customer, flightNumber, timestamp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result.timestamp.stamp();
+			return result;
+		}
 	}
 
 
 	public ReturnTuple<Object> unreserveRoom(int id, int customer, String location, Timestamp timestamp) throws RemoteException {
 		timestamp.stamp();
-		unreserveItem(id, customer, Hotel.getKey(location), location);
-		timestamp.stamp();
-		return new ReturnTuple<Object>(null, timestamp);
+		if (isMaster) {
+			unreserveItem(id, customer, Hotel.getKey(location), location);
+			sendRMGroupCommand(new UnreserveItemRMGroupCommand(id, customer, Hotel.getKey(location), location));
+			timestamp.stamp();
+			return new ReturnTuple<Object>(null, timestamp);
+		}
+		else {
+			ReturnTuple<Object> result = null;
+			try {
+				result = getMaster().unreserveRoom(id, customer, location, timestamp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			result.timestamp.stamp();
+			return result;
+		}
 	}
     
 
@@ -1039,7 +994,16 @@ public class HavocadoSeed extends GroupMember
 
 	@Override
 	protected void specialReceive(Message arg0) {
-		// Do nothing.
+		if (!isMaster) {
+			if (arg0.getObject() instanceof AbstractRMGroupCommand) {
+				AbstractRMGroupCommand c = (AbstractRMGroupCommand)arg0.getObject();
+				try {
+					c.doCommand(this);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }
