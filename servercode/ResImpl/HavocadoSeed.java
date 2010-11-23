@@ -40,6 +40,7 @@ public class HavocadoSeed extends GroupMember
         	else {
         		System.err.println("Wrong usage");
         		System.out.println("<role> must be \"master\" or \"replica\", not "+args[0]);
+        		System.exit(1);
         	}
         	
         	groupName = args[1];
