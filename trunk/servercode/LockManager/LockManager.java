@@ -18,6 +18,10 @@ public class LockManager
     
     private final HavocadoFlesh flesh;
     
+    public LockManager() {
+    	this(null);
+    }
+    
     public LockManager(HavocadoFlesh pF) {
         super();
         flesh = pF;
@@ -94,7 +98,8 @@ public class LockManager
              // just ignore the redundant lock request
         } 
         
-        flesh.lockSet(xid, lockType, strData); /* flesh event fired */
+        if(flesh!=null)
+        	flesh.lockSet(xid, lockType, strData); /* flesh event fired */
         
         return true;
     }
