@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Vector;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -107,6 +108,16 @@ public abstract class GroupMember implements Receiver {
 		throw new UnsupportedOperationException("Not supported");
 	}
 
+	public void send(Serializable obj) {
+		try {
+			this.channel.send(null, null, obj);
+		} catch (ChannelNotConnectedException e) {
+			System.out.println("Channel is not connected.\n" + e.toString());
+		} catch (ChannelClosedException e) {
+			System.out.println("Channel closed.\n" + e.toString());
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	/**
 	 * @param msg The message being received. 
