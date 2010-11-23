@@ -78,6 +78,9 @@ public class Overseer extends Thread{
 		//TODO: Avoid tIds already in use
 		Transaction t = new Transaction(lockManager, nextTId);
 		currentTransactions.put(new Integer(nextTId), t);
+		
+		flesh.transactionCreated(nextTId); /* flesh event fired */
+		
 		return nextTId++;
 	}
 	
@@ -115,6 +118,9 @@ public class Overseer extends Thread{
 		System.out.println("Commiting transaction "+tId);
 		boolean result = t.commit();
 		deleteTransaction(tId);
+		
+		flesh.transactionCommitted(tId); /* flesh event fired */
+		
 		return result;
 	}
 	
@@ -149,6 +155,9 @@ public class Overseer extends Thread{
 		t.abort();
 		System.out.println("Transaction "+tId+" aborted by overseer");
 		deleteTransaction(tId);
+		
+		flesh.transactionAborted(i); /* flesh event fired */
+		
 		return;
 	}
 	
@@ -184,6 +193,9 @@ public class Overseer extends Thread{
 		// Add command and update transaction TTL.
 		t.addCommand(command);
 		t.setTime();
+		
+		flesh.commandAddedToTransaction(tId, command); /* flesh event fired */
+		
 		return true;
 	}
 	

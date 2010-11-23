@@ -31,7 +31,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	public static final String FORCE_SHUTDOWN = "force";
 
     /** The middleware's lock manager. All lock management is done on the middleware side */
-    final LockManager lm = new LockManager();
+    final LockManager lm;
     
     /** The middleware's transaction manager. Handles keeping track of transactions. */
     final Overseer overseer;
@@ -116,6 +116,9 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     	// Create the group member.
     	super(isMaster, myRMIServiceName, groupName);
     	
+    	// Initialize the lock manager.
+    	this.lm = new LockManager(this);
+    	
     	// Initialize the overseer
     	this.overseer = new Overseer(this);
     	
@@ -159,49 +162,67 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     	this(isMaster, myRMIServiceName, groupName, null, null, null, null, null, null);
     }
     
-    void lockSet(int tId, int lockType, String resource) {
+    /**
+     * Called when a lock is set. Sends the appropriate replication
+     * command to the group.
+     * @param tId
+     * @param lockType
+     * @param resource
+     */
+    public void lockSet(int tId, int lockType, String resource) {
     	if(this.isMaster) {
     		ReplicationCommand r = new ReplicateSetLock(tId, lockType, resource);
     		this.send(r);
     	}
     }
     
+    /**
+     * Called when a transaction is created. Sends the appropriate replication
+     * command to the group.
+     * @param tId
+     */
+    void transactionCreated(int tId) {
+    	if(this.isMaster) {
+    		ReplicationCommand r = new ReplicateCreateTransaction(tId);
+    		this.send(r);
+    	}
+    }
+    
+    /**
+     * Called when a command is added to a transaction. Sends the appropriate
+     * replication command to the group.
+     * @param tId
+     * @param pCommand
+     */
     void commandAddedToTransaction(int tId, AbstractRMICommand pCommand) {
     	if(this.isMaster) {
-    		
+    		ReplicationCommand r = new ReplicateAddCommand(tId, pCommand);
+    		this.send(r);
     	}
     }
     
+    /**
+     * Called when a transaction is aborted. Sends the appropriate replication
+     * command to the group.
+     * @param tId
+     */
     void transactionAborted(int tId) {
     	if(this.isMaster) {
-    		
+    		ReplicationCommand r = new ReplicateAbortTransaction(tId);
+    		this.send(r);
     	}
     }
     
+    /**
+     * Called when a transaction is committed. Sends the appropriate replication
+     * command to the group.
+     * @param tId
+     */
     void transactionCommitted(int tId) {
     	if(this.isMaster) {
-    		
+    		ReplicationCommand r = new ReplicateCommitTransaction(tId);
+    		this.send(r);
     	}
-    }
-    
-
-        
-    private ResourceManager getRmCars() {
-    	MemberInfo carMI = carGroup.peekFirst();
-    	if(carMI == null) return null;
-    	return GroupMember.memberInfoToResourceManager(carMI);
-    }
-    
-    private ResourceManager getRmFlights() {
-    	MemberInfo flightMI = flightGroup.peekFirst();
-    	if(flightMI == null) return null;
-    	return GroupMember.memberInfoToResourceManager(flightMI);
-    }
-    
-    private ResourceManager getRmRooms() {
-    	MemberInfo roomMI = roomGroup.peekFirst();
-    	if(roomMI == null) return null;
-    	return GroupMember.memberInfoToResourceManager(roomMI);
     }
 
     // Create a new flight, or add seats to existing flight
