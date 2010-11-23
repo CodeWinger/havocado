@@ -40,6 +40,7 @@ public abstract class AbstractRMICommand implements Command, Serializable {
 			  try{
 				  // Test to see if it's alive.
 				  rm.poke();
+				  // no exception was thrown! return!
 				  return rm;
 			  } catch(RemoteException e) {
 				  System.out.println(mi.rmiName + " is dead.");

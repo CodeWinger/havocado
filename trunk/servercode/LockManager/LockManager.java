@@ -2,6 +2,7 @@ package LockManager;
 
 import java.util.BitSet;
 import java.util.Vector;
+import ResImpl.HavocadoFlesh;
 
 public class LockManager
 {
@@ -15,8 +16,11 @@ public class LockManager
     private static TPHashTable stampTable = new TPHashTable(LockManager.TABLE_SIZE);
     private static TPHashTable waitTable = new TPHashTable(LockManager.TABLE_SIZE);
     
-    public LockManager() {
+    private final HavocadoFlesh flesh;
+    
+    public LockManager(HavocadoFlesh pF) {
         super();
+        flesh = pF;
     }
     
     public boolean Lock(int xid, String strData, int lockType) throws DeadlockException {
@@ -87,10 +91,11 @@ public class LockManager
             throw deadlock;
         }
         catch (RedundantLockRequestException redundantlockrequest) {
-              // just ignore the redundant lock request
-            return true;
+             // just ignore the redundant lock request
         } 
-
+        
+        flesh.lockSet(xid, lockType, strData); /* flesh event fired */
+        
         return true;
     }
 
