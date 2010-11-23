@@ -8,8 +8,6 @@ import Commands.RMGroupCommands.*;
 import ResInterface.*;
 
 import java.util.*;
-import java.rmi.*;
-import java.net.*;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
@@ -981,14 +979,12 @@ public class HavocadoSeed extends GroupMember
 
 
 	public void crash(MemberInfo m) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+		System.exit(0);
 	}
 
 
 	public List<MemberInfo> getGroupMembers() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		return currentMembers;
 	}
 
 
