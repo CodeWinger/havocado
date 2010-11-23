@@ -1,5 +1,7 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
+
 import ResInterface.*;
 
 public class ReserveCarRMICommand extends AbstractRMICommand {
@@ -10,8 +12,8 @@ public class ReserveCarRMICommand extends AbstractRMICommand {
   
   public ReturnTuple<Boolean> success;
 
-  public ReserveCarRMICommand(ResourceManager pRm, int pId, int pCustomer, String pLocation) {
-    super(pRm);
+  public ReserveCarRMICommand(LinkedList<MemberInfo> pRmGroup, int pId, int pCustomer, String pLocation) {
+    super(pRmGroup);
     // Store our attributes.
     id = pId;
     customer = pCustomer;
@@ -19,6 +21,8 @@ public class ReserveCarRMICommand extends AbstractRMICommand {
     
     success = new ReturnTuple<Boolean>(false, null);
   }
+  
+  
   
   public void doCommand() throws Exception {
 	  timestamp.stamp();

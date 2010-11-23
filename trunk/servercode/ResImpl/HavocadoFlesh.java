@@ -18,17 +18,16 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import org.jgroups.Message;
+
 import LockManager.DeadlockException;
 import LockManager.LockManager;
 
 
 //public class HavocadoFlesh extends java.rmi.server.UnicastRemoteObject
-public class HavocadoFlesh 
-	extends GroupMember 
-    implements ResourceManager {
-	
-	/** Static resource manager references */
-    static ResourceManager rmCars, rmFlights, rmRooms;
+public class HavocadoFlesh extends GroupMember implements ResourceManager {
+	private static final String MASTER_FLAG = "master";
+	private static final String SLAVE_FLAG = "slave";
 
     /** The middleware's lock manager. All lock management is done on the middleware side */
     private LockManager lm = new LockManager();
@@ -36,62 +35,140 @@ public class HavocadoFlesh
     /** The middleware's transaction manager. Handles keeping track of transactions. */
     private Overseer overseer = new Overseer();
 
+    private final LinkedList<MemberInfo> carGroup = new LinkedList<MemberInfo>();
+    private final LinkedList<MemberInfo> flightGroup = new LinkedList<MemberInfo>();
+    private final LinkedList<MemberInfo> roomGroup = new LinkedList<MemberInfo>();
+    
     /** 
      * Main program - starts the middleware. The middleware looks for the resource managers'
      * RMI servers and registers itself to the RMI registry on the machine. 
      * @param args
      */ 
     public static void main(String args[]) {
-        // Figure out where server is running
-		String carSeed, flightSeed, roomSeed;
-		carSeed = flightSeed = roomSeed = "localhost";
+        String carMachine, flightMachine, roomMachine;
+        String carServiceName, flightServiceName, roomServiceName;
+        String myRole, myGroupName, myServiceName;
+        
+        carMachine = flightMachine = roomMachine = "localhost";
 
-		if (args.length == 3) {
-		    //port = Integer.parseInt(args[0]);
-		    carSeed = args[0];
-		    flightSeed = args[1];
-		    roomSeed = args[2];
+        HavocadoFlesh obj = null;
+		if (args.length == 9) {
+		    // A master is born...
+		    myRole = args[0];
+		    myServiceName = args[1];
+		    myGroupName = args[2];
+		    carMachine = args[3];
+		    carServiceName = args[4];
+		    flightMachine = args[5];
+		    flightServiceName = args[6];
+		    roomMachine = args[7];
+		    roomServiceName = args[8];
+		    boolean isMaster = myRole == MASTER_FLAG;
+		    if(isMaster) {
+			    // create the master:
+			    try {
+					obj = new HavocadoFlesh(true, myServiceName, myGroupName, 
+							carMachine, carServiceName, flightMachine, flightServiceName, roomMachine, roomServiceName);
+				} catch (Exception e) {
+					System.out.println("Server Exception.");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			} else {
+				System.out.println("Wrong argument - first argument should be 'master' in this case.");
+				System.exit(1);
+			}
+		} else if(args.length == 3) {
+			// A poor slave is born...
+			myRole = args[0];
+			myServiceName = args[1];
+			myGroupName = args[2];
+			boolean isSlave = myRole == SLAVE_FLAG;
+			if(isSlave) {
+				// create the slave:
+				try {
+					obj = new HavocadoFlesh(false, myServiceName, myGroupName );
+				} catch (Exception e) {
+					System.out.println("Server Exception.");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			} else {
+				System.out.println("Wrong argument - first argument should be 'slave' in this case.");
+				System.exit(1);
+			}
 		} else {
 		    System.err.println ("Wrong usage");
 		    System.out.println("Usage: ");
-		    System.out.println("'java ResImpl.HavocadoFlesh <car server host> <flight server host> <room server host>' - Uses the specified host names or IPs to find the resource managers.");
+		    System.out.println("master: 'java ResImpl.HavocadoFlesh master <myRMIServiceName> <myGroupName> " +
+		    		"<carMachineName> <carRMIServiceName> <flightMachineName> <flightRMIServiceName> <roomMachineName> <roomRMIServiceName>'");
+		    System.out.println("slave: 'java ResImpl.HavocadoFlesh slave <myRMIServiceName> <myGroupName>'");
 		    System.exit(1);
 		}
-		
-		// Set up RMI.	 
-		HavocadoFlesh obj = null;
-		try {
-		    // create a new Server object
-		    obj = new HavocadoFlesh();
-		    // dynamically generate the stub (client proxy)
-		    ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(obj, 0);
-	
-		    // Bind the remote object's stub in the registry
-		    Registry registry = LocateRegistry.getRegistry();
-		    registry.rebind("HavocadoFlesh", rm);
-	
-		    registry = LocateRegistry.getRegistry(carSeed);
-		    rmCars = (ResourceManager) registry.lookup("HavocadoSeedCar");
-		    // TODO: Check for null rm.
-		    registry = LocateRegistry.getRegistry(flightSeed);
-		    rmFlights = (ResourceManager) registry.lookup("HavocadoSeedFlight");
-		    // TODO: Check for null rm.
-		    registry = LocateRegistry.getRegistry(roomSeed);
-		    rmRooms = (ResourceManager) registry.lookup("HavocadoSeedRoom");
-		    // TODO: Check for null rm.
-		    
-		    // Start the overseer thread
-		    obj.overseer.start();
-		} 
-		catch (Exception e) 
-	    {
-			System.err.println("Server exception: " + e.toString());
-			e.printStackTrace();
-	    }
     }
     
     
-    public HavocadoFlesh() throws RemoteException {
+    private HavocadoFlesh(boolean isMaster, String myRMIServiceName, String groupName, 
+    		String carMachine, String carRMIServiceName, 
+    		String flightMachine, String flightRMIServiceName,
+    		String roomMachine, String roomRMIServiceName) throws RemoteException, NotBoundException {
+    	// Create the group member.
+    	super(isMaster, myRMIServiceName, groupName);
+    	
+    	// initialize the RMI service.
+	    ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(this, 0);
+
+	    // Bind the remote object's stub in the registry
+	    Registry registry = LocateRegistry.getRegistry();
+	    registry.rebind(myRMIServiceName, rm);
+    	
+    	if(carMachine != null && carRMIServiceName != null
+    			&& flightMachine != null && flightRMIServiceName != null
+    			&& roomMachine != null && roomRMIServiceName != null) { 	    
+    		// cars.
+    	    ResourceManager rmCars;
+    	    registry = LocateRegistry.getRegistry(carMachine);
+    	    rmCars = (ResourceManager) registry.lookup(carRMIServiceName);
+    	    this.carGroup.addAll(rmCars.getGroupMembers());
+
+    	    // flights.
+    	    ResourceManager rmFlights;
+    	    registry = LocateRegistry.getRegistry(flightMachine);
+    	    rmFlights = (ResourceManager) registry.lookup(flightRMIServiceName);
+    	    this.flightGroup.addAll(rmFlights.getGroupMembers());
+    	    
+    	    // rooms.
+    	    ResourceManager rmRooms;
+    	    registry = LocateRegistry.getRegistry(roomMachine);
+    	    rmRooms = (ResourceManager) registry.lookup(roomRMIServiceName);
+    	    this.roomGroup.addAll(rmRooms.getGroupMembers());
+    	}
+    	
+	    // Start the overseer thread
+	    this.overseer.start();
+    }
+    
+    // helper constructor for slaves.
+    private HavocadoFlesh(boolean isMaster, String myRMIServiceName, String groupName) throws RemoteException, NotBoundException {
+    	this(isMaster, myRMIServiceName, groupName, null, null, null, null, null, null);
+    }
+        
+    private ResourceManager getRmCars() {
+    	MemberInfo carMI = carGroup.peekFirst();
+    	if(carMI == null) return null;
+    	return this.memberInfoToResourceManager(carMI);
+    }
+    
+    private ResourceManager getRmFlights() {
+    	MemberInfo flightMI = flightGroup.peekFirst();
+    	if(flightMI == null) return null;
+    	return this.memberInfoToResourceManager(flightMI);
+    }
+    
+    private ResourceManager getRmRooms() {
+    	MemberInfo roomMI = roomGroup.peekFirst();
+    	if(roomMI == null) return null;
+    	return this.memberInfoToResourceManager(roomMI);
     }
 
     // Create a new flight, or add seats to existing flight
@@ -950,8 +1027,15 @@ public class HavocadoFlesh
 		
 	}
 
-	public List<MemberInfo> getGroupMembers() throws RemoteException {
-		return this.;
+	public LinkedList<MemberInfo> getGroupMembers() throws RemoteException {
+		return this.currentMembers;
+	}
+
+
+	@Override
+	protected void specialReceive(Message arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
