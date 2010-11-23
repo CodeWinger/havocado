@@ -990,7 +990,7 @@ public class HavocadoSeed extends GroupMember
 	}
 
 
-	public List<MemberInfo> getGroupMembers() throws RemoteException {
+	public LinkedList<MemberInfo> getGroupMembers() throws RemoteException {
 		return currentMembers;
 	}
 
@@ -1007,6 +1007,11 @@ public class HavocadoSeed extends GroupMember
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public void poke() throws RemoteException {
 	}
 
 }
