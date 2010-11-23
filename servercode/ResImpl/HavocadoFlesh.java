@@ -971,7 +971,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 			
 			// Shutdown all the middleware servers except yourself.
 			for(MemberInfo m: this.currentMembers) {
-				if(m != this.myInfo){
+				if(!m.equals(this.myInfo)){
 					shutdownMember(m);
 				}
 			}
