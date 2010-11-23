@@ -141,6 +141,7 @@ public abstract class GroupMember implements Receiver {
 		else {
 			if (msg.getObject() instanceof LinkedList<?>) {
 				currentMembers = (LinkedList<MemberInfo>)msg.getObject();
+				master = currentMembers.getFirst();
 			}
 		}
 		specialReceive(msg);
@@ -197,8 +198,13 @@ public abstract class GroupMember implements Receiver {
 					break;
 				}
 			}
-			if (!found)
-				promoteToMaster();
+			if (!found) {
+				if (myInfo.equals(currentMembers.getFirst()))
+					promoteToMaster();
+				// Even if we're not next in line, we know who the new master is.
+				else
+					master = currentMembers.getFirst();
+			}
 		}
 	}
 }
