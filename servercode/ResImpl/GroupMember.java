@@ -48,8 +48,7 @@ public abstract class GroupMember implements Receiver {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		//TODO Master specific stuff.
-		//TODO Slave specific stuff.
+		
 		if (!isMaster) {
 			try {
 				channel.send(null, null, myInfo);
@@ -76,7 +75,10 @@ public abstract class GroupMember implements Receiver {
 		} catch (ChannelClosedException e) {
 			e.printStackTrace();
 		}
+		specialPromoteToMaster();
 	}
+	
+	public abstract void specialPromoteToMaster();
 	
 	public ResourceManager getMaster() {
 		try {
@@ -108,6 +110,10 @@ public abstract class GroupMember implements Receiver {
 		throw new UnsupportedOperationException("Not supported");
 	}
 
+	/**
+	 * Send an object to all the members in our group.
+	 * @param obj
+	 */
 	public void send(Serializable obj) {
 		try {
 			this.channel.send(null, null, obj);
@@ -144,10 +150,10 @@ public abstract class GroupMember implements Receiver {
 				master = currentMembers.getFirst();
 			}
 		}
-		specialReceive(msg);
+		specialReceive(msg.getObject());
 	}
 	
-	protected abstract void specialReceive(Message arg0);
+	protected abstract void specialReceive(Object arg0);
 	
 	public void setState(byte[] arg0) {
 		throw new UnsupportedOperationException("Not supported");
