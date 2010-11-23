@@ -6,8 +6,8 @@ import java.util.Vector;
 
 import ResInterface.*;
 
-public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
-
+public class QueryCustomerInfoRMICommand extends AbstractMultiRMICommand {
+/*
   public LinkedList<MemberInfo> carRmGroup;
   public LinkedList<MemberInfo> flightRmGroup;
   public LinkedList<MemberInfo> roomRmGroup;
@@ -15,7 +15,7 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
   private ResourceManager carRm;
   private ResourceManager flightRm;
   private ResourceManager roomRm;
-  
+  */
   public int id;
   public int customer;
   
@@ -27,10 +27,12 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
 		LinkedList<MemberInfo> pRoomRmGroup,
 		int pId, int pCustomer) 
 	{
-		super(pCarRmGroup); // initialize the abstract constructor - this is only to set the error code to false.
+		super(pCarRmGroup, pFlightRmGroup, pRoomRmGroup); // initialize the abstract constructor - this is only to set the error code to false.
+	/*
     carRmGroup = pCarRmGroup;
     flightRmGroup = pFlightRmGroup;
     roomRmGroup = pRoomRmGroup;
+    */
     // Store our attributes.
     id = pId;
     customer = pCustomer;
@@ -38,9 +40,7 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
     customerInfo = new ReturnTuple<String>("", null);
   }
   
-  /**
-   * Override the populateResourceManagers function.
-   */
+  /*
   @Override
   protected void populateResourceManagers() throws Exception {
 	  ResourceManager c = getAvailableRM(carRmGroup);
@@ -53,6 +53,7 @@ public class QueryCustomerInfoRMICommand extends AbstractRMICommand {
 	  flightRm = f;
 	  roomRm = r;
   }
+  */
   
   public Vector<String> getCustomerCarReservations() throws RemoteException {
 	  timestamp.stamp();

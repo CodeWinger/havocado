@@ -5,16 +5,16 @@ import java.util.Vector;
 
 import ResInterface.*;
 
-public class DeleteCustomerRMICommand extends AbstractRMICommand {
-
+public class DeleteCustomerRMICommand extends AbstractMultiRMICommand {
+/*
   public LinkedList<MemberInfo> carRmGroup;
   public LinkedList<MemberInfo> flightRmGroup;
   public LinkedList<MemberInfo> roomRmGroup;
   
-  public ResourceManager carRm;
-  public ResourceManager flightRm;
-  public ResourceManager roomRm;
-
+  public transient ResourceManager carRm;
+  public transient ResourceManager flightRm;
+  public transient ResourceManager roomRm;
+*/
   public int id;
   public int customer;
   
@@ -26,11 +26,12 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
 		  LinkedList<MemberInfo> pRoomRmGroup,
 		  int pId, int pCustomer) 
 	{
-    super(pCarRmGroup); // initialize the abstract constructor - this is only to set the error code to false.
+    super(pCarRmGroup, pFlightRmGroup, pRoomRmGroup); // initialize the abstract constructor - this is only to set the error code to false.
+    /*
     carRmGroup = pCarRmGroup;
     flightRmGroup = pFlightRmGroup;
     roomRmGroup = pRoomRmGroup;
-    
+    */
     // Store our attributes.
     id = pId;
     customer = pCustomer;
@@ -38,9 +39,7 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
     success = new ReturnTuple<Boolean>(false, null);
   }
   
-  /**
-   * Override the populateResourceManagers function.
-   */
+  /*
   @Override
   protected void populateResourceManagers() throws Exception {
 	  ResourceManager c = getAvailableRM(carRmGroup);
@@ -53,6 +52,7 @@ public class DeleteCustomerRMICommand extends AbstractRMICommand {
 	  flightRm = f;
 	  roomRm = r;
   }
+  */
   
   private ReturnTuple<Vector<String>> previousCarReservations;
   private ReturnTuple<Vector<Integer>> previousFlightReservations;
