@@ -162,6 +162,19 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     	this(isMaster, myRMIServiceName, groupName, null, null, null, null, null, null);
     }
     
+	@Override
+	public void specialPromoteToMaster() {
+		// If we have just been promoted to a master, start our overseer thread.
+		this.overseer.refreshAllTransactionsTTL();
+		this.overseer.start();
+	}
+
+	@Override
+	protected void specialReceive(Object arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+    
     /**
      * Called when a lock is set. Sends the appropriate replication
      * command to the group.
@@ -1118,13 +1131,6 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 
 	public LinkedList<MemberInfo> getGroupMembers() throws RemoteException {
 		return this.currentMembers;
-	}
-
-
-	@Override
-	protected void specialReceive(Message arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

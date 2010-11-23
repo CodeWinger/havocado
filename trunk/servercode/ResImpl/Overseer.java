@@ -38,6 +38,12 @@ public class Overseer extends Thread{
 		flesh = pF;
 	}
 	
+	public void refreshAllTransactionsTTL() {
+		for(Transaction t: currentTransactions.values()) {
+			t.setTime();
+		}
+	}
+	
 	/**
 	 * Check each transaction and kills ones that have been inactive for
 	 * too long.

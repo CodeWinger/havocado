@@ -1078,10 +1078,10 @@ public class HavocadoSeed extends GroupMember
 
 
 	@Override
-	protected void specialReceive(Message arg0) {
+	protected void specialReceive(Object arg0) {
 		if (!isMaster) {
-			if (arg0.getObject() instanceof AbstractRMGroupCommand) {
-				AbstractRMGroupCommand c = (AbstractRMGroupCommand)arg0.getObject();
+			if (arg0 instanceof AbstractRMGroupCommand) {
+				AbstractRMGroupCommand c = (AbstractRMGroupCommand)arg0;
 				try {
 					c.doCommand(this);
 				} catch (Exception e) {
@@ -1094,6 +1094,13 @@ public class HavocadoSeed extends GroupMember
 
 	@Override
 	public void poke() throws RemoteException {
+		// do nothing - just tests if i exist.
+	}
+
+
+	@Override
+	public void specialPromoteToMaster() {
+		// do nothing.
 	}
 
 }
