@@ -1,12 +1,18 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
+
 import ResInterface.*;
 
 public class NewCustomerWithIdRMICommand extends AbstractRMICommand {
-
+	
+  public LinkedList<MemberInfo> carRmGroup;
+  public LinkedList<MemberInfo> flightRmGroup;
+  public LinkedList<MemberInfo> roomRmGroup;
+	
   public ResourceManager carRm;
   public ResourceManager flightRm;
-	public ResourceManager roomRm;
+  public ResourceManager roomRm;
 
   public int id;
   public int cid;
@@ -14,21 +20,37 @@ public class NewCustomerWithIdRMICommand extends AbstractRMICommand {
   public ReturnTuple<Boolean> success;
 
   public NewCustomerWithIdRMICommand(
-  	ResourceManager pCarRm, 
-		ResourceManager pFlightRm, 
-		ResourceManager pRoomRm,  
+		LinkedList<MemberInfo> pCarRmGroup, 
+		LinkedList<MemberInfo> pFlightRmGroup,
+		LinkedList<MemberInfo> pRoomRmGroup,
 		int pId, int pCid) 
 	{
-    super(pCarRm); // initialize the abstract constructor - this is only to set the error code to false.
-    carRm = pCarRm;
-    flightRm = pFlightRm;
-    roomRm = pRoomRm;
+    super(pCarRmGroup); // initialize the abstract constructor - this is only to set the error code to false.
+    carRmGroup = pCarRmGroup;
+    flightRmGroup = pFlightRmGroup;
+    roomRmGroup = pRoomRmGroup;
     
     // Store our attributes.
     id = pId;
     cid = pCid;
     
     success = new ReturnTuple<Boolean>(false, null);
+  }
+  
+  /**
+   * Override the populateResourceManagers function.
+   */
+  @Override
+  protected void populateResourceManagers() throws Exception {
+	  ResourceManager c = getAvailableRM(carRmGroup);
+	  ResourceManager f = getAvailableRM(flightRmGroup);
+	  ResourceManager r = getAvailableRM(roomRmGroup);
+	  if (c == null || f == null || r == null) {
+		  throw new Exception("One resource manager is unavailable");
+	  }
+	  carRm = c;
+	  flightRm = f;
+	  roomRm = r;
   }
   
   public void doCommand() throws Exception {

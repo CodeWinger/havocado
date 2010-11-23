@@ -1,5 +1,7 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
+
 import ResInterface.*;
 
 public class QueryRoomsPriceRMICommand extends AbstractRMICommand {
@@ -9,8 +11,8 @@ public class QueryRoomsPriceRMICommand extends AbstractRMICommand {
   
   public ReturnTuple<Integer> price;
 
-  public QueryRoomsPriceRMICommand(ResourceManager pRm, int pId, String pLocation) {
-    super(pRm);
+  public QueryRoomsPriceRMICommand(LinkedList<MemberInfo> pRmGroup, int pId, String pLocation) {
+    super(pRmGroup);
     // Store our attributes.
     id = pId;
     location = pLocation;

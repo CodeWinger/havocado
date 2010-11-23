@@ -1,5 +1,7 @@
 package Commands.RMICommands;
 
+import java.util.LinkedList;
+
 import ResInterface.*;
 
 public class ReserveFlightRMICommand extends AbstractRMICommand {
@@ -10,8 +12,8 @@ public class ReserveFlightRMICommand extends AbstractRMICommand {
   
   public ReturnTuple<Boolean> success;
 
-  public ReserveFlightRMICommand(ResourceManager pRm, int pId, int pCustomer, int pFlightNumber) {
-    super(pRm);
+  public ReserveFlightRMICommand(LinkedList<MemberInfo> pRmGroup, int pId, int pCustomer, int pFlightNumber) {
+    super(pRmGroup);
     // Store our attributes.
     id = pId;
     customer = pCustomer;
