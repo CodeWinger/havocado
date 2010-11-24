@@ -56,10 +56,8 @@ public abstract class GroupMember implements Receiver {
 		if (!isMaster) {
 			try {
 				System.out.println("Pre slave send");
-				//channel.send(null, null, myInfo);
-				Message m = new Message();
-				m.setObject(this.myInfo);
-				channel.send(m);
+				channel.send(null, null, myInfo);
+				channel.startFlush(true);
 				System.out.println("Post slave send");
 			} catch (ChannelNotConnectedException e) {
 				e.printStackTrace();
