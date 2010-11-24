@@ -5,7 +5,7 @@ ROOMSERVER = ${HOSTNAME}
 CARRMINAME =
 FLIGHTRMINAME =
 ROOMRMINAME =
-MIDDLERMINAME =
+MIDDLERMINAME = HavocadoMiddleware
 GROUPNAME =
 
 all: ResInterface.jar
@@ -28,6 +28,7 @@ rooms: ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
 ResImpl.HavocadoSeed HavocadoSeedRoom $(ROLE) $(GROUPNAME) $(ROOMSERVER)
 
+flesh: GROPUNAME = HavocadoMiddlewareGroup
 flesh: ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
 ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(CARSERVER) $(CARRMINAME) \
