@@ -67,11 +67,13 @@ public class HavocadoSeed extends GroupMember
     public HavocadoSeed(boolean isMaster, String myRMIServiceName, String groupName) throws RemoteException {
     	super(isMaster, myRMIServiceName, groupName);
 		// dynamically generate the stub (client proxy)
+    	/*
 		ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(this, 0);
 
 		// Bind the remote object's stub in the registry
 		Registry registry = LocateRegistry.getRegistry();
 		registry.rebind(myRMIServiceName, rm);
+		*/
 
 		System.err.println("Server ready");
     }
