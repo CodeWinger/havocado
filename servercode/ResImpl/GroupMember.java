@@ -135,6 +135,7 @@ public abstract class GroupMember implements Receiver {
 	 * @param msg The message being received. 
 	 */
 	public void receive(Message msg) {
+		System.out.println("MESSAGE RECEIVED.");
 		// If we're master, if we get new member information, add the new member to
 		// the list and broadcast the list.
 		if (isMaster) {
