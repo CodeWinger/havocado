@@ -1,0 +1,14 @@
+#!/bin/bash
+gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-2.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-3.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms"; read line'&
+
+read -p "Press ENTER to clean up processes"
+
+ssh sbriss7@socs-1.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
+ssh sbriss7@socs-2.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
+ssh sbriss7@socs-3.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
+wait
+echo "Done"
