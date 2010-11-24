@@ -58,6 +58,7 @@ public abstract class GroupMember implements Receiver {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("GroupMember created. isMaster: " + isMaster);
 	}
 	
 	/**
@@ -66,6 +67,9 @@ public abstract class GroupMember implements Receiver {
 	 * boolean 'isMaster' to true, and updates all other members' member list.
 	 */
 	public void promoteToMaster() {
+		// DEBUG
+		System.out.println("Promoting myself to master");
+		
 		master = myInfo;
 		isMaster = true;
 		try {
@@ -171,6 +175,13 @@ public abstract class GroupMember implements Receiver {
 	 * @param arg0 The new view.
 	 */
 	public void viewAccepted(View arg0) {
+		// DEBUG: print the view.
+		System.out.println(arg0.toString());
+		System.out.println("Current members:");
+		for(MemberInfo m : currentMembers) {
+			System.out.println("> " + m.rmiName + " " + m.address.toString());
+		}
+		
 		Vector<Address> addresses = arg0.getMembers();
 		PriorityQueue<Integer> toRemove = new PriorityQueue<Integer>(1, Collections.reverseOrder());
 		boolean found;
@@ -211,6 +222,11 @@ public abstract class GroupMember implements Receiver {
 				else
 					master = currentMembers.getFirst();
 			}
+		}
+		
+		System.out.println("New members:");
+		for(MemberInfo m : currentMembers) {
+			System.out.println("> " + m.rmiName + " " + m.address.toString());
 		}
 	}
 }
