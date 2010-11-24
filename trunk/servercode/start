@@ -1,14 +1,44 @@
 #!/bin/bash
-gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+
+# Start master RM's
+gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"ROLE = slave\""; read line'&
 
 gnome-terminal -x bash -c 'ssh sbriss7@socs-2.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights"; read line'&
 
 gnome-terminal -x bash -c 'ssh sbriss7@socs-3.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms"; read line'&
 
+read -p "Press ENTER to start slave RM's"
+
+# Start slave RM's
+gnome-terminal -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-6.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-8.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms"; read line'&
+
+read -p "Press ENTER to start master middleware"
+
+# Start master middleware
+gnome-terminal -x bash -c 'ssh sbriss7@socs-10.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh"; read line'&
+
+read -p "Press ENTER to start slave middlewares"
+
+# Start slave middlewares
+gnome-terminal -x bash -c 'ssh sbriss7@socs-11.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+
+gnome-terminal -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+
 read -p "Press ENTER to clean up processes"
 
-ssh sbriss7@socs-1.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
-ssh sbriss7@socs-2.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
-ssh sbriss7@socs-3.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
+# Cleanup
+for id in {1..12}; do
+    ssh sbriss7@socs-${id}.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
+done
 wait
 echo "Done"
