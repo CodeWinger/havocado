@@ -1,5 +1,5 @@
 #!/bin/bash
 
-make cars&
-make flights&
-make rooms&
+make cars& > /dev/stdout
+make flights& > /dev/stdout
+make rooms& > /dev/stdout

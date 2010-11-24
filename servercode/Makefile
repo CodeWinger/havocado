@@ -1,3 +1,8 @@
+DIR = "/home/2007/sbriss7/School/Comp512"
+CP = $(DIR)"/servercode:"$(DIR)"/servercode/ResImpl:"$(DIR)"/servercode/ResImpl/jgroups-2.9.0.GA.jar"
+JC = javac -cp $(CP)
+JAC = java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" -classpath $(CP)
+
 ROLE = slave
 CARSERVER = ${HOSTNAME}
 FLIGHTSERVER = ${HOSTNAME}
@@ -9,48 +14,49 @@ MIDDLERMINAME = HavocadoMiddleware
 GROUPNAME =
 
 all: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi willy mimi
+	$(JAC) ResImpl.HavocadoFlesh mimi willy mimi
 
 many: cars flights rooms
 
 cars: GROUPNAME = HavocadoCarGroup
 cars: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
-ResImpl.HavocadoSeed HavocadoSeedCar $(ROLE) $(GROUPNAME) $(CARSERVER)
+	$(JAC) \
+ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(CARRMINAME)
 
 flights: GROUPNAME = HavocadoFlightGroup
 flights: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
-ResImpl.HavocadoSeed HavocadoSeedFlight $(ROLE) $(GROUPNAME) $(FLIGHTSERVER)
+	$(JAC) \
+ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(FLIGHTRMINAME)
 
 rooms: GROUPNAME = HavocadoRoomGroup
 rooms: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
-ResImpl.HavocadoSeed HavocadoSeedRoom $(ROLE) $(GROUPNAME) $(ROOMSERVER)
+	$(JAC) \
+ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(ROOMRMINAME)
 
 flesh: GROUPNAME = HavocadoMiddlewareGroup
 flesh: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
+	$(JAC) \
 ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(CARSERVER) $(CARRMINAME) \
 $(FLIGHTSERVER) $(FLIGHTRMINAME) $(ROOMSERVER) $(ROOMRMINAME)
 
 ResInterface.jar: lock resimpl
-	javac ResInterface/*.java
+	$(JC) ResInterface/*.java
 	jar cvf ResInterface.jar ResInterface/*.class
 	chmod 644 LockManager/*.class
 	chmod 644 exceptions/*.class
 	chmod 644 ResImpl/*.class
+	chmod 644 ResImpl/*.jar
 	chmod 644 ResInterface.jar
 	chmod 644 ResInterface/*.class
 
 resimpl: lock commands
-	javac ResImpl/*.java
+	$(JC) ResImpl/*.java
 
 commands:
-	javac Commands/*.java Commands/RMICommands/*.java
+	$(JC) Commands/*.java Commands/RMICommands/*.java Commands/RMGroupCommands/*.java
 
 lock:
-	javac LockManager/*.java
+	$(JC) LockManager/*.java
 
 clean:
-	rm -rf ResImpl/*.class; rm -rf ResInterface/*.class; rm -f Commands.jar; rm -f ResInterface.jar; rm -rf Commands/TCPCommands/*.class;
+	rm -rf ResImpl/*.class; rm -rf ResInterface/*.class; rm -f Commands.jar; rm -f ResInterface.jar; rm -rf Commands/TCPCommands/*.class; rm -rf Commands/RMGroupCommands/*.class
