@@ -1,19 +1,37 @@
+ROLE = slave
+CARSERVER = ${HOSTNAME}
+FLIGHTSERVER = ${HOSTNAME}
+ROOMSERVER = ${HOSTNAME}
+CARRMINAME =
+FLIGHTRMINAME =
+ROOMRMINAME =
+MIDDLERMINAME =
+GROUPNAME =
+
 all: ResInterface.jar
 	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi willy mimi
 
 many: cars flights rooms
 
+cars: GROUPNAME = HavocadoCarGroup
 cars: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedCar
-	
-flights: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedFlight
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
+ResImpl.HavocadoSeed HavocadoSeedCar $(ROLE) $(GROUPNAME) $(CARSERVER)
 
+flights: GROUPNAME = HavocadoFlightGroup
+flights: ResInterface.jar
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
+ResImpl.HavocadoSeed HavocadoSeedFlight $(ROLE) $(GROUPNAME) $(FLIGHTSERVER)
+
+rooms: GROUPNAME = HavocadoRoomGroup
 rooms: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoSeed HavocadoSeedRoom
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
+ResImpl.HavocadoSeed HavocadoSeedRoom $(ROLE) $(GROUPNAME) $(ROOMSERVER)
 
 flesh: ResInterface.jar
-	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" ResImpl.HavocadoFlesh mimi willy mimi
+	java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" \
+ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(CARSERVER) $(CARRMINAME) \
+$(FLIGHTSERVER) $(FLIGHTRMINAME) $(ROOMSERVER) $(ROOMRMINAME)
 
 ResInterface.jar: lock resimpl
 	javac ResInterface/*.java
