@@ -48,7 +48,12 @@ public abstract class GroupMember implements Receiver {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if (!isMaster) {
 			try {
 				System.out.println("Pre slave send");
