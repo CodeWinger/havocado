@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start master RM's
-gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"ROLE = slave\""; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"ROLE = master\""; read line'&
 
 gnome-terminal -x bash -c 'ssh sbriss7@socs-2.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights"; read line'&
 
