@@ -35,11 +35,11 @@ public class HavocadoSeed extends GroupMember
         if (args.length == 3) {
         	if (args[0].compareToIgnoreCase("master") == 0)
         		isMaster = true;
-        	else if (args[0].compareToIgnoreCase("replica") == 0)
+        	else if (args[0].compareToIgnoreCase("slave") == 0)
         		isMaster = false;
         	else {
         		System.err.println("Wrong usage");
-        		System.out.println("<role> must be \"master\" or \"replica\", not "+args[0]);
+        		System.out.println("<role> must be \"master\" or \"slave\", not "+args[0]);
         		System.exit(1);
         	}
         	

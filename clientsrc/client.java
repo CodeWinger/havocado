@@ -1,6 +1,8 @@
 import java.rmi.*;
 
+import ResImpl.GroupMember;
 import ResInterface.*;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -9,13 +11,121 @@ import java.io.*;
 public class client
 {
     static String message = "blank";
-    static ResourceManager rm = null;
-
+    //static ResourceManager rm = null;
+    
+    /** Group of middleware servers to call */
+    private final LinkedList<MemberInfo> mwGroup = new LinkedList<MemberInfo>();
+    
+    /**
+     * Copied from GroupMember.java
+     */
+	public static ResourceManager memberInfoToResourceManager(MemberInfo mi) {
+		try {
+			return (ResourceManager)LocateRegistry.getRegistry(mi.address.getHostName()).lookup(mi.rmiName);
+		} catch (AccessException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+    
+    /**
+     * Copied from AbstractRMICommand.java
+     */
+    public static ResourceManager getAvailableRM(LinkedList<MemberInfo> memberList) {
+  	  int listSize = memberList.size();
+  	  for(int i = 0; i < listSize; i++) {
+  		  MemberInfo mi = memberList.get(i);
+  		  ResourceManager r = memberInfoToResourceManager(memberList.get(i));
+  		  if(r != null) {
+  			  try{
+  				  // Test to see if it's alive.
+  				  r.poke();
+  				  // no exception was thrown! return!
+  				  return r;
+  			  } catch(RemoteException e) {
+  				  System.out.println(mi.rmiName + " is dead.");
+  				  continue;
+  			  }
+  		  }
+  	  }
+  	  return null;
+    }
+    
+    /**
+	 * Copied from HavocadoFlesh.java
+	 */
+	private void updateRMGroup(LinkedList<MemberInfo> old, LinkedList<MemberInfo> next) {
+		if(next == null || next.isEmpty()) { 
+			System.out.println("empty or null next MemberInfo sent in updated.");
+			return; 
+		}
+		
+		// Add to our old list the memberInfo objects that were not previously there.
+		for(MemberInfo m : next) {
+			if(!old.contains(m)) {
+				old.add(m);
+			}
+		}
+		
+		// Remove from our old list the memberInfo objects that are absent in next.
+		LinkedList<MemberInfo> toRemove = new LinkedList<MemberInfo>();
+		for(MemberInfo m : old) {
+			if(!next.contains(m)) {
+				toRemove.add(m);
+			}
+		}
+		for(MemberInfo m : toRemove) {
+			old.remove(m);
+		}
+	}
+	
+	/**
+	 * Crash a resource manager using its service name and machine name
+	 * @param serviceName
+	 * @param machineName
+	 */
+	public void crashAt(String serviceName, String machineName) {
+		try{
+			Registry registry = LocateRegistry.getRegistry(machineName);
+			ResourceManager r = (ResourceManager) registry.lookup(serviceName);
+			r.crash();
+		} catch(Exception e) {
+			System.out.println("CRASH EXCEPTION:");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Get a resource manager which will let us connect to the middleware.
+	 * @return
+	 */
+	public ResourceManager getRM() {
+		return getAvailableRM(this.mwGroup);
+	}
+	
+	/**
+	 * Constructor. Takes care of populating the mwGroup.
+	 * @param bootstrapServiceName
+	 * @param bootstrapMachineName
+	 * @throws RemoteException 
+	 * @throws NotBoundException 
+	 */
+	public client(String serviceName, String machineName) throws RemoteException, NotBoundException {
+		
+		Registry registry = LocateRegistry.getRegistry(machineName);
+		ResourceManager middleware = (ResourceManager) registry.lookup(serviceName);
+	    //this.carGroup.addAll(rmCars.getGroupMembers());
+	    updateRMGroup(mwGroup, middleware.getGroupMembers());
+	}
+    
     int lastTransaction = 0;
 
     public static void main(String args[])
 	{
-	    client obj = new client();
 	    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 	    String command = "";
 	    Vector arguments  = new Vector();
@@ -31,7 +141,7 @@ public class client
 	    String location;
 	    String shutdownServer;
 
-
+	    /*
 	    String server = "localhost";
 	    if (args.length == 1) 
 			server = args[0]; 
@@ -40,7 +150,29 @@ public class client
 			System.out.println ("Usage: java client [rmihost]"); 
 			System.exit(1); 
 	    }
+	    */
+	    String serviceName = "";
+	    String machineName = "";
+	    if (args.length == 2) {
+	    	machineName = args[0];
+	    	serviceName = args[1];
+	    } else {
+	    	System.out.println("Usage: java client [machine name] [service name]");
+	    }
+	    
+	    // Initialize our client object using the arguments.
+	    client obj = null;
+	    try {
+	    	obj = new client(serviceName, machineName);
+	    	if(obj.mwGroup.isEmpty()) {
+	    		throw new Exception("empty middleware group");
+	    	}
+	    } catch(Exception e) {
+	    	e.printStackTrace();
+	    	System.exit(-1);
+	    }
 		
+	    /*
 		try 
 		{
 			// get a reference to the rmiregistry
@@ -63,7 +195,7 @@ public class client
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
 		}
-    
+		*/
 		
 		
 	    
@@ -83,7 +215,7 @@ public class client
 		System.out.print("\n>");
 		try{
 		    //read the next command
-		    command =stdin.readLine();
+		    command = stdin.readLine();
 		}
 		catch (IOException io){
 		    System.out.println("Unable to read from standard in");
@@ -119,7 +251,7 @@ public class client
 			flightNum = obj.getInt(arguments.elementAt(2));
 			flightSeats = obj.getInt(arguments.elementAt(3));
 			flightPrice = obj.getInt(arguments.elementAt(4));
-			if(rm.addFlight(Id,flightNum,flightSeats,flightPrice, new Timestamp()).result)
+			if(obj.getRM().addFlight(Id,flightNum,flightSeats,flightPrice, new Timestamp()).result)
 			    System.out.println("Flight added");
 			else
 			    System.out.println("Flight could not be added");
@@ -145,7 +277,7 @@ public class client
 			location = obj.getString(arguments.elementAt(2));
 			numCars = obj.getInt(arguments.elementAt(3));
 			price = obj.getInt(arguments.elementAt(4));
-			if(rm.addCars(Id,location,numCars,price, new Timestamp()).result)
+			if(obj.getRM().addCars(Id,location,numCars,price, new Timestamp()).result)
 			    System.out.println("Cars added");
 			else
 			    System.out.println("Cars could not be added");
@@ -171,7 +303,7 @@ public class client
 			location = obj.getString(arguments.elementAt(2));
 			numRooms = obj.getInt(arguments.elementAt(3));
 			price = obj.getInt(arguments.elementAt(4));
-			if(rm.addRooms(Id,location,numRooms,price, new Timestamp()).result)
+			if(obj.getRM().addRooms(Id,location,numRooms,price, new Timestamp()).result)
 			    System.out.println("Rooms added");
 			else
 			    System.out.println("Rooms could not be added");
@@ -191,7 +323,7 @@ public class client
 		    System.out.println("Adding a new Customer using id:"+arguments.elementAt(1));
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
-			int customer=rm.newCustomer(Id, new Timestamp()).result;
+			int customer=obj.getRM().newCustomer(Id, new Timestamp()).result;
 			System.out.println("new customer id:"+customer);
 		    }
 		    catch(Exception e){
@@ -211,7 +343,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			if(rm.deleteFlight(Id,flightNum, new Timestamp()).result)
+			if(obj.getRM().deleteFlight(Id,flightNum, new Timestamp()).result)
 			    System.out.println("Flight Deleted");
 			else
 			    System.out.println("Flight could not be deleted");
@@ -234,7 +366,7 @@ public class client
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
 			
-			if(rm.deleteCars(Id,location, new Timestamp()).result)
+			if(obj.getRM().deleteCars(Id,location, new Timestamp()).result)
 			    System.out.println("Cars Deleted");
 			else
 			    System.out.println("Cars could not be deleted");
@@ -256,7 +388,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			if(rm.deleteRooms(Id,location, new Timestamp()).result)
+			if(obj.getRM().deleteRooms(Id,location, new Timestamp()).result)
 			    System.out.println("Rooms Deleted");
 			else
 			    System.out.println("Rooms could not be deleted");
@@ -278,7 +410,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
-			if(rm.deleteCustomer(Id,customer, new Timestamp()).result)
+			if(obj.getRM().deleteCustomer(Id,customer, new Timestamp()).result)
 			    System.out.println("Customer Deleted");
 			else
 			    System.out.println("Customer could not be deleted");
@@ -300,7 +432,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			int seats=rm.queryFlight(Id,flightNum, new Timestamp()).result;
+			int seats=obj.getRM().queryFlight(Id,flightNum, new Timestamp()).result;
 			System.out.println("Number of seats available:"+seats);
 		    }
 		    catch(Exception e){
@@ -320,7 +452,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			numCars=rm.queryCars(Id,location, new Timestamp()).result;
+			numCars=obj.getRM().queryCars(Id,location, new Timestamp()).result;
 			System.out.println("number of Cars at this location:"+numCars);
 		    }
 		    catch(Exception e){
@@ -340,7 +472,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			numRooms=rm.queryRooms(Id,location, new Timestamp()).result;
+			numRooms=obj.getRM().queryRooms(Id,location, new Timestamp()).result;
 			System.out.println("number of Rooms at this location:"+numRooms);
 		    }
 		    catch(Exception e){
@@ -360,7 +492,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
-			String bill=rm.queryCustomerInfo(Id,customer, new Timestamp()).result;
+			String bill=obj.getRM().queryCustomerInfo(Id,customer, new Timestamp()).result;
 			System.out.println("Customer info:"+bill);
 		    }
 		    catch(Exception e){
@@ -380,7 +512,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			flightNum = obj.getInt(arguments.elementAt(2));
-			price=rm.queryFlightPrice(Id,flightNum, new Timestamp()).result;
+			price=obj.getRM().queryFlightPrice(Id,flightNum, new Timestamp()).result;
 			System.out.println("Price of a seat:"+price);
 		    }
 		    catch(Exception e){
@@ -400,7 +532,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			price=rm.queryCarsPrice(Id,location, new Timestamp()).result;
+			price=obj.getRM().queryCarsPrice(Id,location, new Timestamp()).result;
 			System.out.println("Price of a car at this location:"+price);
 		    }
 		    catch(Exception e){
@@ -420,7 +552,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			location = obj.getString(arguments.elementAt(2));
-			price=rm.queryRoomsPrice(Id,location, new Timestamp()).result;
+			price=obj.getRM().queryRoomsPrice(Id,location, new Timestamp()).result;
 			System.out.println("Price of Rooms at this location:"+price);
 		    }
 		    catch(Exception e){
@@ -442,7 +574,7 @@ public class client
 			Id = obj.getInt(arguments.elementAt(1));
 			int customer = obj.getInt(arguments.elementAt(2));
 			flightNum = obj.getInt(arguments.elementAt(3));
-			if(rm.reserveFlight(Id,customer,flightNum, new Timestamp()).result)
+			if(obj.getRM().reserveFlight(Id,customer,flightNum, new Timestamp()).result)
 			    System.out.println("Flight Reserved");
 			else
 			    System.out.println("Flight could not be reserved.");
@@ -468,7 +600,7 @@ public class client
 			int customer = obj.getInt(arguments.elementAt(2));
 			location = obj.getString(arguments.elementAt(3));
 			
-			if(rm.reserveCar(Id,customer,location, new Timestamp()).result)
+			if(obj.getRM().reserveCar(Id,customer,location, new Timestamp()).result)
 			    System.out.println("Car Reserved");
 			else
 			    System.out.println("Car could not be reserved.");
@@ -493,7 +625,7 @@ public class client
 			int customer = obj.getInt(arguments.elementAt(2));
 			location = obj.getString(arguments.elementAt(3));
 			
-			if(rm.reserveRoom(Id,customer,location, new Timestamp()).result)
+			if(obj.getRM().reserveRoom(Id,customer,location, new Timestamp()).result)
 			    System.out.println("Room Reserved");
 			else
 			    System.out.println("Room could not be reserved.");
@@ -527,7 +659,7 @@ public class client
 			Car = obj.getBoolean(arguments.elementAt(arguments.size()-2));
 			Room = obj.getBoolean(arguments.elementAt(arguments.size()-1));
 			
-			if(rm.itinerary(Id,customer,flightNumbers,location,Car,Room, new Timestamp()).result)
+			if(obj.getRM().itinerary(Id,customer,flightNumbers,location,Car,Room, new Timestamp()).result)
 			    System.out.println("Itinerary Reserved");
 			else
 			    System.out.println("Itinerary could not be reserved.");
@@ -557,7 +689,7 @@ public class client
 		    try{
 			Id = obj.getInt(arguments.elementAt(1));
 			Cid = obj.getInt(arguments.elementAt(2));
-			boolean customer=rm.newCustomer(Id,Cid, new Timestamp()).result;
+			boolean customer=obj.getRM().newCustomer(Id,Cid, new Timestamp()).result;
 			System.out.println("new customer id:"+Cid);
 		    }
 		    catch(Exception e){
@@ -574,7 +706,7 @@ public class client
 			}
 			System.out.println("Shutting down server: "+arguments.elementAt(1));
 			try {
-				rm.shutdown(obj.getString(arguments.elementAt(1)));
+				obj.getRM().shutdown(obj.getString(arguments.elementAt(1)));
 			}
 			catch (Exception e) {
 				System.out.println("EXCEPTION:");
@@ -590,7 +722,7 @@ public class client
 			}
 			System.out.println("Starting a new transaction");
 			try {
-				int transactionID = rm.start(new Timestamp()).result;
+				int transactionID = obj.getRM().start(new Timestamp()).result;
 				System.out.println("New transaction id:"+transactionID);
 			}
 			catch(Exception e) {
@@ -608,7 +740,7 @@ public class client
 			System.out.println("Commiting transaction with ID: "+arguments.elementAt(1));
 			try {
 				Id = obj.getInt(arguments.elementAt(1));
-				boolean success = rm.commit(Id, new Timestamp()).result;
+				boolean success = obj.getRM().commit(Id, new Timestamp()).result;
 				if (success)
 					System.out.println("Transaction commited!");
 				else
@@ -635,7 +767,7 @@ public class client
 			System.out.println("Aborting transaction with ID: "+arguments.elementAt(1));
 			try {
 				Id = obj.getInt(arguments.elementAt(1));
-				rm.abort(Id, new Timestamp());
+				obj.getRM().abort(Id, new Timestamp());
 				System.out.println("Transaction aborted!");
 			}
 			catch(TransactionAbortedException tae) {
@@ -659,6 +791,22 @@ public class client
 			System.out.println("Running script: "+arguments.elementAt(1));
 			try {
 				obj.runScript(obj.getString(arguments.elementAt(1)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		
+		case 28: // crash a server.
+			// arguments.elementAt(1) = rmi service name
+			// arguments.elementAt(2) = machine name
+			if(arguments.size() != 3) {
+				obj.wrongNumber();
+				break;
+			}
+			System.out.println("Crashing service: " + arguments.elementAt(1) + 
+					"at: " + arguments.elementAt(2));
+			try {
+				obj.crashAt(obj.getString(arguments.elementAt(1)),obj.getString(arguments.elementAt(2)));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -740,7 +888,7 @@ public class client
 			flightNum = getInt(arguments.elementAt(2));
 			flightSeats = getInt(arguments.elementAt(3));
 			flightPrice = getInt(arguments.elementAt(4));
-			timestamp = rm.addFlight(Id,flightNum,flightSeats,flightPrice, timestamp).timestamp;
+			timestamp = this.getRM().addFlight(Id,flightNum,flightSeats,flightPrice, timestamp).timestamp;
 			timestamp.stamp();
 			logger.log(timestamp);
 		    }
@@ -762,7 +910,7 @@ public class client
 			location = getString(arguments.elementAt(2));
 			numCars = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			timestamp = rm.addCars(Id,location,numCars,price, timestamp).timestamp;
+			timestamp = this.getRM().addCars(Id,location,numCars,price, timestamp).timestamp;
 			timestamp.stamp();
 			logger.log(timestamp);
 		    }
@@ -784,7 +932,7 @@ public class client
 			location = getString(arguments.elementAt(2));
 			numRooms = getInt(arguments.elementAt(3));
 			price = getInt(arguments.elementAt(4));
-			timestamp = rm.addRooms(Id,location,numRooms,price, timestamp).timestamp;
+			timestamp = this.getRM().addRooms(Id,location,numRooms,price, timestamp).timestamp;
 			timestamp.stamp();
 			logger.log(timestamp);
 		    }
@@ -802,7 +950,7 @@ public class client
 		    }
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
-			timestamp = (rm.newCustomer(Id, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().newCustomer(Id, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -819,7 +967,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			timestamp = (rm.deleteFlight(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().deleteFlight(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -837,7 +985,7 @@ public class client
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
 			
-			timestamp = (rm.deleteCars(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().deleteCars(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -854,7 +1002,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.deleteRooms(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().deleteRooms(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -871,7 +1019,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			timestamp = (rm.deleteCustomer(Id,customer, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().deleteCustomer(Id,customer, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -888,7 +1036,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			timestamp = (rm.queryFlight(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().queryFlight(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -905,7 +1053,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryCars(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().queryCars(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -922,7 +1070,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryRooms(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().queryRooms(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -939,7 +1087,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
-			timestamp = (rm.queryCustomerInfo(Id,customer, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().queryCustomerInfo(Id,customer, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -956,7 +1104,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			flightNum = getInt(arguments.elementAt(2));
-			timestamp = (rm.queryFlightPrice(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().queryFlightPrice(Id,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -973,7 +1121,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryCarsPrice(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().queryCarsPrice(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -990,7 +1138,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			location = getString(arguments.elementAt(2));
-			timestamp = (rm.queryRoomsPrice(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().queryRoomsPrice(Id,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1008,7 +1156,7 @@ public class client
 			Id = getInt(arguments.elementAt(1));
 			int customer = getInt(arguments.elementAt(2));
 			flightNum = getInt(arguments.elementAt(3));
-			timestamp = (rm.reserveFlight(Id,customer,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().reserveFlight(Id,customer,flightNum, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1028,7 +1176,7 @@ public class client
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			timestamp = (rm.reserveCar(Id,customer,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().reserveCar(Id,customer,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1047,7 +1195,7 @@ public class client
 			int customer = getInt(arguments.elementAt(2));
 			location = getString(arguments.elementAt(3));
 			
-			timestamp = (rm.reserveRoom(Id,customer,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().reserveRoom(Id,customer,location, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1071,7 +1219,7 @@ public class client
 			Car = getBoolean(arguments.elementAt(arguments.size()-2));
 			Room = getBoolean(arguments.elementAt(arguments.size()-1));
 			
-			timestamp = (rm.itinerary(Id,customer,flightNumbers,location,Car,Room, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().itinerary(Id,customer,flightNumbers,location,Car,Room, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1096,7 +1244,7 @@ public class client
 		    try { timestamp.stamp();
 			Id = getInt(arguments.elementAt(1));
 			Cid = getInt(arguments.elementAt(2));
-			timestamp = (rm.newCustomer(Id,Cid, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
+			timestamp = (this.getRM().newCustomer(Id,Cid, timestamp).timestamp); timestamp.stamp(); logger.log(timestamp);
 		    }
 		    catch(Exception e){
 			System.out.println("EXCEPTION:");
@@ -1110,7 +1258,7 @@ public class client
 				System.out.println("Wrong number of args on line "+lineno);
 				break;
 			}
-			try {rm.shutdown(getString(arguments.elementAt(1)));
+			try {this.getRM().shutdown(getString(arguments.elementAt(1)));
 			}
 			catch (Exception e) {
 				System.out.println("EXCEPTION:");
@@ -1127,7 +1275,7 @@ public class client
 			}
 			try {
 				timestamp.stamp();
-				ReturnTuple<Integer> rt = rm.start(timestamp);
+				ReturnTuple<Integer> rt = this.getRM().start(timestamp);
 				lastTransaction = rt.result;
 				timestamp = rt.timestamp;
 				timestamp.stamp();
@@ -1148,7 +1296,7 @@ public class client
 			try {
 				timestamp.stamp();
 				Id = getInt(arguments.elementAt(1));
-				timestamp = (rm.commit(Id, timestamp).timestamp);
+				timestamp = (this.getRM().commit(Id, timestamp).timestamp);
 				timestamp.stamp();
 				logger.log(timestamp);
 			}
@@ -1173,7 +1321,7 @@ public class client
 			try {
 				timestamp.stamp();
 				Id = getInt(arguments.elementAt(1));
-				timestamp = (rm.abort(Id, timestamp).timestamp);
+				timestamp = (this.getRM().abort(Id, timestamp).timestamp);
 				timestamp.stamp();
 				logger.log(timestamp);
 				System.out.println("Transaction aborted!");
@@ -1187,6 +1335,26 @@ public class client
 			catch(Exception e) {
 				System.out.println("EXCEPTION:");
 				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			break;
+		case 27:
+			// do nothing here.
+			break;
+			
+		case 28: // crash a server.
+			// arguments.elementAt(1) = rmi service name
+			// arguments.elementAt(2) = machine name
+			if(arguments.size() != 3) {
+				wrongNumber();
+				break;
+			}
+			System.out.println("Crashing service: " + arguments.elementAt(1) + 
+					"at: " + arguments.elementAt(2));
+			try {
+				crashAt(getString(arguments.elementAt(1)),getString(arguments.elementAt(2)));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
@@ -1267,6 +1435,8 @@ public class client
 		return 26;
 	else if (argument.compareToIgnoreCase("script")==0)
 		return 27;
+	else if (argument.compareToIgnoreCase("crash")==0)
+		return 28;
 	else
 	    return 666;
 

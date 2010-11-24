@@ -26,8 +26,8 @@ import LockManager.LockManager;
 
 //public class HavocadoFlesh extends java.rmi.server.UnicastRemoteObject
 public class HavocadoFlesh extends GroupMember implements ResourceManager {
-	private static final String MASTER_FLAG = "master";
-	private static final String SLAVE_FLAG = "slave";
+	private static final String MASTER_ROLE = "master";
+	private static final String SLAVE_ROLE = "slave";
 	public static final String FORCE_SHUTDOWN = "force";
 
     /** The middleware's lock manager. All lock management is done on the middleware side */
@@ -64,7 +64,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		    flightServiceName = args[6];
 		    roomMachine = args[7];
 		    roomServiceName = args[8];
-		    boolean isMaster = myRole == MASTER_FLAG;
+		    boolean isMaster = myRole.equalsIgnoreCase(MASTER_ROLE);
 		    if(isMaster) {
 			    // create the master:
 			    try {
@@ -84,7 +84,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 			myRole = args[0];
 			myServiceName = args[1];
 			myGroupName = args[2];
-			boolean isSlave = myRole == SLAVE_FLAG;
+			boolean isSlave = myRole.equalsIgnoreCase(SLAVE_ROLE);
 			if(isSlave) {
 				// create the slave:
 				try {
