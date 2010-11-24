@@ -52,7 +52,9 @@ public abstract class GroupMember implements Receiver {
 		while(!channel.isConnected()) {
 			Thread.yield();
 		}
+		
 		if (!isMaster) {
+			/*
 			try {
 				System.out.println("Pre slave send");
 				channel.send(null, null, myInfo);
@@ -62,6 +64,7 @@ public abstract class GroupMember implements Receiver {
 			} catch (ChannelClosedException e) {
 				e.printStackTrace();
 			}
+			*/
 		}
 		System.out.println("GroupMember created. isMaster: " + isMaster);
 	}
