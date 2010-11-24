@@ -129,30 +129,33 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	    Registry registry = LocateRegistry.getRegistry();
 	    registry.rebind(myRMIServiceName, rm);
     	
-    	if(carMachine != null && carRMIServiceName != null
-    			&& flightMachine != null && flightRMIServiceName != null
-    			&& roomMachine != null && roomRMIServiceName != null) { 	    
-    		// cars.
-    	    ResourceManager rmCars;
-    	    registry = LocateRegistry.getRegistry(carMachine);
-    	    rmCars = (ResourceManager) registry.lookup(carRMIServiceName);
-    	    this.carGroup.addAll(rmCars.getGroupMembers());
-
-    	    // flights.
-    	    ResourceManager rmFlights;
-    	    registry = LocateRegistry.getRegistry(flightMachine);
-    	    rmFlights = (ResourceManager) registry.lookup(flightRMIServiceName);
-    	    this.flightGroup.addAll(rmFlights.getGroupMembers());
-    	    
-    	    // rooms.
-    	    ResourceManager rmRooms;
-    	    registry = LocateRegistry.getRegistry(roomMachine);
-    	    rmRooms = (ResourceManager) registry.lookup(roomRMIServiceName);
-    	    this.roomGroup.addAll(rmRooms.getGroupMembers());
-    	}
+	    if(this.isMaster){ 
+	    	if(carMachine != null && carRMIServiceName != null
+	    			&& flightMachine != null && flightRMIServiceName != null
+	    			&& roomMachine != null && roomRMIServiceName != null) { 	    
+	    		// cars.
+	    	    ResourceManager rmCars;
+	    	    registry = LocateRegistry.getRegistry(carMachine);
+	    	    rmCars = (ResourceManager) registry.lookup(carRMIServiceName);
+	    	    //this.carGroup.addAll(rmCars.getGroupMembers());
+	    	    updateRMGroup(carGroup, rmCars.getGroupMembers());
+	
+	    	    // flights.
+	    	    ResourceManager rmFlights;
+	    	    registry = LocateRegistry.getRegistry(flightMachine);
+	    	    rmFlights = (ResourceManager) registry.lookup(flightRMIServiceName);
+	    	    //this.flightGroup.addAll(rmFlights.getGroupMembers());
+	    	    updateRMGroup(flightGroup, rmFlights.getGroupMembers());
+	    	    
+	    	    // rooms.
+	    	    ResourceManager rmRooms;
+	    	    registry = LocateRegistry.getRegistry(roomMachine);
+	    	    rmRooms = (ResourceManager) registry.lookup(roomRMIServiceName);
+	    	    //his.roomGroup.addAll(rmRooms.getGroupMembers());
+	    	    updateRMGroup(roomGroup, rmRooms.getGroupMembers());
+	    	}
     	
-	    // Start the overseer thread if I am a master.
-    	if(this.isMaster) {
+	    	// Start the overseer thread if I am a master.
     		this.overseer.start();
     	}
     }
@@ -167,12 +170,128 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		// If we have just been promoted to a master, start our overseer thread.
 		this.overseer.refreshAllTransactionsTTL();
 		this.overseer.start();
+		
+		// Send out a list of the updated RM group members
+		refreshRMGroups();
+		broadcastRMGroups();
 	}
 
 	@Override
 	protected void specialReceive(Object arg0) {
-		// TODO Auto-generated method stub
+		if(arg0 == null) {
+			// If the object is null, and I am a master, it means a new slave has joined the group.
+			// I therefore need to send to everyone the list of RM's to communicate to.
+			if(isMaster) {
+				broadcastRMGroups();
+			}
+			
+		} else {
+			if(arg0 instanceof ReplicationCommand && !isMaster) {
+				// if the object is not null, and i am a slave, check if it is a replication command
+				// and execute that replication command.
+				ReplicationCommand c = (ReplicationCommand) arg0;
+				c.execute(this);
+				
+			} else if (arg0 instanceof RMInfoMessage && !isMaster) {
+				// if the object is not null, and i am a slave, check if it is a resource manager
+				// update, and refresh my groups.
+				updateRMGroups((RMInfoMessage) arg0);
+			}
+		}
+	}
+	
+	/**
+	 * Refresh our groups by contacting at least one available RM per group, and retrieving
+	 * the new group members.
+	 */
+	private void refreshRMGroups() {
+		// Cars.
+		ResourceManager carRM = AbstractRMICommand.getAvailableRM(carGroup);
+		if(carRM != null) {
+			try {
+				this.updateRMGroup(carGroup, carRM.getGroupMembers());
+			} catch (RemoteException e) {
+				System.out.println("Invalid carRM to refresh the car group.");
+			}
+		} else {
+			System.out.println("no available carRM.");
+		}
 		
+		// Flights.
+		ResourceManager flightRM = AbstractRMICommand.getAvailableRM(flightGroup);
+		if(flightRM != null) {
+			try {
+				this.updateRMGroup(flightGroup, flightRM.getGroupMembers());
+			} catch (RemoteException e) {
+				System.out.println("Invald flightRM to refresh the flight group.");
+			}
+		} else {
+			System.out.println("no available flightRM.");
+		}
+		
+		// Rooms.
+		ResourceManager roomRM = AbstractRMICommand.getAvailableRM(roomGroup);
+		if(roomRM != null) {
+			try {
+				this.updateRMGroup(roomGroup, roomRM.getGroupMembers());
+			} catch (RemoteException e) {
+				System.out.println("Invald roomRM to refresh the room group.");
+			}
+		} else {
+			System.out.println("no available roomRM.");
+		}
+	}
+	
+	/**
+	 * Broadcast my RM groups to the group.
+	 */
+	private void broadcastRMGroups() {
+		RMInfoMessage rmsg = new RMInfoMessage();
+		rmsg.setCarGroup(carGroup);
+		rmsg.setFlightGroup(flightGroup);
+		rmsg.setRoomGroup(roomGroup);
+		// Broadcast the message.
+		send(rmsg);
+	}
+	
+	/**
+	 * Update my RM groups from a message.
+	 * @param rmsg
+	 */
+	private void updateRMGroups(RMInfoMessage rmsg) {
+		updateRMGroup(carGroup, rmsg.getCarGroup());
+		updateRMGroup(flightGroup, rmsg.getFlightGroup());
+		updateRMGroup(roomGroup, rmsg.getRoomGroup());
+	}
+	
+	/**
+	 * Helper function: update the "old" RM group with the "next" group provided.
+	 * @param old
+	 * @param next
+	 */
+	private void updateRMGroup(LinkedList<MemberInfo> old, LinkedList<MemberInfo> next) {
+		if(next == null || next.isEmpty()) { 
+			System.out.println("empty or null next MemberInfo sent in updated.");
+			return; 
+		}
+		
+		// Add to our old list the memberInfo objects that were not previously there.
+		for(MemberInfo m : next) {
+			if(!old.contains(m)) {
+				old.add(m);
+			}
+		}
+		
+		// Remove from our old list the memberInfo objects that are absent in next.
+		LinkedList<MemberInfo> toRemove = new LinkedList<MemberInfo>();
+		for(MemberInfo m : old) {
+			if(!next.contains(m)) {
+				toRemove.add(m);
+			}
+		}
+		for(MemberInfo m : toRemove) {
+			old.remove(m);
+		}
 	}
     
     /**
@@ -243,34 +362,39 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Boolean> addFlight(int id, int flightNum, int flightSeats, int flightPrice, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-	timestamp.stamp();
-	AddFlightRMICommand af = new AddFlightRMICommand(flightGroup, id, flightNum, flightSeats, flightPrice);
-	af.setTimestampObject(timestamp);
-	ReturnTuple<Boolean> result = null;
-	try {
-		overseer.validTransaction(id);
-		lm.Lock(id, Flight.getKey(flightNum), af.getRequiredLock());
-		af.execute();
-		result = af.success;
-		if(result.result)
-			overseer.addCommandToTransaction(id, af);
-	}
-	catch (DeadlockException d) {
-		timestamp.stamp();
-		overseer.abort(id);
-		timestamp.stamp();
-		throw new TransactionAbortedException(timestamp);
-	}
-	catch (TransactionAbortedException tae) {
-		tae.t = timestamp;
-		throw tae;
-	}
-	catch (InvalidTransactionException ite) {
-		ite.t = timestamp;
-		throw ite;
-	}
-	result.timestamp.stamp();
-	return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting addFlight to master");
+    		return this.getMaster().addFlight(id, flightNum, flightSeats, flightPrice, timestamp);
+    	} else {
+			timestamp.stamp();
+			AddFlightRMICommand af = new AddFlightRMICommand(flightGroup, id, flightNum, flightSeats, flightPrice);
+			af.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Flight.getKey(flightNum), af.getRequiredLock());
+				af.execute();
+				result = af.success;
+				if(result.result)
+					overseer.addCommandToTransaction(id, af);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -278,34 +402,39 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Boolean> deleteFlight(int id, int flightNum, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		DeleteFlightRMICommand df = new DeleteFlightRMICommand(flightGroup, id, flightNum);
-		df.setTimestampObject(timestamp);
-		ReturnTuple<Boolean> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Flight.getKey(flightNum), df.getRequiredLock());
-			df.execute();
-			result = df.success;
-			if (result.result)
-				overseer.addCommandToTransaction(id, df);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting deleteFlight to master");
+    		return this.getMaster().deleteFlight(id, flightNum, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			DeleteFlightRMICommand df = new DeleteFlightRMICommand(flightGroup, id, flightNum);
+			df.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Flight.getKey(flightNum), df.getRequiredLock());
+				df.execute();
+				result = df.success;
+				if (result.result)
+					overseer.addCommandToTransaction(id, df);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -315,69 +444,78 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Boolean> addRooms(int id, String location, int count, int price, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		AddRoomsRMICommand ar = new AddRoomsRMICommand(roomGroup, id, location, count, price);
-		ar.setTimestampObject(timestamp);
-		ReturnTuple<Boolean> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Hotel.getKey(location), ar.getRequiredLock());
-			ar.execute();
-			result = ar.success;
-			if (result.result)
-				overseer.addCommandToTransaction(id, ar);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting addRooms to master");
+    		return this.getMaster().addRooms(id, location, count, price, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			AddRoomsRMICommand ar = new AddRoomsRMICommand(roomGroup, id, location, count, price);
+			ar.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Hotel.getKey(location), ar.getRequiredLock());
+				ar.execute();
+				result = ar.success;
+				if (result.result)
+					overseer.addCommandToTransaction(id, ar);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
     // Delete rooms from a location
     public ReturnTuple<Boolean> deleteRooms(int id, String location, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(roomGroup, id, location);
-		dr.setTimestampObject(timestamp);
-		ReturnTuple<Boolean> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Hotel.getKey(location), dr.getRequiredLock());
-			dr.execute();
-			result = dr.success;
-			if (result.result)
-				overseer.addCommandToTransaction(id, dr);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
-		
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting deleteRooms to master");
+    		return this.getMaster().deleteRooms(id, location, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			DeleteRoomsRMICommand dr = new DeleteRoomsRMICommand(roomGroup, id, location);
+			dr.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Hotel.getKey(location), dr.getRequiredLock());
+				dr.execute();
+				result = dr.success;
+				if (result.result)
+					overseer.addCommandToTransaction(id, dr);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
     // Create a new car location or add cars to an existing location
@@ -385,34 +523,39 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Boolean> addCars(int id, String location, int count, int price, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		AddCarsRMICommand ac = new AddCarsRMICommand(carGroup, id, location, count, price);
-		ac.setTimestampObject(timestamp);
-		ReturnTuple<Boolean> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Car.getKey(location), ac.getRequiredLock());
-			ac.execute();
-			result = ac.success;
-			if (result.result)
-				overseer.addCommandToTransaction(id, ac);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting addCars to master");
+    		return this.getMaster().addCars(id, location, count, price, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			AddCarsRMICommand ac = new AddCarsRMICommand(carGroup, id, location, count, price);
+			ac.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Car.getKey(location), ac.getRequiredLock());
+				ac.execute();
+				result = ac.success;
+				if (result.result)
+					overseer.addCommandToTransaction(id, ac);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -420,34 +563,39 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Boolean> deleteCars(int id, String location, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		DeleteCarsRMICommand dc = new DeleteCarsRMICommand(carGroup, id, location);
-		dc.setTimestampObject(timestamp);
-		ReturnTuple<Boolean> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Car.getKey(location), dc.getRequiredLock());
-			dc.execute();
-			result = dc.success;
-			if (result.result)
-				overseer.addCommandToTransaction(id, dc);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting deleteCars to master");
+    		return this.getMaster().deleteCars(id, location, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			DeleteCarsRMICommand dc = new DeleteCarsRMICommand(carGroup, id, location);
+			dc.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Car.getKey(location), dc.getRequiredLock());
+				dc.execute();
+				result = dc.success;
+				if (result.result)
+					overseer.addCommandToTransaction(id, dc);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -456,32 +604,37 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> queryFlight(int id, int flightNum, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		QueryFlightRMICommand qf = new QueryFlightRMICommand(flightGroup, id, flightNum);
-		qf.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Flight.getKey(flightNum), qf.getRequiredLock());
-			qf.execute();
-			result = qf.numSeats;
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting queryFlight to master");
+    		return this.getMaster().queryFlight(id, flightNum, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			QueryFlightRMICommand qf = new QueryFlightRMICommand(flightGroup, id, flightNum);
+			qf.setTimestampObject(timestamp);
+			ReturnTuple<Integer> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Flight.getKey(flightNum), qf.getRequiredLock());
+				qf.execute();
+				result = qf.numSeats;
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
     // Returns the number of reservations for this flight. 
@@ -502,32 +655,37 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> queryFlightPrice(int id, int flightNum, Timestamp timestamp )
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(flightGroup, id, flightNum);
-		qfp.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Flight.getKey(flightNum), qfp.getRequiredLock());
-			qfp.execute();
-			result = qfp.price;
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting queryFlightPrice to master");
+    		return this.getMaster().queryFlightPrice(id, flightNum, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			QueryFlightPriceRMICommand qfp = new QueryFlightPriceRMICommand(flightGroup, id, flightNum);
+			qfp.setTimestampObject(timestamp);
+			ReturnTuple<Integer> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Flight.getKey(flightNum), qfp.getRequiredLock());
+				qfp.execute();
+				result = qfp.price;
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -535,32 +693,37 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> queryRooms(int id, String location, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		QueryRoomsRMICommand qr = new QueryRoomsRMICommand(roomGroup, id, location);
-		qr.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Hotel.getKey(location), qr.getRequiredLock());
-			qr.execute();
-			result = qr.numRooms;
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting queryRooms to master");
+    		return this.getMaster().queryRooms(id, location, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			QueryRoomsRMICommand qr = new QueryRoomsRMICommand(roomGroup, id, location);
+			qr.setTimestampObject(timestamp);
+			ReturnTuple<Integer> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Hotel.getKey(location), qr.getRequiredLock());
+				qr.execute();
+				result = qr.numRooms;
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -570,32 +733,37 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> queryRoomsPrice(int id, String location, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(roomGroup, id, location);
-		qrp.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Hotel.getKey(location), qrp.getRequiredLock());
-			qrp.execute();
-			result = qrp.price;
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting queryRoomsPrice to master");
+    		return this.getMaster().queryRoomsPrice(id, location, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			QueryRoomsPriceRMICommand qrp = new QueryRoomsPriceRMICommand(roomGroup, id, location);
+			qrp.setTimestampObject(timestamp);
+			ReturnTuple<Integer> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Hotel.getKey(location), qrp.getRequiredLock());
+				qrp.execute();
+				result = qrp.price;
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -603,32 +771,37 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> queryCars(int id, String location, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		QueryCarsRMICommand qc = new QueryCarsRMICommand(carGroup, id, location);
-		qc.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Car.getKey(location), qc.getRequiredLock());
-			qc.execute();
-			result = qc.numCars;
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting queryCars to master");
+    		return this.getMaster().queryCars(id, location, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			QueryCarsRMICommand qc = new QueryCarsRMICommand(carGroup, id, location);
+			qc.setTimestampObject(timestamp);
+			ReturnTuple<Integer> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Car.getKey(location), qc.getRequiredLock());
+				qc.execute();
+				result = qc.numCars;
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -636,78 +809,88 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> queryCarsPrice(int id, String location, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-		QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(roomGroup, id, location);
-		qcp.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Car.getKey(location), qcp.getRequiredLock());
-			qcp.execute();
-			result = qcp.price;
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting queryCarsPrice to master");
+    		return this.getMaster().queryCarsPrice(id, location, timestamp);
+    	} else {
+			QueryCarsPriceRMICommand qcp = new QueryCarsPriceRMICommand(roomGroup, id, location);
+			qcp.setTimestampObject(timestamp);
+			ReturnTuple<Integer> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Car.getKey(location), qcp.getRequiredLock());
+				qcp.execute();
+				result = qcp.price;
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
     // return a bill
     public ReturnTuple<String> queryCustomerInfo(int id, int customerID, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
-		qci.setTimestampObject(timestamp);
-		ReturnTuple<String> result = null;
-		try {
-			Vector<Integer> flightNos;
-			Vector<String> locations;
-			overseer.validTransaction(id);
-			lm.Lock(id, Customer.getKey(customerID), qci.getRequiredLock());
-			qci.execute();
-			flightNos = qci.getCustomerFlightReservations();
-			for (int flightNo : flightNos) {
-				lm.Lock(id, Flight.getKey(flightNo), qci.getRequiredLock());
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting queryCustomerInfo to master");
+    		return this.getMaster().queryCustomerInfo(id, customerID, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			QueryCustomerInfoRMICommand qci = new QueryCustomerInfoRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
+			qci.setTimestampObject(timestamp);
+			ReturnTuple<String> result = null;
+			try {
+				Vector<Integer> flightNos;
+				Vector<String> locations;
+				overseer.validTransaction(id);
+				lm.Lock(id, Customer.getKey(customerID), qci.getRequiredLock());
+				qci.execute();
+				flightNos = qci.getCustomerFlightReservations();
+				for (int flightNo : flightNos) {
+					lm.Lock(id, Flight.getKey(flightNo), qci.getRequiredLock());
+				}
+				locations = qci.getCustomerRoomReservations();
+				for (String location : locations) {
+					lm.Lock(id, Hotel.getKey(location), qci.getRequiredLock());
+				}
+				locations = qci.getCustomerCarReservations();
+				for (String location : locations) {
+					lm.Lock(id, Car.getKey(location), qci.getRequiredLock());
+				}
+				qci.execute();
+				result = qci.customerInfo;
 			}
-			locations = qci.getCustomerRoomReservations();
-			for (String location : locations) {
-				lm.Lock(id, Hotel.getKey(location), qci.getRequiredLock());
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
 			}
-			locations = qci.getCustomerCarReservations();
-			for (String location : locations) {
-				lm.Lock(id, Car.getKey(location), qci.getRequiredLock());
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
 			}
-			qci.execute();
-			result = qci.customerInfo;
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
     // customer functions
@@ -716,70 +899,80 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Integer> newCustomer(int id, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		int rid = Integer.parseInt( String.valueOf(id) +
-					    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
-					    String.valueOf( Math.round( Math.random() * 100 + 1 )));
-		NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(carGroup, flightGroup, roomGroup, id, rid);
-		nc.setTimestampObject(timestamp);
-		ReturnTuple<Integer> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Customer.getKey(rid), nc.getRequiredLock());
-			nc.execute();
-			result = new ReturnTuple<Integer>(rid, nc.success.timestamp);
-			overseer.addCommandToTransaction(id, nc);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting newCustomer to master");
+    		return this.getMaster().newCustomer(id, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			int rid = Integer.parseInt( String.valueOf(id) +
+						    String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
+						    String.valueOf( Math.round( Math.random() * 100 + 1 )));
+			NewCustomerWithIdRMICommand nc = new NewCustomerWithIdRMICommand(carGroup, flightGroup, roomGroup, id, rid);
+			nc.setTimestampObject(timestamp);
+			ReturnTuple<Integer> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Customer.getKey(rid), nc.getRequiredLock());
+				nc.execute();
+				result = new ReturnTuple<Integer>(rid, nc.success.timestamp);
+				overseer.addCommandToTransaction(id, nc);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
     // I opted to pass in customerID instead. This makes testing easier
     public ReturnTuple<Boolean> newCustomer(int id, int customerID, Timestamp timestamp )
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
-		ncwi.setTimestampObject(timestamp);
-		ReturnTuple<Boolean> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Customer.getKey(customerID), ncwi.getRequiredLock());
-			ncwi.execute();
-			result = ncwi.success;
-			if (result.result)
-				overseer.addCommandToTransaction(id, ncwi);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting newCustomer to master");
+    		return this.getMaster().newCustomer(id, customerID, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			NewCustomerWithIdRMICommand ncwi = new NewCustomerWithIdRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
+			ncwi.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Customer.getKey(customerID), ncwi.getRequiredLock());
+				ncwi.execute();
+				result = ncwi.success;
+				if (result.result)
+					overseer.addCommandToTransaction(id, ncwi);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
@@ -787,34 +980,39 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public ReturnTuple<Boolean> deleteCustomer(int id, int customerID, Timestamp timestamp)
 	throws RemoteException, TransactionAbortedException, InvalidTransactionException
     {
-    	timestamp.stamp();
-		DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
-		dc.setTimestampObject(timestamp);
-		ReturnTuple<Boolean> result = null;
-		try {
-			overseer.validTransaction(id);
-			lm.Lock(id, Customer.getKey(customerID), dc.getRequiredLock());
-			dc.execute();
-			result = dc.success;
-			if (result.result)
-				overseer.addCommandToTransaction(id, dc);
-		}
-		catch (DeadlockException d) {
-			timestamp.stamp();
-			overseer.abort(id);
-			timestamp.stamp();
-			throw new TransactionAbortedException(timestamp);
-		}
-		catch (TransactionAbortedException tae) {
-			tae.t = timestamp;
-			throw tae;
-		}
-		catch (InvalidTransactionException ite) {
-			ite.t = timestamp;
-			throw ite;
-		}
-		result.timestamp.stamp();
-		return result;
+    	if(!isMaster) {
+    		System.out.println("Slave retransmitting deleteCustomer to master");
+    		return this.getMaster().deleteCustomer(id, customerID, timestamp);
+    	} else {
+	    	timestamp.stamp();
+			DeleteCustomerRMICommand dc = new DeleteCustomerRMICommand(carGroup, flightGroup, roomGroup, id, customerID);
+			dc.setTimestampObject(timestamp);
+			ReturnTuple<Boolean> result = null;
+			try {
+				overseer.validTransaction(id);
+				lm.Lock(id, Customer.getKey(customerID), dc.getRequiredLock());
+				dc.execute();
+				result = dc.success;
+				if (result.result)
+					overseer.addCommandToTransaction(id, dc);
+			}
+			catch (DeadlockException d) {
+				timestamp.stamp();
+				overseer.abort(id);
+				timestamp.stamp();
+				throw new TransactionAbortedException(timestamp);
+			}
+			catch (TransactionAbortedException tae) {
+				tae.t = timestamp;
+				throw tae;
+			}
+			catch (InvalidTransactionException ite) {
+				ite.t = timestamp;
+				throw ite;
+			}
+			result.timestamp.stamp();
+			return result;
+    	}
     }
 
 
