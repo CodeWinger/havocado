@@ -5,8 +5,10 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.Vector;
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -198,6 +200,7 @@ public abstract class GroupMember implements Receiver {
 		
 		Vector<Address> addresses = arg0.getMembers();
 		PriorityQueue<Integer> toRemove = new PriorityQueue<Integer>(1, Collections.reverseOrder());
+		Set<MemberInfo>toRemoveObj = new HashSet<MemberInfo>();
 		boolean found;
 		int position = 0;
 		
@@ -206,18 +209,23 @@ public abstract class GroupMember implements Receiver {
 			found = false;
 			for (Address a : addresses) {
 				if (a.equals(mi.viewID)) {
-					mi.viewID = a;
 					found = true;
 					break;
 				}
 			}
+			if (!found) {
+				toRemove.add(position);
+				System.out.println("Member no longer present: "+mi);
+			}
 			if (!found)
-				toRemove.add(position);	
+				toRemoveObj.add(mi);
 			position++;
 		}
 		// Remove all marked members.
-		while (!toRemove.isEmpty())
-			currentMembers.remove(toRemove.poll());
+		for (MemberInfo mi : toRemoveObj)
+			currentMembers.remove(mi);
+		/*while (!toRemove.isEmpty())
+			currentMembers.remove(toRemove.poll());*/
 
 		// If the master dies and we're next in line, become a master.
 		if (!isMaster) {
