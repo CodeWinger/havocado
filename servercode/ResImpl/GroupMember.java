@@ -160,6 +160,7 @@ public abstract class GroupMember implements Receiver {
 			}
 		}
 		specialReceive(msg.getObject());
+		System.out.println("Current members: "+currentMembers);
 	}
 	
 	protected abstract void specialReceive(Object arg0);
@@ -183,9 +184,7 @@ public abstract class GroupMember implements Receiver {
 		// DEBUG: print the view.
 		System.out.println(arg0.toString());
 		System.out.println("Current members:");
-		for(MemberInfo m : currentMembers) {
-			System.out.println("> " + m.rmiName + " " + m.address.toString());
-		}
+		System.out.println(currentMembers);
 		
 		Vector<Address> addresses = arg0.getMembers();
 		PriorityQueue<Integer> toRemove = new PriorityQueue<Integer>(1, Collections.reverseOrder());
@@ -228,9 +227,6 @@ public abstract class GroupMember implements Receiver {
 			}
 		}
 		
-		System.out.println("New members:");
-		for(MemberInfo m : currentMembers) {
-			System.out.println("> " + m.rmiName + " " + m.address.toString());
-		}
+		System.out.println("New members:"+currentMembers);
 	}
 }

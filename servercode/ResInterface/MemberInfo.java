@@ -15,6 +15,10 @@ public class MemberInfo implements Serializable{
 		address = pAddress;
 	}
 	
+	public String toString() {
+		return rmiName + " " + address + " " + viewID;
+	}
+	
 	public void setViewID(Address a) {
 		viewID = a;
 	}
