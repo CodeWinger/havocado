@@ -197,6 +197,7 @@ public abstract class GroupMember implements Receiver {
 			found = false;
 			for (Address a : addresses) {
 				if (a.equals(mi.viewID)) {
+					mi.viewID = a;
 					found = true;
 					break;
 				}
