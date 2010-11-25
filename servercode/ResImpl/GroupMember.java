@@ -146,7 +146,7 @@ public abstract class GroupMember implements Receiver {
 				MemberInfo newMember = (MemberInfo)msg.getObject();
 				boolean edited = false;
 				for (MemberInfo mi : currentMembers) {
-					if (newMember.rmiName.equals(mi.rmiName) && newMember.address.equals(mi.address)) {
+					if (newMember.equals(mi)) {
 						mi.setViewID(msg.getSrc());
 						edited = true;
 					}
@@ -167,6 +167,17 @@ public abstract class GroupMember implements Receiver {
 		// If we're slave, and we get a list of MemberInfo, update our list.
 		else {
 			if (msg.getObject() instanceof LinkedList<?>) {
+				/*int position = 0;
+				for (MemberInfo newMember : (LinkedList<MemberInfo>)msg.getObject()) {
+					boolean found = false;
+					for (MemberInfo mi : currentMembers) {
+						if (mi.equals(newMember))
+							found = true;
+					}
+					if (!found)
+						currentMembers.add(position, newMember);
+					position++;
+				}*/
 				currentMembers = (LinkedList<MemberInfo>)msg.getObject();
 				master = currentMembers.getFirst();
 			}
