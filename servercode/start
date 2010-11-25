@@ -10,7 +10,7 @@ gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/se
 read -p "Press ENTER to start slave RM's"
 
 # Start slave RM's
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
 
 gnome-terminal -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
 
