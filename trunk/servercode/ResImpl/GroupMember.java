@@ -186,7 +186,7 @@ public abstract class GroupMember implements Receiver {
 	}
 	
 	public void suspect(Address arg0) {
-		throw new UnsupportedOperationException("Not supported");
+		//throw new UnsupportedOperationException("Not supported");
 	}
 	
 	/**
@@ -199,10 +199,8 @@ public abstract class GroupMember implements Receiver {
 		System.out.println(currentMembers);
 		
 		Vector<Address> addresses = arg0.getMembers();
-		PriorityQueue<Integer> toRemove = new PriorityQueue<Integer>(1, Collections.reverseOrder());
-		Set<MemberInfo>toRemoveObj = new HashSet<MemberInfo>();
+		Set<MemberInfo>toRemove = new HashSet<MemberInfo>();
 		boolean found;
-		int position = 0;
 		
 		// For everyone in currentmembers, if they aren't in the view, mark them to be removed.
 		for (MemberInfo mi : currentMembers) {
@@ -213,19 +211,14 @@ public abstract class GroupMember implements Receiver {
 					break;
 				}
 			}
-			if (!found) {
-				toRemove.add(position);
+			if (!found){
+				toRemove.add(mi);
 				System.out.println("Member no longer present: "+mi);
 			}
-			if (!found)
-				toRemoveObj.add(mi);
-			position++;
 		}
 		// Remove all marked members.
-		for (MemberInfo mi : toRemoveObj)
+		for (MemberInfo mi : toRemove)
 			currentMembers.remove(mi);
-		/*while (!toRemove.isEmpty())
-			currentMembers.remove(toRemove.poll());*/
 
 		// If the master dies and we're next in line, become a master.
 		if (!isMaster) {
