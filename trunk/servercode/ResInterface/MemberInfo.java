@@ -25,7 +25,6 @@ public class MemberInfo implements Serializable{
 	
 	public boolean equals(MemberInfo other) {
 		return other.rmiName.equals(this.rmiName)
-			&& other.address.equals(this.address)
-			&& other.viewID.equals(this.viewID);
+			&& other.address.equals(this.address);
 	}
 }
