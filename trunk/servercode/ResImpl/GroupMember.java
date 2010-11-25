@@ -141,8 +141,18 @@ public abstract class GroupMember implements Receiver {
 		// the list and broadcast the list.
 		if (isMaster) {
 			if (msg.getObject() instanceof MemberInfo) {
-				currentMembers.add((MemberInfo)msg.getObject());
-				currentMembers.getLast().setViewID(msg.getSrc());
+				MemberInfo newMember = (MemberInfo)msg.getObject();
+				boolean edited = false;
+				for (MemberInfo mi : currentMembers) {
+					if (newMember.rmiName.equals(mi.rmiName) && newMember.address.equals(mi.address)) {
+						mi.setViewID(msg.getSrc());
+						edited = true;
+					}
+				}
+				if (!edited) {
+					currentMembers.add((MemberInfo) msg.getObject());
+					currentMembers.getLast().setViewID(msg.getSrc());
+				}
 				try {
 					channel.send(null, null, currentMembers);
 				} catch (ChannelNotConnectedException e) {
