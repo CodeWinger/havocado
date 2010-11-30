@@ -1,26 +1,26 @@
 #!/bin/bash
 
 # Start master RM's
-gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"ROLE = master\""; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"ROLE = master\" \"JCONFIG = jconfigCars.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-2.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"ROLE = master\""; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-2.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"ROLE = master\" \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-3.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"ROLE = master\""; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-3.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"ROLE = master\" \"JCONFIG = jconfigRooms.xml\""; read line'&
 
 read -p "Press ENTER to start slave RM's"
 
 # Start slave RM's
-gnome-terminal -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
 
-gnome-terminal -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars"; read line'&
+#gnome-terminal -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-6.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights"; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-6.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights"; read line'&
+#gnome-terminal -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-8.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms"; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-8.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms"; read line'&
+#gnome-terminal -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
 
 #read -p "Press ENTER to start master middleware"
 

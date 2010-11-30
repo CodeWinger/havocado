@@ -31,8 +31,9 @@ public class HavocadoSeed extends GroupMember
 		boolean isMaster = false;
 		String groupName = "";
         String rmiName = "";
+        String configFile = "";
 
-        if (args.length == 3) {
+        if (args.length == 4) {
         	if (args[0].compareToIgnoreCase("master") == 0)
         		isMaster = true;
         	else if (args[0].compareToIgnoreCase("slave") == 0)
@@ -45,16 +46,17 @@ public class HavocadoSeed extends GroupMember
         	
         	groupName = args[1];
         	rmiName = args[2];
+        	configFile = args[3];
         } else {
         	System.err.println ("Wrong usage");
-        	System.out.println("Usage: java ResImpl.HavocadoSeed <role> <groupName> <rmiName>");
+        	System.out.println("Usage: java ResImpl.HavocadoSeed <role> <groupName> <rmiName> <configFile>");
             System.exit(1);
         }
 		
 		try 
 		{
 			// create a new Server object
-			new HavocadoSeed(isMaster, rmiName, groupName);
+			new HavocadoSeed(isMaster, rmiName, groupName, configFile);
 		} 
 		catch (Exception e) 
 		{
@@ -64,8 +66,8 @@ public class HavocadoSeed extends GroupMember
     }
 
     
-    public HavocadoSeed(boolean isMaster, String myRMIServiceName, String groupName) throws RemoteException {
-    	super(isMaster, myRMIServiceName, groupName);
+    public HavocadoSeed(boolean isMaster, String myRMIServiceName, String groupName, String configFile) throws RemoteException {
+    	super(isMaster, myRMIServiceName, groupName, configFile);
 		// dynamically generate the stub (client proxy)
 		ResourceManager rm = (ResourceManager) UnicastRemoteObject.exportObject(this, 0);
 
