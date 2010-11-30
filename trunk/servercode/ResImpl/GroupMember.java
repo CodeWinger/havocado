@@ -74,14 +74,13 @@ public abstract class GroupMember implements Receiver {
 	public void promoteToMaster() {
 		// DEBUG
 		System.out.println("Promoting myself to master");
-		
 		master = myInfo;
 		isMaster = true;
 		//channel.send(null, null, currentMembers);
 		System.out.println("Sending current members: " + currentMembers);
-		//send(currentMembers);
+		send(currentMembers);
 		System.out.println("Sent current members.");
-		//specialPromoteToMaster();
+		specialPromoteToMaster();
 	}
 	
 	public abstract void specialPromoteToMaster();
@@ -242,11 +241,29 @@ public abstract class GroupMember implements Receiver {
 				}
 			}
 			if (!found) {
-				if (myInfo.equals(currentMembers.getFirst()))
-					promoteToMaster();
-				// Even if we're not next in line, we know who the new master is.
-				else
+				if (myInfo.equals(currentMembers.getFirst())){
+					
+					// promoteToMaster();
+					Runnable masterPromotion = new Runnable(){
+						public void run() {
+							try{
+								// The idea here is to start the execution
+								// of master promotion after we have exitted
+								// viewAccepted()
+								Thread.sleep(1000);
+								promoteToMaster();
+							} catch(InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					};
+					Thread masterPromotionThread = new Thread(masterPromotion); 
+					masterPromotionThread.start();
+					
+				} else {
+					// Even if we're not next in line, we know who the new master is.
 					master = currentMembers.getFirst();
+				}
 			}
 		}
 		
