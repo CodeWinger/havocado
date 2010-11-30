@@ -249,6 +249,11 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		} else {
 			System.out.println("no available roomRM.");
 		}
+		
+		// print the group members.
+	    System.out.println("car group: " + carGroup);
+	    System.out.println("flight group: " + flightGroup);
+	    System.out.println("room group: " + roomGroup);
 	}
 	
 	/**
