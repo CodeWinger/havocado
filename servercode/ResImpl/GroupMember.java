@@ -125,7 +125,7 @@ public abstract class GroupMember implements Receiver {
 			Message m = new Message();
 			m.setObject(obj);
 			channel.send(m);
-			channel.startFlush(true);
+			//channel.startFlush(true);
 			//this.channel.send(null, null, obj);
 		} catch (ChannelNotConnectedException e) {
 			System.out.println("Channel is not connected.\n" + e.toString());
