@@ -77,13 +77,10 @@ public abstract class GroupMember implements Receiver {
 		
 		master = myInfo;
 		isMaster = true;
-		try {
-			channel.send(null, null, currentMembers);
-		} catch (ChannelNotConnectedException e) {
-			e.printStackTrace();
-		} catch (ChannelClosedException e) {
-			e.printStackTrace();
-		}
+		//channel.send(null, null, currentMembers);
+		System.out.println("Sending current members: " + currentMembers);
+		send(currentMembers);
+		System.out.println("Sent current members.");
 		specialPromoteToMaster();
 	}
 	
@@ -125,7 +122,11 @@ public abstract class GroupMember implements Receiver {
 	 */
 	public void send(Serializable obj) {
 		try {
-			this.channel.send(null, null, obj);
+			Message m = new Message();
+			m.setObject(obj);
+			channel.send(m);
+			channel.startFlush(true);
+			//this.channel.send(null, null, obj);
 		} catch (ChannelNotConnectedException e) {
 			System.out.println("Channel is not connected.\n" + e.toString());
 		} catch (ChannelClosedException e) {
