@@ -155,6 +155,12 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	    	    rmRooms = (ResourceManager) registry.lookup(roomRMIServiceName);
 	    	    //his.roomGroup.addAll(rmRooms.getGroupMembers());
 	    	    updateRMGroup(roomGroup, rmRooms.getGroupMembers());
+	    	    
+	    	    // print the group members.
+	    	    System.out.println("car group: " + carGroup);
+	    	    System.out.println("flight group: " + flightGroup);
+	    	    System.out.println("room group: " + roomGroup);
+	    	    
 	    	}
     	
 	    	// Start the overseer thread if I am a master.
@@ -265,6 +271,10 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		updateRMGroup(carGroup, rmsg.getCarGroup());
 		updateRMGroup(flightGroup, rmsg.getFlightGroup());
 		updateRMGroup(roomGroup, rmsg.getRoomGroup());
+		// print the group members.
+	    System.out.println("car group: " + carGroup);
+	    System.out.println("flight group: " + flightGroup);
+	    System.out.println("room group: " + roomGroup);
 	}
 	
 	/**
