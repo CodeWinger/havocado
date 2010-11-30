@@ -175,13 +175,16 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     
 	@Override
 	public void specialPromoteToMaster() {
+		System.out.println("special promote to master.");
 		// If we have just been promoted to a master, start our overseer thread.
 		this.overseer.refreshAllTransactionsTTL();
 		this.overseer.start();
-		
+		System.out.println("overseer started.");
 		// Send out a list of the updated RM group members
 		refreshRMGroups();
+		System.out.println("refreshedRMGroups");
 		broadcastRMGroups();
+		System.out.println("broadcastedRMGroups");
 	}
 
 	@Override
@@ -217,8 +220,10 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		// Cars.
 		ResourceManager carRM = AbstractRMICommand.getAvailableRM(carGroup);
 		if(carRM != null) {
+			System.out.println("carRM found.");
 			try {
 				this.updateRMGroup(carGroup, carRM.getGroupMembers());
+				System.out.println("updated my car group with: " + carGroup);
 			} catch (RemoteException e) {
 				System.out.println("Invalid carRM to refresh the car group.");
 			}
@@ -229,8 +234,10 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		// Flights.
 		ResourceManager flightRM = AbstractRMICommand.getAvailableRM(flightGroup);
 		if(flightRM != null) {
+			System.out.println("flightRM found.");
 			try {
 				this.updateRMGroup(flightGroup, flightRM.getGroupMembers());
+				System.out.println("updated my flight group with: " + flightGroup);
 			} catch (RemoteException e) {
 				System.out.println("Invald flightRM to refresh the flight group.");
 			}
@@ -241,8 +248,10 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		// Rooms.
 		ResourceManager roomRM = AbstractRMICommand.getAvailableRM(roomGroup);
 		if(roomRM != null) {
+			System.out.println("roomRM found.");
 			try {
 				this.updateRMGroup(roomGroup, roomRM.getGroupMembers());
+				System.out.println("updated my room group with: " + roomGroup);
 			} catch (RemoteException e) {
 				System.out.println("Invald roomRM to refresh the room group.");
 			}
