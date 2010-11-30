@@ -11,6 +11,7 @@ CARRMINAME = HavocadoCar
 FLIGHTRMINAME = HavocadoFlight
 ROOMRMINAME = HavocadoRoom
 MIDDLERMINAME = HavocadoMiddleware
+JCONFIG = jconfig.xml
 GROUPNAME =
 
 all: ResInterface.jar
@@ -21,23 +22,23 @@ many: cars flights rooms
 cars: GROUPNAME = HavocadoCarGroup
 cars: ResInterface.jar
 	$(JAC) \
-ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(CARRMINAME)
+ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(CARRMINAME) $(JCONFIG)
 
 flights: GROUPNAME = HavocadoFlightGroup
 flights: ResInterface.jar
 	$(JAC) \
-ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(FLIGHTRMINAME)
+ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(FLIGHTRMINAME) $(JCONFIG)
 
 rooms: GROUPNAME = HavocadoRoomGroup
 rooms: ResInterface.jar
 	$(JAC) \
-ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(ROOMRMINAME)
+ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(ROOMRMINAME) $(JCONFIG)
 
 flesh: GROUPNAME = HavocadoMiddlewareGroup
 flesh: ResInterface.jar
 	$(JAC) \
 ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(CARSERVER) $(CARRMINAME) \
-$(FLIGHTSERVER) $(FLIGHTRMINAME) $(ROOMSERVER) $(ROOMRMINAME)
+$(FLIGHTSERVER) $(FLIGHTRMINAME) $(ROOMSERVER) $(ROOMRMINAME) $(JCONFIG)
 
 ResInterface.jar: lock resimpl
 	$(JC) ResInterface/*.java

@@ -48,12 +48,12 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     public static void main(String args[]) {
         String carMachine, flightMachine, roomMachine;
         String carServiceName, flightServiceName, roomServiceName;
-        String myRole, myGroupName, myServiceName;
+        String myRole, myGroupName, myServiceName, configFile;
         
         carMachine = flightMachine = roomMachine = "localhost";
 
         HavocadoFlesh obj = null;
-		if (args.length == 9) {
+		if (args.length == 10) {
 		    // A master is born...
 		    myRole = args[0];
 		    myServiceName = args[1];
@@ -64,12 +64,13 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		    flightServiceName = args[6];
 		    roomMachine = args[7];
 		    roomServiceName = args[8];
+		    configFile = args[9];
 		    boolean isMaster = myRole.equalsIgnoreCase(MASTER_ROLE);
 		    if(isMaster) {
 			    // create the master:
 			    try {
 					obj = new HavocadoFlesh(true, myServiceName, myGroupName, 
-							carMachine, carServiceName, flightMachine, flightServiceName, roomMachine, roomServiceName);
+							carMachine, carServiceName, flightMachine, flightServiceName, roomMachine, roomServiceName, configFile);
 				} catch (Exception e) {
 					System.out.println("Server Exception.");
 					e.printStackTrace();
@@ -79,16 +80,17 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 				System.out.println("Wrong argument - first argument should be 'master' in this case.");
 				System.exit(1);
 			}
-		} else if(args.length == 3) {
+		} else if(args.length == 4) {
 			// A poor slave is born...
 			myRole = args[0];
 			myServiceName = args[1];
 			myGroupName = args[2];
+			configFile = args[3];
 			boolean isSlave = myRole.equalsIgnoreCase(SLAVE_ROLE);
 			if(isSlave) {
 				// create the slave:
 				try {
-					obj = new HavocadoFlesh(false, myServiceName, myGroupName );
+					obj = new HavocadoFlesh(false, myServiceName, myGroupName, configFile );
 				} catch (Exception e) {
 					System.out.println("Server Exception.");
 					e.printStackTrace();
@@ -102,8 +104,8 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		    System.err.println ("Wrong usage");
 		    System.out.println("Usage: ");
 		    System.out.println("master: 'java ResImpl.HavocadoFlesh master <myRMIServiceName> <myGroupName> " +
-		    		"<carMachineName> <carRMIServiceName> <flightMachineName> <flightRMIServiceName> <roomMachineName> <roomRMIServiceName>'");
-		    System.out.println("slave: 'java ResImpl.HavocadoFlesh slave <myRMIServiceName> <myGroupName>'");
+		    		"<carMachineName> <carRMIServiceName> <flightMachineName> <flightRMIServiceName> <roomMachineName> <roomRMIServiceName> <configFile>'");
+		    System.out.println("slave: 'java ResImpl.HavocadoFlesh slave <myRMIServiceName> <myGroupName> <configFile>'");
 		    System.exit(1);
 		}
     }
@@ -112,9 +114,9 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     private HavocadoFlesh(boolean isMaster, String myRMIServiceName, String groupName, 
     		String carMachine, String carRMIServiceName, 
     		String flightMachine, String flightRMIServiceName,
-    		String roomMachine, String roomRMIServiceName) throws RemoteException, NotBoundException {
+    		String roomMachine, String roomRMIServiceName, String configFile) throws RemoteException, NotBoundException {
     	// Create the group member.
-    	super(isMaster, myRMIServiceName, groupName);
+    	super(isMaster, myRMIServiceName, groupName, configFile);
     	
     	// Initialize the lock manager.
     	this.lm = new LockManager(this);
@@ -161,8 +163,8 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     }
     
     // helper constructor for slaves.
-    private HavocadoFlesh(boolean isMaster, String myRMIServiceName, String groupName) throws RemoteException, NotBoundException {
-    	this(isMaster, myRMIServiceName, groupName, null, null, null, null, null, null);
+    private HavocadoFlesh(boolean isMaster, String myRMIServiceName, String groupName, String configFile) throws RemoteException, NotBoundException {
+    	this(isMaster, myRMIServiceName, groupName, null, null, null, null, null, null, configFile);
     }
     
 	@Override

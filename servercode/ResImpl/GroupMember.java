@@ -34,12 +34,12 @@ public abstract class GroupMember implements Receiver {
 	protected MemberInfo master = null;
 	protected boolean isMaster;
 	
-	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName) {
+	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName, String configFile) {
 		try {
 			this.isMaster = isMaster;
 			myInfo = new MemberInfo(myRMIServiceName, InetAddress.getLocalHost());
 			currentMembers.add(myInfo);
-			channel = new JChannel("jconfig.xml");
+			channel = new JChannel(configFile);
 			channel.connect(groupName);
 			channel.setReceiver(this);
 			NAKACK nak = (NAKACK)channel.getProtocolStack().findProtocol(NAKACK.class);
