@@ -260,6 +260,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		}
 		
 		// print the group members.
+		System.out.println("RefreshRMGroups()");
 	    System.out.println("car group: " + carGroup);
 	    System.out.println("flight group: " + flightGroup);
 	    System.out.println("room group: " + roomGroup);
