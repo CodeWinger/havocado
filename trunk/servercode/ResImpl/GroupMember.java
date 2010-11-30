@@ -79,9 +79,9 @@ public abstract class GroupMember implements Receiver {
 		isMaster = true;
 		//channel.send(null, null, currentMembers);
 		System.out.println("Sending current members: " + currentMembers);
-		send(currentMembers);
+		//send(currentMembers);
 		System.out.println("Sent current members.");
-		specialPromoteToMaster();
+		//specialPromoteToMaster();
 	}
 	
 	public abstract void specialPromoteToMaster();
