@@ -303,6 +303,10 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 			return; 
 		}
 		
+		if(old == null) {
+			System.out.println("updateRMGroup - old is null.");
+		}
+		
 		// Add to our old list the memberInfo objects that were not previously there.
 		for(MemberInfo m : next) {
 			if(!old.contains(m)) {
