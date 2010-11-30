@@ -33,6 +33,7 @@ public abstract class AbstractRMICommand implements Command, Serializable {
    */
   public static ResourceManager getAvailableRM(LinkedList<MemberInfo> memberList) {
 	  int listSize = memberList.size();
+	  System.out.println("member list size: " + listSize);
 	  for(int i = 0; i < listSize; i++) {
 		  MemberInfo mi = memberList.get(i);
 		  ResourceManager rm = GroupMember.memberInfoToResourceManager(memberList.get(i));
@@ -40,6 +41,7 @@ public abstract class AbstractRMICommand implements Command, Serializable {
 			  try{
 				  // Test to see if it's alive.
 				  rm.poke();
+				  System.out.println("rm successfully poked.");
 				  // no exception was thrown! return!
 				  return rm;
 			  } catch(RemoteException e) {
