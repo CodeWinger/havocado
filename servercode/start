@@ -22,17 +22,17 @@ gnome-terminal -x bash -c 'ssh sbriss7@socs-8.cs.mcgill.ca "cd School/Comp512/se
 
 #gnome-terminal -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
 
-#read -p "Press ENTER to start master middleware"
+read -p "Press ENTER to start master middleware"
 
 # Start master middleware
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-10.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"ROLE = master\" \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-10.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"ROLE = master\" \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
 
-#read -p "Press ENTER to start slave middlewares"
+read -p "Press ENTER to start slave middlewares"
 
 # Start slave middlewares
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-11.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-11.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
+#gnome-terminal -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
 
 read -p "Press ENTER to clean up processes"
 

@@ -40,6 +40,11 @@ flesh: ResInterface.jar
 ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(CARSERVER) $(CARRMINAME) \
 $(FLIGHTSERVER) $(FLIGHTRMINAME) $(ROOMSERVER) $(ROOMRMINAME) $(JCONFIG)
 
+middleSlave: GROUPNAME = HavocadoMiddlewareGroup
+middleSlave: ResInterface.jar
+	$(JAC) \
+ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(JCONFIG)
+
 ResInterface.jar: lock resimpl
 	$(JC) ResInterface/*.java
 	jar cvf ResInterface.jar ResInterface/*.class
