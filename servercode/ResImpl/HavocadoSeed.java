@@ -712,6 +712,14 @@ public class HavocadoSeed extends GroupMember
 			return result;
 		}
 	}
+  
+  public void cancelReservation(int id, int customerID, String reservedkey) {
+	  Customer cust = (Customer) readData(id, Customer.getKey(customerID));
+	  ReservedItem reserveditem = cust.getReservedItem(reservedkey);
+	  ReservableItem item = (ReservableItem) readData(id, reserveditem.getKey());
+	  item.setReserved(item.getReserved() - reserveditem.getCount());
+	  item.setCount(item.getCount() + reserveditem.getCount());
+  }
 
 
 	// Deletes customer from the database. 
@@ -745,6 +753,7 @@ public class HavocadoSeed extends GroupMember
 							+ item.getCount() + " times");
 					item.setReserved(item.getReserved() - reserveditem.getCount());
 					item.setCount(item.getCount() + reserveditem.getCount());
+					sendRMGroupCommand(new CancelReservationRMGroupCommand(id, customerID, reservedkey));
 				}
 
 				// remove the customer from the storage
