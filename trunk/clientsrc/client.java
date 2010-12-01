@@ -24,11 +24,11 @@ public class client {
 			return (ResourceManager) LocateRegistry.getRegistry(
 					mi.address.getHostName()).lookup(mi.rmiName);
 		} catch (AccessException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (NotBoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return null;
 	}
@@ -96,13 +96,14 @@ public class client {
 	 * @param machineName
 	 */
 	public void crashAt(String serviceName, String machineName) {
+		System.out.println("Crashing: " + serviceName + " running on " + machineName);
 		try {
 			Registry registry = LocateRegistry.getRegistry(machineName);
 			ResourceManager r = (ResourceManager) registry.lookup(serviceName);
 			r.crash();
 		} catch (Exception e) {
-			System.out.println("CRASH EXCEPTION:");
-			e.printStackTrace();
+			//System.out.println("CRASH EXCEPTION:");
+			//e.printStackTrace();
 		}
 	}
 
@@ -285,7 +286,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -313,7 +314,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -331,7 +332,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -354,7 +355,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -378,7 +379,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -401,7 +402,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -425,7 +426,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -446,7 +447,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -468,7 +469,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -490,7 +491,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -511,7 +512,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -532,7 +533,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -554,7 +555,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -576,7 +577,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -601,7 +602,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -628,7 +629,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -654,7 +655,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -696,7 +697,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -725,7 +726,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -741,7 +742,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -757,7 +758,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -782,7 +783,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -804,7 +805,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -835,7 +836,7 @@ public class client {
 					obj.crashAt(obj.getString(arguments.elementAt(1)),
 							obj.getString(arguments.elementAt(2)));
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -929,7 +930,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -952,7 +953,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -975,7 +976,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -994,7 +995,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1015,7 +1016,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1037,7 +1038,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1058,7 +1059,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1079,7 +1080,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1100,7 +1101,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1121,7 +1122,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1142,7 +1143,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1163,7 +1164,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1184,7 +1185,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1205,7 +1206,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1226,7 +1227,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1248,7 +1249,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1272,7 +1273,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1295,7 +1296,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1324,7 +1325,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1352,7 +1353,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1367,7 +1368,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1388,7 +1389,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1411,7 +1412,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
@@ -1435,7 +1436,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 			case 27:
@@ -1457,7 +1458,7 @@ public class client {
 							getString(arguments.elementAt(2)));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				break;
 
