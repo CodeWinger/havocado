@@ -1,7 +1,7 @@
 DIR = "/home/2007/sbriss7/School/Comp512"
 CP = $(DIR)"/servercode:"$(DIR)"/servercode/ResImpl:"$(DIR)"/servercode/ResImpl/jgroups-2.9.0.GA.jar"
 JC = javac -cp $(CP)
-JAC = java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" -classpath $(CP)
+JAC = java -Djava.rmi.server.codebase=file:"${HOME}/School/Comp512/servercode/" -classpath $(CP) -Djava.net.preferIPv4Stack=true
 
 ROLE = slave
 CARSERVER = ${HOSTNAME}
