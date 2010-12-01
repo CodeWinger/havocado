@@ -306,6 +306,14 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		
 		// Add to our old list the memberInfo objects that were not previously there.
 		for(MemberInfo m : next) {
+			if(old == null) {
+				System.out.println("OLD NULL");
+			}
+			
+			if(m == null) {
+				System.out.println("M NULL");
+			}
+			
 			if(!old.contains(m)) {
 				old.add(m);
 			}
