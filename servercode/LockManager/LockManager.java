@@ -303,7 +303,7 @@ public class LockManager
                 thisThread.wait(LockManager.DEADLOCK_TIMEOUT - timeBlocked);
                 TimeObj currTime = new TimeObj(dataObj.getXId());
                 timeBlocked = currTime.getTime() - timestamp.getTime();
-                if (flesh.getIsMaster && timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
+                if (flesh.getIsMaster() && timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
                     // the transaction has been waiting for a period greater than the timeout period
                     cleanupDeadlock(timestamp, waitObj);
                 }
