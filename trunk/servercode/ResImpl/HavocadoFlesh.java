@@ -1225,7 +1225,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 				}
 				i.execute();
 				result = i.success;
-				if (result.result)
+				if (result.result && !i.error())
 					overseer.addCommandToTransaction(id, i);
 			}
 			catch (DeadlockException d) {
