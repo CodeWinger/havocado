@@ -32,7 +32,7 @@ read -p "Press ENTER to start slave middlewares"
 # Start slave middlewares
 gnome-terminal -x bash -c 'ssh sbriss7@socs-11.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
+gnome-terminal -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
 
 read -p "Press ENTER to clean up processes"
 

@@ -19,5 +19,9 @@ public class EditPriceRMGroupCommand extends AbstractRMGroupCommand {
 	public void doCommand(HavocadoSeed hs) throws Exception {
 		hs.editPrice(id, key, price);
 	}
+	
+	public String toString() {
+		return "EditPrice";
+	}
 
 }
