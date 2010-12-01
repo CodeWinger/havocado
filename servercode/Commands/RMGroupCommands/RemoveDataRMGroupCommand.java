@@ -21,5 +21,9 @@ public class RemoveDataRMGroupCommand extends AbstractRMGroupCommand {
 	public void doCommand(HavocadoSeed hs) throws Exception {
 		hs.removeData(id, key);
 	}
+	
+	public String toString() {
+		return "RemoveData";
+	}
 
 }

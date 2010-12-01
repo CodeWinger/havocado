@@ -21,5 +21,9 @@ public class DeleteItemRMGroupCommand extends AbstractRMGroupCommand {
 	public void doCommand(HavocadoSeed hs) throws Exception {
 		hs.deleteItem(id, key);
 	}
+	
+	public String toString() {
+		return "DeleteItem";
+	}
 
 }

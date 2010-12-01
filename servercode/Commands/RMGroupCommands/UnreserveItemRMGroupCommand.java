@@ -21,5 +21,9 @@ public class UnreserveItemRMGroupCommand extends AbstractRMGroupCommand {
 	public void doCommand(HavocadoSeed hs) throws Exception {
 		hs.unreserveItem(id, customerID, key, location);
 	}
+	
+	public String toString() {
+		return "UnreserveItem";
+	}
 
 }

@@ -25,5 +25,9 @@ public class ReserveItemRMGroupCommand extends AbstractRMGroupCommand {
 	public void doCommand(HavocadoSeed hs) throws Exception {
 		hs.reserveItem(id, customerID, key, location);
 	}
+	
+	public String toString() {
+		return "ReserveItem";
+	}
 
 }

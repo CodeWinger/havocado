@@ -20,5 +20,9 @@ public class WriteDataRMGroupCommand extends AbstractRMGroupCommand {
 	public void doCommand(HavocadoSeed hs) throws Exception {
 		hs.writeData(id, key, value);
 	}
+	
+	public String toString() {
+		return "WriteData";
+	}
 
 }

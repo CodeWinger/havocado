@@ -10,5 +10,9 @@ public class ShutdownRMGroupCommand extends AbstractRMGroupCommand {
 	public void doCommand(HavocadoSeed hs) throws Exception {
 		System.exit(0);
 	}
+	
+	public String toString() {
+		return "Shutdown";
+	}
 
 }
