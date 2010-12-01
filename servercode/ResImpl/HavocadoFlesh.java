@@ -119,7 +119,7 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     		String roomMachine, String roomRMIServiceName, String configFile) throws RemoteException, NotBoundException {
     	// Create the group member.
     	super(isMaster, myRMIServiceName, groupName, configFile);
-    	
+
     	// Initialize the lock manager.
     	this.lm = new LockManager(this);
     	
@@ -168,6 +168,9 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	    	// Start the overseer thread if I am a master.
     		this.overseer.start();
     	}
+	    
+	    // join the group.
+	    joinGroup();
     }
     
     // helper constructor for slaves.
