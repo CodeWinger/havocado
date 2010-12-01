@@ -1318,7 +1318,7 @@ public class client {
 					int customer = getInt(arguments.elementAt(2));
 					Vector flightNumbers = new Vector();
 					for (int i = 0; i < arguments.size() - 6; i++)
-						flightNumbers.addElement(arguments.elementAt(3 + i));
+						flightNumbers.addElement(getInt(arguments.elementAt(3 + i)));
 					location = getString(arguments
 							.elementAt(arguments.size() - 3));
 					Car = getBoolean(arguments.elementAt(arguments.size() - 2));
