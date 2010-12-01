@@ -45,6 +45,6 @@
                   <pbcast.FLUSH timeout="5000"/>
                   <pbcast.STATE_TRANSFER  />
                   <!-- <CAUSAL/> -->
-                  <SEQUENCER/>
+                  <!-- <SEQUENCER/> --><!-- FIFO. -->
 
    </config>
