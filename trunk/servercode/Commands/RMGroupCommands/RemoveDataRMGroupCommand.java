@@ -23,7 +23,7 @@ public class RemoveDataRMGroupCommand extends AbstractRMGroupCommand {
 	}
 	
 	public String toString() {
-		return "RemoveData "+id;
+		return "RemoveData "+id+" key: "+key;
 	}
 
 }

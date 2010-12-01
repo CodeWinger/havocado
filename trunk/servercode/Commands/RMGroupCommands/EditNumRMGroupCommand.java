@@ -21,7 +21,7 @@ public class EditNumRMGroupCommand extends AbstractRMGroupCommand {
 	}
 	
 	public String toString() {
-		return "EditNum "+id;
+		return "EditNum "+id+" key: "+key+" qty: "+qty;
 	}
 
 }

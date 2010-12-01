@@ -23,7 +23,7 @@ public class UnreserveItemRMGroupCommand extends AbstractRMGroupCommand {
 	}
 	
 	public String toString() {
-		return "UnreserveItem "+id;
+		return "UnreserveItem "+id+" key: "+key+" location: "+location;
 	}
 
 }

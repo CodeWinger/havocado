@@ -27,7 +27,7 @@ public class ReserveItemRMGroupCommand extends AbstractRMGroupCommand {
 	}
 	
 	public String toString() {
-		return "ReserveItem "+id;
+		return "ReserveItem "+id+" key: "+key+" location: "+location;
 	}
 
 }
