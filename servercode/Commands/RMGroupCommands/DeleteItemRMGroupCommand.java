@@ -23,7 +23,7 @@ public class DeleteItemRMGroupCommand extends AbstractRMGroupCommand {
 	}
 	
 	public String toString() {
-		return "DeleteItem";
+		return "DeleteItem "+id;
 	}
 
 }

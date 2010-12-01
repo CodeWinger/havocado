@@ -21,7 +21,7 @@ public class EditPriceRMGroupCommand extends AbstractRMGroupCommand {
 	}
 	
 	public String toString() {
-		return "EditPrice";
+		return "EditPrice "+id;
 	}
 
 }
