@@ -178,6 +178,11 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     	this(isMaster, myRMIServiceName, groupName, null, null, null, null, null, null, configFile);
     }
     
+	
+	public boolean getIsMaster() {
+		return this.isMaster;
+	}
+    
 	@Override
 	public void specialPromoteToMaster() {
 		//System.out.println("special promote to master.");
