@@ -54,10 +54,10 @@ public abstract class GroupMember implements Receiver {
 			//System.out.println("Pre slave send");
 			//channel.send(null, null, myInfo);
 			
-			//Message m = new Message();
-			//m.setObject(myInfo);
-			//channel.send(m);
-			channel.send(null, null, myInfo);
+			Message m = new Message();
+			m.setObject(myInfo);
+			channel.send(m);
+			//channel.send(null, null, myInfo);
 			channel.startFlush(true);
 			
 			//send(myInfo);
