@@ -1160,7 +1160,12 @@ public class client {
 					int customer = getInt(arguments.elementAt(2));
 					returnS = (this.getRM().queryCustomerInfo(Id, customer,
 							timestamp));
-					returnS.timestamp.stamp(); System.out.println("Result: " + returnS.result);
+					returnS.timestamp.stamp();
+					if(returnS.result != null) {
+						System.out.println("Result: " + returnS.result);
+					} else {
+						System.out.println("Result: no customer.");
+					}
 					logger.log(returnS.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1326,7 +1331,7 @@ public class client {
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
 					System.out.println(e.getMessage());
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 				break;
 
