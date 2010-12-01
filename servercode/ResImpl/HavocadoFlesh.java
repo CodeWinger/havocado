@@ -157,9 +157,9 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 	    	    updateRMGroup(roomGroup, rmRooms.getGroupMembers());
 	    	    
 	    	    // print the group members.
-	    	    System.out.println("car group: " + carGroup);
-	    	    System.out.println("flight group: " + flightGroup);
-	    	    System.out.println("room group: " + roomGroup);
+	    	    //System.out.println("car group: " + carGroup);
+	    	    //System.out.println("flight group: " + flightGroup);
+	    	    //System.out.println("room group: " + roomGroup);
 	    	    
 	    	}
     	
@@ -175,16 +175,15 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
     
 	@Override
 	public void specialPromoteToMaster() {
-		System.out.println("special promote to master.");
+		//System.out.println("special promote to master.");
 		// If we have just been promoted to a master, start our overseer thread.
 		this.overseer.refreshAllTransactionsTTL();
 		this.overseer.start();
-		System.out.println("overseer started.");
+		System.out.println("Overseer started.");
+		
 		// Send out a list of the updated RM group members
 		refreshRMGroups();
-		System.out.println("refreshedRMGroups");
 		broadcastRMGroups();
-		System.out.println("broadcastedRMGroups");
 	}
 
 	@Override
@@ -220,12 +219,12 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		// Cars.
 		ResourceManager carRM = AbstractRMICommand.getAvailableRM(carGroup);
 		if(carRM != null) {
-			System.out.println("carRM found.");
+			//System.out.println("carRM found.");
 			try {
 				this.updateRMGroup(carGroup, carRM.getGroupMembers());
-				System.out.println("updated my car group with: " + carGroup);
+				//System.out.println("updated my car group with: " + carGroup);
 			} catch (RemoteException e) {
-				System.out.println("Invalid carRM to refresh the car group.");
+				//System.out.println("Invalid carRM to refresh the car group.");
 			}
 		} else {
 			System.out.println("no available carRM.");
@@ -234,12 +233,12 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		// Flights.
 		ResourceManager flightRM = AbstractRMICommand.getAvailableRM(flightGroup);
 		if(flightRM != null) {
-			System.out.println("flightRM found.");
+			//System.out.println("flightRM found.");
 			try {
 				this.updateRMGroup(flightGroup, flightRM.getGroupMembers());
-				System.out.println("updated my flight group with: " + flightGroup);
+				//System.out.println("updated my flight group with: " + flightGroup);
 			} catch (RemoteException e) {
-				System.out.println("Invald flightRM to refresh the flight group.");
+				//System.out.println("Invald flightRM to refresh the flight group.");
 			}
 		} else {
 			System.out.println("no available flightRM.");
@@ -248,22 +247,22 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		// Rooms.
 		ResourceManager roomRM = AbstractRMICommand.getAvailableRM(roomGroup);
 		if(roomRM != null) {
-			System.out.println("roomRM found.");
+			//System.out.println("roomRM found.");
 			try {
 				this.updateRMGroup(roomGroup, roomRM.getGroupMembers());
-				System.out.println("updated my room group with: " + roomGroup);
+				//System.out.println("updated my room group with: " + roomGroup);
 			} catch (RemoteException e) {
-				System.out.println("Invald roomRM to refresh the room group.");
+				//System.out.println("Invald roomRM to refresh the room group.");
 			}
 		} else {
 			System.out.println("no available roomRM.");
 		}
 		
 		// print the group members.
-		System.out.println("RefreshRMGroups()");
-	    System.out.println("car group: " + carGroup);
-	    System.out.println("flight group: " + flightGroup);
-	    System.out.println("room group: " + roomGroup);
+		//System.out.println("RefreshRMGroups()");
+	    //System.out.println("car group: " + carGroup);
+	    //System.out.println("flight group: " + flightGroup);
+	    //System.out.println("room group: " + roomGroup);
 	}
 	
 	/**
@@ -287,9 +286,9 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		updateRMGroup(flightGroup, rmsg.getFlightGroup());
 		updateRMGroup(roomGroup, rmsg.getRoomGroup());
 		// print the group members.
-	    System.out.println("car group: " + carGroup);
-	    System.out.println("flight group: " + flightGroup);
-	    System.out.println("room group: " + roomGroup);
+	    //System.out.println("car group: " + carGroup);
+	    //System.out.println("flight group: " + flightGroup);
+	    //System.out.println("room group: " + roomGroup);
 	}
 	
 	/**
@@ -301,10 +300,6 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		if(next == null || next.isEmpty()) { 
 			System.out.println("empty or null next MemberInfo sent in updated.");
 			return; 
-		}
-		
-		if(old == null) {
-			System.out.println("updateRMGroup - old is null.");
 		}
 		
 		// Add to our old list the memberInfo objects that were not previously there.
