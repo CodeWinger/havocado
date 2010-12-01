@@ -1,0 +1,4 @@
+start
+newcar,$,cars1,30,70
+crash,HavocadoMiddleware,socs-10
+querycar,$,cars1
