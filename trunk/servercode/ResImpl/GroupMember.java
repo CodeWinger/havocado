@@ -79,7 +79,7 @@ public abstract class GroupMember implements Receiver {
 	 */
 	public void promoteToMaster() {
 		// DEBUG
-		//System.out.println("Promoting myself to master");
+		System.out.println("Promoted myself to master");
 		master = myInfo;
 		isMaster = true;
 		//channel.send(null, null, currentMembers);
@@ -164,7 +164,7 @@ public abstract class GroupMember implements Receiver {
 				if (!edited) {
 					currentMembers.add((MemberInfo) msg.getObject());
 					currentMembers.getLast().setViewID(msg.getSrc());
-					//System.out.println("New members: "+currentMembers);
+					System.out.println("Current members: "+currentMembers);
 				}
 				//try {
 					//channel.send(null, null, currentMembers);
@@ -197,7 +197,7 @@ public abstract class GroupMember implements Receiver {
 				}*/
 				currentMembers = (LinkedList<MemberInfo>)msg.getObject();
 				master = currentMembers.getFirst();
-				System.out.println("New members: "+currentMembers);
+				System.out.println("Current members: "+currentMembers);
 			}
 		}
 		specialReceive(msg.getObject());
