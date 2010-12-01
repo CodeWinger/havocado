@@ -101,7 +101,7 @@ public abstract class GroupMember implements Receiver {
 	
 	public ResourceManager getMaster() {
 		try {
-			return (ResourceManager)LocateRegistry.getRegistry().lookup(master.rmiName);
+			return (ResourceManager)LocateRegistry.getRegistry(master.address.getHostName()).lookup(master.rmiName);
 		} catch (AccessException e) {
 			e.printStackTrace();
 		} catch (RemoteException e) {
