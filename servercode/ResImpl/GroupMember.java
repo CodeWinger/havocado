@@ -50,19 +50,24 @@ public abstract class GroupMember implements Receiver {
 			e.printStackTrace();
 		}
 
-		try {
+		//try {
 			//System.out.println("Pre slave send");
 			//channel.send(null, null, myInfo);
+			/*
 			Message m = new Message();
 			m.setObject(myInfo);
 			channel.send(m);
 			channel.startFlush(true);
+			*/
+			send(myInfo);
 			//System.out.println("Post slave send");
+			/*
 		} catch (ChannelNotConnectedException e) {
 			e.printStackTrace();
 		} catch (ChannelClosedException e) {
 			e.printStackTrace();
 		}
+		*/
 		//System.out.println("GroupMember created. isMaster: " + isMaster);
 	}
 	
@@ -126,7 +131,7 @@ public abstract class GroupMember implements Receiver {
 			//channel.send(m);
 			//channel.startFlush(true);
 			this.channel.send(null, null, obj);
-			channel.startFlush(false); //test
+			//channel.startFlush(false); //test
 		} catch (ChannelNotConnectedException e) {
 			System.out.println("Channel is not connected.\n" + e.toString());
 		} catch (ChannelClosedException e) {
@@ -156,14 +161,17 @@ public abstract class GroupMember implements Receiver {
 					currentMembers.add((MemberInfo) msg.getObject());
 					currentMembers.getLast().setViewID(msg.getSrc());
 				}
-				try {
-					channel.send(null, null, currentMembers);
-					channel.startFlush(false); //test
+				//try {
+					//channel.send(null, null, currentMembers);
+					send(currentMembers);
+					//channel.startFlush(false); //test
+					/*
 				} catch (ChannelNotConnectedException e) {
 					e.printStackTrace();
 				} catch (ChannelClosedException e) {
 					e.printStackTrace();
 				}
+				*/
 			}
 		}
 		// If we're slave, and we get a list of MemberInfo, update our list.
