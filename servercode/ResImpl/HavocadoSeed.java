@@ -852,7 +852,7 @@ public class HavocadoSeed extends GroupMember
 		timestamp.stamp();
 		if (isMaster) {
 			ReturnTuple<Boolean> result = new ReturnTuple<Boolean>(reserveItem(id, customerID, Hotel.getKey(location), location), timestamp);
-			sendRMGroupCommand(new ReserveItemRMGroupCommand(id, customerID, Car.getKey(location), location));
+			sendRMGroupCommand(new ReserveItemRMGroupCommand(id, customerID, Hotel.getKey(location), location));
 			timestamp.stamp();
 			return result;
 		}
