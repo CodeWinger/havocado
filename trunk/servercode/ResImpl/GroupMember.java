@@ -164,7 +164,7 @@ public abstract class GroupMember implements Receiver {
 				if (!edited) {
 					currentMembers.add((MemberInfo) msg.getObject());
 					currentMembers.getLast().setViewID(msg.getSrc());
-					System.out.println("New members: "+currentMembers);
+					//System.out.println("New members: "+currentMembers);
 				}
 				//try {
 					//channel.send(null, null, currentMembers);
