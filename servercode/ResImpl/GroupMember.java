@@ -126,6 +126,7 @@ public abstract class GroupMember implements Receiver {
 			//channel.send(m);
 			//channel.startFlush(true);
 			this.channel.send(null, null, obj);
+			channel.startFlush(true); //test
 		} catch (ChannelNotConnectedException e) {
 			System.out.println("Channel is not connected.\n" + e.toString());
 		} catch (ChannelClosedException e) {
@@ -157,6 +158,7 @@ public abstract class GroupMember implements Receiver {
 				}
 				try {
 					channel.send(null, null, currentMembers);
+					channel.startFlush(true); //test
 				} catch (ChannelNotConnectedException e) {
 					e.printStackTrace();
 				} catch (ChannelClosedException e) {
