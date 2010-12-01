@@ -28,6 +28,8 @@ import ResInterface.MemberInfo;
 import ResInterface.ResourceManager;
 
 public abstract class GroupMember implements Receiver {
+	private static final int NUMBER_OF_ATTEMPTS = 100;
+	
 	protected JChannel channel;
 	protected LinkedList<MemberInfo> currentMembers = new LinkedList<MemberInfo>();
 	protected MemberInfo myInfo = null;
@@ -100,16 +102,28 @@ public abstract class GroupMember implements Receiver {
 	public abstract void specialPromoteToMaster();
 	
 	public ResourceManager getMaster() {
-		try {
-			return (ResourceManager)LocateRegistry.getRegistry(master.address.getHostName()).lookup(master.rmiName);
-		} catch (AccessException e) {
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
+		ResourceManager rm = null;
+		for (int i = 0; i < NUMBER_OF_ATTEMPTS; i++) {
+			try {
+				rm = (ResourceManager)LocateRegistry.getRegistry(master.address.getHostName()).lookup(master.rmiName);
+				rm.poke();
+				//return (ResourceManager)LocateRegistry.getRegistry(master.address.getHostName()).lookup(master.rmiName);
+			} catch (AccessException e) {
+				//e.printStackTrace();
+			} catch (RemoteException e) {
+				//e.printStackTrace();
+				System.out.println("Master not responding. Waiting...");
+				rm = null;
+				try {
+					Thread.sleep(50l);
+				} catch (InterruptedException e1) {
+					
+				}
+			} catch (NotBoundException e) {
+				//e.printStackTrace();
+			}
 		}
-		return null;
+		return rm;
 	}
 	
 	public static ResourceManager memberInfoToResourceManager(MemberInfo mi) {
