@@ -197,6 +197,7 @@ public abstract class GroupMember implements Receiver {
 				}*/
 				currentMembers = (LinkedList<MemberInfo>)msg.getObject();
 				master = currentMembers.getFirst();
+				System.out.println("New members: "+currentMembers);
 			}
 		}
 		specialReceive(msg.getObject());
@@ -278,7 +279,5 @@ public abstract class GroupMember implements Receiver {
 				}
 			}
 		}
-		
-		System.out.println("NEW VIEW ACCEPTED: "+currentMembers);
 	}
 }
