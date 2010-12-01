@@ -159,6 +159,8 @@ public abstract class GroupMember implements Receiver {
 						edited = true;
 					}
 				}
+				System.out.println("Current members: "+currentMembers);
+				System.out.println("edited: " + edited);
 				if (!edited) {
 					currentMembers.add((MemberInfo) msg.getObject());
 					currentMembers.getLast().setViewID(msg.getSrc());
@@ -179,6 +181,7 @@ public abstract class GroupMember implements Receiver {
 		// If we're slave, and we get a list of MemberInfo, update our list.
 		else {
 			if (msg.getObject() instanceof LinkedList<?>) {
+				
 				/*int position = 0;
 				for (MemberInfo newMember : (LinkedList<MemberInfo>)msg.getObject()) {
 					boolean found = false;
@@ -195,7 +198,7 @@ public abstract class GroupMember implements Receiver {
 			}
 		}
 		specialReceive(msg.getObject());
-		System.out.println("Current members: "+currentMembers);
+		
 	}
 	
 	protected abstract void specialReceive(Object arg0);
