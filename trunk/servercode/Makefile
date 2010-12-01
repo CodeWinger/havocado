@@ -20,28 +20,28 @@ all: ResInterface.jar
 many: cars flights rooms
 
 cars: GROUPNAME = HavocadoCarGroup
-cars: ResInterface.jar
+cars:
 	$(JAC) \
 ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(CARRMINAME) $(JCONFIG)
 
 flights: GROUPNAME = HavocadoFlightGroup
-flights: ResInterface.jar
+flights:
 	$(JAC) \
 ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(FLIGHTRMINAME) $(JCONFIG)
 
 rooms: GROUPNAME = HavocadoRoomGroup
-rooms: ResInterface.jar
+rooms:
 	$(JAC) \
 ResImpl.HavocadoSeed $(ROLE) $(GROUPNAME) $(ROOMRMINAME) $(JCONFIG)
 
 flesh: GROUPNAME = HavocadoMiddlewareGroup
-flesh: ResInterface.jar
+flesh:
 	$(JAC) \
 ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(CARSERVER) $(CARRMINAME) \
 $(FLIGHTSERVER) $(FLIGHTRMINAME) $(ROOMSERVER) $(ROOMRMINAME) $(JCONFIG)
 
 middleSlave: GROUPNAME = HavocadoMiddlewareGroup
-middleSlave: ResInterface.jar
+middleSlave:
 	$(JAC) \
 ResImpl.HavocadoFlesh $(ROLE) $(MIDDLERMINAME) $(GROUPNAME) $(JCONFIG)
 
