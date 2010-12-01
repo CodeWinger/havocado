@@ -108,6 +108,8 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 		    System.out.println("slave: 'java ResImpl.HavocadoFlesh slave <myRMIServiceName> <myGroupName> <configFile>'");
 		    System.exit(1);
 		}
+		
+		System.out.println("Server ready");
     }
     
     
