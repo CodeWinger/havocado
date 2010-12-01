@@ -1084,6 +1084,7 @@ public class HavocadoSeed extends GroupMember
 		if (!isMaster) {
 			if (arg0 instanceof AbstractRMGroupCommand) {
 				AbstractRMGroupCommand c = (AbstractRMGroupCommand)arg0;
+				System.out.println("Special Receive: " + c.toString());
 				try {
 					c.doCommand(this);
 				} catch (Exception e) {
