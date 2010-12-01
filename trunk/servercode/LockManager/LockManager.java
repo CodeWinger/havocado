@@ -275,7 +275,7 @@ public class LockManager
                 TimeObj prevStamp = (TimeObj)vect.firstElement();
                 timestamp = prevStamp;
                 timeBlocked = timeObj.getTime() - prevStamp.getTime();
-                if (timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
+                if (flesh.getIsMaster() && timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
                     // the transaction has been waiting for a period greater than the timeout period
                     cleanupDeadlock(prevStamp, waitObj);
                 }
@@ -303,7 +303,7 @@ public class LockManager
                 thisThread.wait(LockManager.DEADLOCK_TIMEOUT - timeBlocked);
                 TimeObj currTime = new TimeObj(dataObj.getXId());
                 timeBlocked = currTime.getTime() - timestamp.getTime();
-                if (timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
+                if (flesh.getIsMaster && timeBlocked >= LockManager.DEADLOCK_TIMEOUT) {
                     // the transaction has been waiting for a period greater than the timeout period
                     cleanupDeadlock(timestamp, waitObj);
                 }
