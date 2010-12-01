@@ -1,11 +1,11 @@
 start
-newcar,$,cars1,30,70
 crash,HavocadoMiddleware,socs-10
-querycar,$,cars1
+newroom,$,Hotel4,900,300
+queryroom,$,Hotel4
 commit,$
 
 start
-newroom,$,hotel1,400,250
 crash,HavocadoRoom,socs-3
-queryroom,$,hotel1
+newroom,$,Hotel3,1000,400
+queryroom,$,Hotel3
 commit,$

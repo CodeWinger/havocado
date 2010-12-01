@@ -1,0 +1,15 @@
+start
+newcar,$,cars5,800,40
+commit,$
+crash,HavocadoFlight,socs02
+start
+querycar,$,cars5
+commit,$
+
+start
+newflight,$,1337,200,1200
+commit,$
+crash,HavocadoMiddleware,socs-10
+start
+queryflight,$,1337
+commit,$
