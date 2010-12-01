@@ -22,7 +22,7 @@ public class WriteDataRMGroupCommand extends AbstractRMGroupCommand {
 	}
 	
 	public String toString() {
-		return "WriteData "+id;
+		return "WriteData "+id+"value"+value;
 	}
 
 }

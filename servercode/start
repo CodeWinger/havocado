@@ -15,15 +15,15 @@ read -p "Press ENTER to start slave RM's"
 # Start slave RM's
 gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
 
-#gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
 
 gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-6.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-#gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-8.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-13.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
 
-#gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
 
 read -p "Press ENTER to start master middleware"
 
@@ -40,8 +40,9 @@ gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd
 read -p "Press ENTER to clean up processes"
 
 # Cleanup
-for id in {1..12}; do
+for id in 1 2 3 4 5 6 7 9 10 11 12 13; do
     ssh sbriss7@socs-${id}.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
 done
 wait
+pkill bash
 echo "Done"
