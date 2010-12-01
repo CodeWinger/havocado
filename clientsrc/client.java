@@ -926,6 +926,7 @@ public class client {
 					returnB = this.getRM().addFlight(Id, flightNum,
 							flightSeats, flightPrice, timestamp);
 					returnB.timestamp.stamp();
+					System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -948,7 +949,7 @@ public class client {
 					price = getInt(arguments.elementAt(4));
 					returnB = this.getRM().addCars(Id, location, numCars,
 							price, timestamp);
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -971,7 +972,7 @@ public class client {
 					price = getInt(arguments.elementAt(4));
 					returnB = this.getRM().addRooms(Id, location, numRooms,
 							price, timestamp);
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -990,7 +991,7 @@ public class client {
 					timestamp.stamp();
 					Id = getInt(arguments.elementAt(1));
 					returnI = (this.getRM().newCustomer(Id, timestamp));
-					returnI.timestamp.stamp();
+					returnI.timestamp.stamp(); System.out.println("Result: " + returnI.result);
 					logger.log(returnI.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1011,7 +1012,7 @@ public class client {
 					flightNum = getInt(arguments.elementAt(2));
 					returnB = (this.getRM().deleteFlight(Id, flightNum,
 							timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1033,7 +1034,7 @@ public class client {
 
 					returnB = (this.getRM().deleteCars(Id, location,
 							timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1054,7 +1055,7 @@ public class client {
 					location = getString(arguments.elementAt(2));
 					returnB = (this.getRM().deleteRooms(Id, location,
 							timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1075,7 +1076,7 @@ public class client {
 					int customer = getInt(arguments.elementAt(2));
 					returnB = (this.getRM().deleteCustomer(Id, customer,
 							timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1096,7 +1097,7 @@ public class client {
 					flightNum = getInt(arguments.elementAt(2));
 					returnI = (this.getRM().queryFlight(Id, flightNum,
 							timestamp));
-					returnI.timestamp.stamp();
+					returnI.timestamp.stamp(); System.out.println("Result: " + returnI.result);
 					logger.log(returnI.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1117,7 +1118,7 @@ public class client {
 					location = getString(arguments.elementAt(2));
 					returnI = (this.getRM()
 							.queryCars(Id, location, timestamp));
-					returnI.timestamp.stamp();
+					returnI.timestamp.stamp(); System.out.println("Result: " + returnI.result);
 					logger.log(returnI.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1138,7 +1139,7 @@ public class client {
 					location = getString(arguments.elementAt(2));
 					returnI = (this.getRM().queryRooms(Id, location,
 							timestamp));
-					returnI.timestamp.stamp();
+					returnI.timestamp.stamp(); System.out.println("Result: " + returnI.result);
 					logger.log(returnI.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1159,7 +1160,7 @@ public class client {
 					int customer = getInt(arguments.elementAt(2));
 					returnS = (this.getRM().queryCustomerInfo(Id, customer,
 							timestamp));
-					returnS.timestamp.stamp();
+					returnS.timestamp.stamp(); System.out.println("Result: " + returnS.result);
 					logger.log(returnS.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1180,7 +1181,7 @@ public class client {
 					flightNum = getInt(arguments.elementAt(2));
 					returnI = (this.getRM().queryFlightPrice(Id, flightNum,
 							timestamp));
-					returnI.timestamp.stamp();
+					returnI.timestamp.stamp(); System.out.println("Result: " + returnI.result);
 					logger.log(returnI.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1201,7 +1202,7 @@ public class client {
 					location = getString(arguments.elementAt(2));
 					returnI = (this.getRM().queryCarsPrice(Id, location,
 							timestamp));
-					returnI.timestamp.stamp();
+					returnI.timestamp.stamp(); System.out.println("Result: " + returnI.result);
 					logger.log(returnI.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1222,7 +1223,7 @@ public class client {
 					location = getString(arguments.elementAt(2));
 					returnI = (this.getRM().queryRoomsPrice(Id, location,
 							timestamp));
-					returnI.timestamp.stamp();
+					returnI.timestamp.stamp(); System.out.println("Result: " + returnI.result);
 					logger.log(returnI.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1244,7 +1245,7 @@ public class client {
 					flightNum = getInt(arguments.elementAt(3));
 					returnB = (this.getRM().reserveFlight(Id, customer,
 							flightNum, timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1268,7 +1269,7 @@ public class client {
 
 					returnB = (this.getRM().reserveCar(Id, customer,
 							location, timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1291,7 +1292,7 @@ public class client {
 
 					returnB = (this.getRM().reserveRoom(Id, customer,
 							location, timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1320,7 +1321,7 @@ public class client {
 
 					returnB = (this.getRM().itinerary(Id, customer,
 							flightNumbers, location, Car, Room, timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1348,7 +1349,7 @@ public class client {
 					Id = getInt(arguments.elementAt(1));
 					Cid = getInt(arguments.elementAt(2));
 					returnB = (this.getRM().newCustomer(Id, Cid, timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (Exception e) {
 					System.out.println("EXCEPTION:");
@@ -1403,7 +1404,7 @@ public class client {
 					timestamp.stamp();
 					Id = getInt(arguments.elementAt(1));
 					returnB = (this.getRM().commit(Id, timestamp));
-					returnB.timestamp.stamp();
+					returnB.timestamp.stamp(); System.out.println("Result: " + returnB.result);
 					logger.log(returnB.timestamp);
 				} catch (TransactionAbortedException tae) {
 					System.out.println("Transaction previously aborted.");
