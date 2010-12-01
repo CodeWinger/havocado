@@ -152,6 +152,7 @@ public abstract class GroupMember implements Receiver {
 		if (isMaster) {
 			if (msg.getObject() instanceof MemberInfo) {
 				MemberInfo newMember = (MemberInfo)msg.getObject();
+				System.out.println("New member: " + newMember);
 				boolean edited = false;
 				for (MemberInfo mi : currentMembers) {
 					if (newMember.equals(mi)) {
@@ -159,11 +160,11 @@ public abstract class GroupMember implements Receiver {
 						edited = true;
 					}
 				}
-				System.out.println("Current members: "+currentMembers);
-				System.out.println("edited: " + edited);
+				
 				if (!edited) {
 					currentMembers.add((MemberInfo) msg.getObject());
 					currentMembers.getLast().setViewID(msg.getSrc());
+					System.out.println("New members: "+currentMembers);
 				}
 				//try {
 					//channel.send(null, null, currentMembers);
@@ -176,6 +177,7 @@ public abstract class GroupMember implements Receiver {
 					e.printStackTrace();
 				}
 				*/
+				
 			}
 		}
 		// If we're slave, and we get a list of MemberInfo, update our list.
