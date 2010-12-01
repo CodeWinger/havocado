@@ -93,6 +93,7 @@ public class Overseer extends Thread{
 	public synchronized void replicateCreateTransaction(LockManager lockManager, int tId) {
 		Transaction t = new Transaction(lockManager, tId);
 		currentTransactions.put(new Integer(tId), t);
+		nextTId++;
 	}
 	
 	/**
