@@ -47,7 +47,7 @@ public class client
   				  // no exception was thrown! return!
   				  return r;
   			  } catch(RemoteException e) {
-  				  System.out.println(mi.rmiName + " is dead.");
+  				  //System.out.println(mi.rmiName + " is dead.");
   				  continue;
   			  }
   		  }
@@ -157,7 +157,8 @@ public class client
 	    	machineName = args[0];
 	    	serviceName = args[1];
 	    } else {
-	    	System.out.println("Usage: java client [machine name] [service name]");
+	    	System.out.println("Usage: java client <machine name> <service name>");
+	    	System.exit(-1);
 	    }
 	    
 	    // Initialize our client object using the arguments.
