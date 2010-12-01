@@ -1,166 +1,166 @@
 # addFlight
 start
-newflight, 0, 774, 200, 450
-commit, 0
+newflight, $, 774, 200, 450
+commit, $
 
 #addFlightAbort
 start
-newflight, 1, 775, 201, 451
-abort, 1
+newflight, $, 775, 201, 451
+abort, $
 
 #addCars
 start
-newcar, 2, cars1, 250, 75
-commit, 2
+newcar, $, cars1, 250, 75
+commit, $
 
 #addCarsAbort
 start
-newcar, 3, cars2, 251, 76
-abort, 3
+newcar, $, cars2, 251, 76
+abort, $
 
 #addRooms
 start
-newroom, 4, hotel1, 500, 135
-commit, 4
+newroom, $, hotel1, 500, 135
+commit, $
 
 #addRoomsAbort
 start
-newroom, 5, hotel2, 501, 136
-abort, 5
+newroom, $, hotel2, 501, 136
+abort, $
 
 #newCustomer
 start
-newcustomer, 6
-commit, 6
+newcustomer, $
+commit, $
 
 #newCustomerAbort
 start
-newcustomer, 7
-commit, 7
+newcustomer, $
+commit, $
 
 #newCustomerWithID
 start
-newcustomerid, 8, 45
-commit, 8
+newcustomerid, $, 45
+commit, $
 
 #newCustomerWithIDAbort
 start
-newcustomerid, 9, 46
-abort, 9
+newcustomerid, $, 46
+abort, $
 
 #deleteFlightAbort
 start
-deleteflight, 10, 774
-abort, 10
+deleteflight, $, 774
+abort, $
 
 #deleteFlight
 start
-deleteflight, 11, 774
-commit, 11
+deleteflight, $, 774
+commit, $
 
 #deleteCarsAbort
 start
-deletecar, 12, cars1
-abort, 12
+deletecar, $, cars1
+abort, $
 
 #deleteCars
 start
-deletecar, 13, cars1
-commit, 13
+deletecar, $, cars1
+commit, $
 
 #deleteRoomsAbort
 start
-deleteroom, 14, hotel1
-abort, 14
+deleteroom, $, hotel1
+abort, $
 
 #deleteRooms
 start
-deleteroom, 15, hotel1
-abort, 15
+deleteroom, $, hotel1
+abort, $
 
 #deleteCustomer
 start
-deletecustomer, 16, 45
-abort, 16
+deletecustomer, $, 45
+abort, $
 
 #deleteCustomerAbort
 start
-deletecustomer, 17, 45
-commit, 17
+deletecustomer, $, 45
+commit, $
 
 #queryflight
 start
-newflight, 18, 8850, 690, 510
-commit, 18
+newflight, $, 8850, 690, 510
+commit, $
 start
-queryflight, 19, 8850
-commit, 19
+queryflight, $, 8850
+commit, $
 
 #querycars
 start
-newcar, 20, cars2, 700, 46
-commit, 20
+newcar, $, cars2, 700, 46
+commit, $
 start
-querycar, 21, cars2
-commit, 21
+querycar, $, cars2
+commit, $
 
 #queryrooms
 start
-newroom, 22, hotel2, 1200, 325
-commit, 22
+newroom, $, hotel2, 1200, 325
+commit, $
 start
-queryroom, 23, hotel2
-commit, 23
+queryroom, $, hotel2
+commit, $
 
 #queryflightprice
 start
-queryflightprice, 24, 8850
-commit, 24
+queryflightprice, $, 8850
+commit, $
 
 #querycarsprice
 start
-querycarprice, 25, cars2
-commit, 25
+querycarprice, $, cars2
+commit, $
 
 #queryroomsprice
 start
-queryroomprice, 26, hotel2
-commit, 26
+queryroomprice, $, hotel2
+commit, $
 
 #reserveflightAbort
 start
-newcustomerid, 27, 46
-commit, 27
+newcustomerid, $, 46
+commit, $
 start
-reserveflight, 28, 46, 8850
-abort, 28
+reserveflight, $, 46, 8850
+abort, $
 
 #reserveFlight
 start
-reserveflight, 29, 46, 8850
-commit, 29
+reserveflight, $, 46, 8850
+commit, $
 
 #reserveCarAbort
 start
-reservecar, 30, 46, cars2
-abort, 30
+reservecar, $, 46, cars2
+abort, $
 
 #reserveCar
 start
-reservecar, 31, 46, cars2
-commit, 31
+reservecar, $, 46, cars2
+commit, $
 
 #reserveRoomAbort
 start
-reserveroom, 32, 46, hotel2
-abort, 32
+reserveroom, $, 46, hotel2
+abort, $
 
 #reserveRoom
 start
-reserveroom, 33, 46, hotel2
-commit, 33
+reserveroom, $, 46, hotel2
+commit, $
 
 #querycustomerinfo
 start
-querycustomer, 34, 46
-commit, 34
+querycustomer, $, 46
+commit, $
