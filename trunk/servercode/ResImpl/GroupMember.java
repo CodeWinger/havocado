@@ -51,7 +51,7 @@ public abstract class GroupMember implements Receiver {
 		}
 
 		//try {
-			//System.out.println("Pre slave send");
+			System.out.println("Pre slave send");
 			//channel.send(null, null, myInfo);
 			/*
 			Message m = new Message();
@@ -60,7 +60,7 @@ public abstract class GroupMember implements Receiver {
 			channel.startFlush(true);
 			*/
 			send(myInfo);
-			//System.out.println("Post slave send");
+			System.out.println("Post slave send");
 			/*
 		} catch (ChannelNotConnectedException e) {
 			e.printStackTrace();
@@ -68,7 +68,7 @@ public abstract class GroupMember implements Receiver {
 			e.printStackTrace();
 		}
 		*/
-		//System.out.println("GroupMember created. isMaster: " + isMaster);
+		System.out.println("GroupMember created. isMaster: " + isMaster);
 	}
 	
 	/**
@@ -78,13 +78,13 @@ public abstract class GroupMember implements Receiver {
 	 */
 	public void promoteToMaster() {
 		// DEBUG
-		//System.out.println("Promoting myself to master");
+		System.out.println("Promoting myself to master");
 		master = myInfo;
 		isMaster = true;
 		//channel.send(null, null, currentMembers);
-		//System.out.println("Sending current members: " + currentMembers);
+		System.out.println("Sending current members: " + currentMembers);
 		send(currentMembers);
-		//System.out.println("Sent current members.");
+		System.out.println("Sent current members.");
 		specialPromoteToMaster();
 	}
 	
@@ -131,7 +131,7 @@ public abstract class GroupMember implements Receiver {
 			//channel.send(m);
 			//channel.startFlush(true);
 			this.channel.send(null, null, obj);
-			channel.startFlush(false);
+			//channel.startFlush(false);
 			//channel.startFlush(false); //test
 		} catch (ChannelNotConnectedException e) {
 			System.out.println("Channel is not connected.\n" + e.toString());
@@ -145,7 +145,7 @@ public abstract class GroupMember implements Receiver {
 	 * @param msg The message being received. 
 	 */
 	public void receive(Message msg) {
-		//System.out.println("MESSAGE RECEIVED.");
+		System.out.println("MESSAGE RECEIVED.");
 		// If we're master, if we get new member information, add the new member to
 		// the list and broadcast the list.
 		if (isMaster) {
@@ -194,7 +194,7 @@ public abstract class GroupMember implements Receiver {
 			}
 		}
 		specialReceive(msg.getObject());
-		//System.out.println("Current members: "+currentMembers);
+		System.out.println("Current members: "+currentMembers);
 	}
 	
 	protected abstract void specialReceive(Object arg0);
