@@ -34,19 +34,29 @@ public abstract class GroupMember implements Receiver {
 	protected MemberInfo master = null;
 	protected boolean isMaster;
 	
-	public GroupMember(boolean isMaster, String myRMIServiceName, String groupName, String configFile) {
-		try {
-			this.isMaster = isMaster;
+	private String configFile;
+	private String groupName;
+	public GroupMember(boolean isMaster, String myRMIServiceName, String pGroupName, String pConfigFile) {
+		this.isMaster = isMaster;
+		try { 
 			myInfo = new MemberInfo(myRMIServiceName, InetAddress.getLocalHost());
-			currentMembers.add(myInfo);
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		}
+		this.currentMembers.add(myInfo);
+		this.configFile = pConfigFile;
+		this.groupName = pGroupName;
+	}
+	
+	/** Called by the child class once it is done initializing its constructor. */
+	protected void joinGroup() {
+		try {
 			channel = new JChannel(configFile);
 			channel.connect(groupName);
 			channel.setReceiver(this);
 			NAKACK nak = (NAKACK)channel.getProtocolStack().findProtocol(NAKACK.class);
 			nak.setLogDiscardMessages(false);
 		} catch (ChannelException e) {
-			e.printStackTrace();
-		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 
@@ -68,8 +78,6 @@ public abstract class GroupMember implements Receiver {
 		} catch (ChannelClosedException e) {
 			e.printStackTrace();
 		}
-		
-		//System.out.println("GroupMember created. isMaster: " + isMaster);
 	}
 	
 	/**

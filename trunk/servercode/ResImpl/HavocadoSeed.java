@@ -75,6 +75,7 @@ public class HavocadoSeed extends GroupMember
 		Registry registry = LocateRegistry.getRegistry();
 		registry.rebind(myRMIServiceName, rm);
 
+		this.joinGroup();
 		System.err.println("Server ready");
     }
 
