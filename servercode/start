@@ -1,38 +1,41 @@
 #!/bin/bash
 
+# Make the project
+ssh sbriss7@mimi.cs.mcgill.ca "cd School/Comp512/servercode; make ResInterface.jar"
+
 # Start master RM's
-gnome-terminal -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"ROLE = master\" \"JCONFIG = jconfigCars.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-1.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"ROLE = master\" \"JCONFIG = jconfigCars.xml\""; read line'&
 
-gnome-terminal -x bash -c 'ssh sbriss7@socs-2.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"ROLE = master\" \"JCONFIG = jconfigFlights.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-2.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"ROLE = master\" \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-gnome-terminal -x bash -c 'ssh sbriss7@socs-3.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"ROLE = master\" \"JCONFIG = jconfigRooms.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-3.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"ROLE = master\" \"JCONFIG = jconfigRooms.xml\""; read line'&
 
 read -p "Press ENTER to start slave RM's"
 
 # Start slave RM's
-gnome-terminal -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-4.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
+#gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
 
-gnome-terminal -x bash -c 'ssh sbriss7@socs-6.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-6.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
+#gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
-gnome-terminal -x bash -c 'ssh sbriss7@socs-8.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-8.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
 
-#gnome-terminal -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
+#gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make rooms \"JCONFIG = jconfigRooms.xml\""; read line'&
 
 read -p "Press ENTER to start master middleware"
 
 # Start master middleware
-gnome-terminal -x bash -c 'ssh sbriss7@socs-10.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"ROLE = master\" \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-10.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"ROLE = master\" \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
 
 read -p "Press ENTER to start slave middlewares"
 
 # Start slave middlewares
-gnome-terminal -x bash -c 'ssh sbriss7@socs-11.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-11.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
 
-gnome-terminal -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
+gnome-terminal --geometry=60x17 -x bash -c 'ssh sbriss7@socs-12.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make middleSlave"; read line'&
 
 read -p "Press ENTER to clean up processes"
 
