@@ -183,7 +183,7 @@ public abstract class GroupMember implements Receiver {
 			}
 		}
 		specialReceive(msg.getObject());
-		System.out.println("Current members: "+currentMembers);
+		//System.out.println("Current members: "+currentMembers);
 	}
 	
 	protected abstract void specialReceive(Object arg0);

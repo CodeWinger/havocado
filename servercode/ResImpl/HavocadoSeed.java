@@ -208,18 +208,22 @@ public class HavocadoSeed extends GroupMember
 	 * @return
 	 */
 	public void unreserveItem(int id, int customerID, String key, String location) {
+		Trace.info("RM::unreserveItem( " + id + ", customer=" + customerID + ", " +key+ ", "+location+" ) called" );
 		Customer cust = (Customer) readData(id, Customer.getKey(customerID));
 		if(cust == null) {
 			// we've got nothing to do.
+			Trace.warn("RM::unreserveItem( " + id + ", " + customerID + ", " + key + ", "+location+")  --customer doesn't exist" );
 			return;
 		}
 		
 		ReservableItem item = (ReservableItem)readData(id,key);
 		if(item == null) {
 			// nothing to do again!
+			Trace.warn("RM::unreserveItem( " + id + ", " + customerID + ", " + key+", " +location+") --item doesn't exist" );
 			return;
 		} else if (item.getCount() == 0) {
 			// the item can't be un-reserved.
+			Trace.warn("RM::unreserveItem( " + id + ", " + customerID + ", " + key+", " + location+") --No more items" );
 			return;
 		} else {
 			cust.unreserve(key, location, item.getPrice());
@@ -228,7 +232,7 @@ public class HavocadoSeed extends GroupMember
 			// increase the number of available items in the storage.
 			item.setCount(item.getCount() + 1);
 			item.setReserved(item.getReserved() - 1);
-			
+			Trace.info("RM::unreserveItem( " + id + ", " + customerID + ", " + key + ", " +location+") succeeded" );
 			return;
 		}
 	}
