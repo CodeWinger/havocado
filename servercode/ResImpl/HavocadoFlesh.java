@@ -1220,7 +1220,8 @@ public class HavocadoFlesh extends GroupMember implements ResourceManager {
 				lm.Lock(id, ResImpl.Car.getKey(location), i.getRequiredLock());
 				lm.Lock(id, Hotel.getKey(location), i.getRequiredLock());
 				for (Object flightNo : flightNumbers) {
-					lm.Lock(id, Flight.getKey(((Integer)flightNo).intValue()), i.getRequiredLock());
+					int flightNum = Integer.parseInt((String) flightNo);
+					lm.Lock(id, Flight.getKey(flightNum), i.getRequiredLock());
 				}
 				i.execute();
 				result = i.success;
