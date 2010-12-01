@@ -132,7 +132,7 @@ public abstract class GroupMember implements Receiver {
 			//channel.send(m);
 			//channel.startFlush(true);
 			this.channel.send(null, null, obj);
-			channel.startFlush(true);
+			//channel.startFlush(true);
 			//channel.startFlush(false); //test
 		} catch (ChannelNotConnectedException e) {
 			System.out.println("Channel is not connected.\n" + e.toString());
@@ -151,7 +151,6 @@ public abstract class GroupMember implements Receiver {
 		// the list and broadcast the list.
 		if (isMaster) {
 			if (msg.getObject() instanceof MemberInfo) {
-				System.out.println("Current members: "+currentMembers);
 				MemberInfo newMember = (MemberInfo)msg.getObject();
 				boolean edited = false;
 				for (MemberInfo mi : currentMembers) {
@@ -196,7 +195,7 @@ public abstract class GroupMember implements Receiver {
 			}
 		}
 		specialReceive(msg.getObject());
-		
+		System.out.println("Current members: "+currentMembers);
 	}
 	
 	protected abstract void specialReceive(Object arg0);
