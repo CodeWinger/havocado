@@ -27,7 +27,6 @@ public class HavocadoSeed extends GroupMember
 
 
 	public static void main(String args[]) {
-		System.out.println("TEST OH MY GOD ASLFKJFAD:LF");
         // Figure out where server is running
 		boolean isMaster = false;
 		String groupName = "";
@@ -242,7 +241,6 @@ public class HavocadoSeed extends GroupMember
 	// TODO Create interface for RMGroupCommands.
 	
 	private void sendRMGroupCommand(AbstractRMGroupCommand c) {
-		System.out.println("==============="+c);
 		try {
 			channel.send(null, null, c);
 		} catch (ChannelNotConnectedException e) {
