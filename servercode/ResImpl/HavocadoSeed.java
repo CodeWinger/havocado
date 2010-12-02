@@ -241,6 +241,7 @@ public class HavocadoSeed extends GroupMember
 	// TODO Create interface for RMGroupCommands.
 	
 	private void sendRMGroupCommand(AbstractRMGroupCommand c) {
+		System.out.println("==============="+c);
 		try {
 			channel.send(null, null, c);
 		} catch (ChannelNotConnectedException e) {
