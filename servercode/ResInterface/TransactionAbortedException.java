@@ -10,4 +10,9 @@ public class TransactionAbortedException extends Exception{
 	public TransactionAbortedException(ResInterface.Timestamp pT){
 		t = pT;
 	}
+	
+	@Override
+	public String getMessage() {
+		return "Transaction Aborted.";
+	}
 }
