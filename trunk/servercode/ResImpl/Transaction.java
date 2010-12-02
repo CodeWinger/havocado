@@ -37,7 +37,7 @@ public class Transaction {
 		AbstractRMICommand c;
 		while (!commandStack.isEmpty()) {
 			c = commandStack.pop();
-			c.undo();
+			c.undo(); 
 		}
 	}
 	
