@@ -10,4 +10,9 @@ public class InvalidTransactionException extends Exception {
 	public InvalidTransactionException(ResInterface.Timestamp pT){
 		t = pT;
 	}
+	
+	@Override
+	public String getMessage() {
+		return "Invalid Transaction.";
+	}
 }
