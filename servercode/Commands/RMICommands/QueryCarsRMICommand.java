@@ -27,7 +27,7 @@ public class QueryCarsRMICommand extends AbstractRMICommand {
 	  setTimestamp(numCars.timestamp);
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  // do nothing.
   }
 

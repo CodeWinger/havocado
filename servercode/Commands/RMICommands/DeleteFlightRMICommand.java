@@ -31,7 +31,7 @@ public class DeleteFlightRMICommand extends AbstractRMICommand {
 	//success = rm.deleteFlight(id, flightNum, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  try {
 		  if(success.result) {
 			  timestamp.stamp();

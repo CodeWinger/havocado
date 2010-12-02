@@ -33,7 +33,7 @@ public class AddFlightRMICommand extends AbstractRMICommand {
     setTimestamp(success.timestamp);
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  try {
 		  if(success.result) {
 			  timestamp.stamp();

@@ -30,7 +30,7 @@ public class DeleteCarsRMICommand extends AbstractRMICommand {
 	  //success = rm.deleteCars(id, location, null).result; // TODO: TIMESTAMP LOGIC.
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  try {
 		  if(success.result){
 			  timestamp.stamp();

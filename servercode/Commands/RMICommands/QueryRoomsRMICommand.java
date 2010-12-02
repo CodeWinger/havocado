@@ -27,7 +27,7 @@ public class QueryRoomsRMICommand extends AbstractRMICommand {
 	  setTimestamp(numRooms.timestamp);
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  // do nothing.
   }
 

@@ -130,4 +130,17 @@ public abstract class AbstractRMICommand implements Command, Serializable {
       finished();
     }
   }
+  
+  public void undo() {
+	  try {
+		  // populate my resource managers if they don't exist.
+		  if(this.rm == null) {
+			  this.populateResourceManagers();
+		  }
+		  // undo the command.
+		  this.undoCommand();
+	  } catch (Exception e) {
+		  // do nothing... you did your best.
+	  }
+  }
 }

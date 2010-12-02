@@ -26,7 +26,7 @@ public class QueryFlightRMICommand extends AbstractRMICommand {
 	  setTimestamp(numSeats.timestamp);
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  // do nothing.
   }
 
