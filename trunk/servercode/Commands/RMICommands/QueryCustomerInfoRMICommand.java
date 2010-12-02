@@ -103,7 +103,7 @@ public class QueryCustomerInfoRMICommand extends AbstractMultiRMICommand {
 	    customerInfo.timestamp = timestamp;
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  	// do nothing.
   }
 

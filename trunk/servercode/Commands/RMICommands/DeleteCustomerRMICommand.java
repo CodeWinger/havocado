@@ -78,7 +78,7 @@ public class DeleteCustomerRMICommand extends AbstractMultiRMICommand {
       success.timestamp = timestamp;
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  try {
 		  if(success.result) {
 			  timestamp.stamp();

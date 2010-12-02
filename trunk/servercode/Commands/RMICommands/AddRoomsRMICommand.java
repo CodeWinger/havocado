@@ -34,7 +34,7 @@ public class AddRoomsRMICommand extends AbstractRMICommand {
 	  //success = rm.addRooms(id, location, numRooms, price, null).result;
   }
   
-  public void undo() {
+  public void undoCommand() {
 	  try {
 		  if(success.result) {
 			  timestamp.stamp();
