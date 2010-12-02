@@ -18,7 +18,7 @@ start
 newcustomerid,$,15
 itinerary,$,15,4455,location1,true,true
 deletecustomer,$,10
-crash,HavocadoMiddleware,socs-14
+#crash,HavocadoMiddleware,socs-14
 crash,HavocadoCar,socs-4
 crash,HavocadoFlight,socs-6
 crash,HavocadoRoom,socs-13
