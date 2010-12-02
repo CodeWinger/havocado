@@ -27,6 +27,7 @@ public class HavocadoSeed extends GroupMember
 
 
 	public static void main(String args[]) {
+		System.out.println("TEST OH MY GOD ASLFKJFAD:LF");
         // Figure out where server is running
 		boolean isMaster = false;
 		String groupName = "";
