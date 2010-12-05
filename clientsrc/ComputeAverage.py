@@ -24,7 +24,7 @@ def newMachine3(name):
 
 def processBuffer(buff):
 	size = len(buff)
-	if(size <= 1):
+	if(size <= 4):
 		return
 	
 	mimiName = buff[0].split(' ')[0]
@@ -45,7 +45,7 @@ def processBuffer(buff):
 	for i in range(size):
 		line = buff[i]
 		tokens = buff[i].split(' ')
-		if "lab" in tokens[0]:
+		if ("socs" in tokens[0]) and ("socs-10" not in tokens[0]):
 			if foundLab == 0:
 				labName = tokens[0]
 				labFirstTime = long(tokens[1])
