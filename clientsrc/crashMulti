@@ -11,7 +11,7 @@ start
 newflight,$,2424,600,450
 crash,HavocadoFlight,socs-2
 reserveflight,$,5,2424
-crash,HavocadoFlight,socs-6
+crash,HavocadoFlight,socs-9
 querycustomer,$,5
 commit,$
 
@@ -24,9 +24,9 @@ querycustomer,$,5
 abort,$
 
 start
-crash,HavocadoMiddleware,socs-10
+crash,HavocadoMiddleware,socs-11
 querycustomer,$,5
 deletecustomer,$,5
-crash,HavocadoMiddleware,socs-11
+crash,HavocadoMiddleware,socs-14
 querycustomer,$,5
 commit,$
