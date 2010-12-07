@@ -17,7 +17,7 @@ gnome-terminal --geometry=60x17 --title=socs-4:CarSlave1 -x bash -c 'ssh sbriss7
 
 gnome-terminal --geometry=60x17 --title=socs-5:CarSlave2 -x bash -c 'ssh sbriss7@socs-5.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make cars \"JCONFIG = jconfigCars.xml\""; read line'&
 
-gnome-terminal --geometry=60x17 --title=socs-6:FlightSlave1 -x bash -c 'ssh sbriss7@socs-6.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
+gnome-terminal --geometry=60x17 --title=socs-9:FlightSlave1 -x bash -c 'ssh sbriss7@socs-9.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
 gnome-terminal --geometry=60x17 --title=socs-7:FlightSlave2 -x bash -c 'ssh sbriss7@socs-7.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flights \"JCONFIG = jconfigFlights.xml\""; read line'&
 
@@ -28,7 +28,7 @@ gnome-terminal --geometry=60x17 --title=socs-8:RoomSlave2 -x bash -c 'ssh sbriss
 read -p "Press ENTER to start master middleware"
 
 # Start master middleware
-gnome-terminal --geometry=60x17 --title=socs-10:MiddlewareMaster -x bash -c 'ssh sbriss7@socs-10.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"ROLE = master\" \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
+gnome-terminal --geometry=60x17 --title=socs-11:MiddlewareMaster -x bash -c 'ssh sbriss7@socs-11.cs.mcgill.ca "cd School/Comp512/servercode; rmiregistry & make flesh \"ROLE = master\" \"CARSERVER = socs-1\" \"FLIGHTSERVER = socs-2\" \"ROOMSERVER = socs-3\""; read line'&
 
 read -p "Press ENTER to start slave middlewares"
 
@@ -40,7 +40,7 @@ gnome-terminal --geometry=60x17 --title=socs-12:MiddlewareSlave2 -x bash -c 'ssh
 read -p "Press ENTER to clean up processes"
 
 # Cleanup
-for id in 1 2 3 4 5 6 7 8 10 12 13 14; do
+for id in 1 2 3 4 5 9 7 8 11 12 13 14; do
     ssh sbriss7@socs-${id}.cs.mcgill.ca 'pkill "java|bash|rmiregistry"' 2> /dev/null &
 done
 wait
